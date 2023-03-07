@@ -1,4 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
-  
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/black"
+    tools:parentTag="com.example.coursework.MessageView">
+
+    <TextView
+        android:id="@+id/tvMessageAuthor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/accent"
+        android:textSize="14sp"
+        tools:text="Darrell Steward" />
+
+    <TextView
+        android:id="@+id/tvMessageContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="17sp"
+        tools:text="Привет! Lorem ipsum ansjdn jan djkasn jkdna jksnd knas jkas ndjk nasjk djka ds" />
+
+    <ImageView
+        android:id="@+id/ivMessageAuthorPic"
+        android:layout_width="37dp"
+        android:layout_height="37dp"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_launcher_foreground" />
+
+    <com.example.coursework.FlexBoxLayout
+        android:id="@+id/fbReactions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:horizontalSpacing="8dp"
+        app:verticalSpacing="10dp" />
 </merge>
