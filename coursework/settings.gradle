@@ -13,4 +13,7 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "coursework"
+include ':app_catalog'
+include ':feature_chat'
+include ':core_ui'
 include ':app'

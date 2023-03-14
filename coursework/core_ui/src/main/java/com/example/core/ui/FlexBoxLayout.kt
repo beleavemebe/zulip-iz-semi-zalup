@@ -1,14 +1,13 @@
-package com.example.coursework.chat.ui.view
+package com.example.core.ui
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.View
 import android.view.ViewGroup
-import com.example.feature_chat.R
+import com.example.core_ui.R
+import kotlin.math.max
+import kotlin.math.min
 
-val Context.screenWidth: Int
-    get() {
-        return resources.displayMetrics.widthPixels
-    }
 
 class FlexBoxLayout @JvmOverloads constructor(
     context: Context,
@@ -23,7 +22,7 @@ class FlexBoxLayout @JvmOverloads constructor(
     init {
         val attributes = context.obtainStyledAttributes(attrs, R.styleable.FlexBoxLayout, 0, 0)
         helper = FlexBoxHelper(
-            maxWidth = context.screenWidth,
+            maxWidth = screenWidth,
             verticalSpacing = attributes
                 .getDimension(R.styleable.FlexBoxLayout_verticalSpacing, 0f)
                 .toInt(),
@@ -54,3 +53,56 @@ class FlexBoxLayout @JvmOverloads constructor(
     }
 }
 
+internal class FlexBoxModel(
+    var width: Int = 0,
+    var height: Int = 0,
+    var children: List<FlexBoxChild> = emptyList()
+)
+
+internal class FlexBoxChild(val left: Int, val top: Int, val view: View)
+
+internal class FlexBoxHelper(
+    private val maxWidth: Int,
+    private val verticalSpacing: Int,
+    private val horizontalSpacing: Int,
+    private val paddingLeft: Int,
+    private val paddingTop: Int,
+    private val paddingRight: Int,
+    private val paddingBottom: Int
+) {
+    fun updateModel(
+        model: FlexBoxModel,
+        childCount: Int,
+        viewAt: (Int) -> View
+    ) {
+        val children = ArrayList<FlexBoxChild>(childCount)
+        var i = 0
+        var reachedWidth = paddingLeft
+        var currLeft = paddingLeft
+        var currTop = paddingTop
+        var currRowHeight = paddingTop
+        while (i != childCount) {
+            val next = viewAt(i)
+            val nextWidth = next.measuredWidth
+            val nextHeight = next.measuredHeight
+
+            if (currLeft + nextWidth + horizontalSpacing + paddingRight <= maxWidth) {
+                currRowHeight = max(currRowHeight, nextHeight)
+                children += FlexBoxChild(left = currLeft, top = currTop, view = next)
+                currLeft += nextWidth + horizontalSpacing
+                i++
+                if (reachedWidth != maxWidth) {
+                    reachedWidth = min(maxWidth, currLeft)
+                }
+            } else {
+                reachedWidth = maxWidth
+                currTop += currRowHeight + verticalSpacing
+                currLeft = 0
+            }
+        }
+
+        model.width = reachedWidth
+        model.height = currTop + currRowHeight + verticalSpacing + paddingBottom
+        model.children = children
+    }
+}

@@ -1,22 +1,20 @@
-package com.example.coursework.chat.ui.recycler
+package com.example.coursework.chat.ui.model
 
-import android.view.View
-import com.example.coursework.chat.ui.model.MessageModel
 import com.example.feature_chat.R
-import com.example.feature_chat.databinding.LayoutMessageBinding
-import ru.tinkoff.mobile.tech.ti_recycler.base.BaseViewHolder
-import ru.tinkoff.mobile.tech.ti_recycler.base.ViewTyped
-import ru.tinkoff.mobile.tech.ti_recycler.clicks.TiRecyclerClickListener
+import java.time.LocalDateTime
 
 data class MessageUi(
-    val model: MessageModel,
-    override val viewType: Int = R.layout.layout_message,
-    override val uid: String
-) : ViewTyped
+    val id: String,
+    val author: String,
+    val authorImageUrl: String,
+    val message: String,
+    val reactions: List<ReactionUi>,
+    val posted: LocalDateTime,
+) : ChatItem {
+    override val viewType: Int = VIEW_TYPE
+    override val uid: String = id
 
-class MessageUiViewHolder(
-    view: View,
-    clicks: TiRecyclerClickListener
-) : BaseViewHolder<MessageUi>(view, clicks) {
-    private val binding = LayoutMessageBinding.bind(view)
+    companion object {
+        val VIEW_TYPE =  R.layout.item_message
+    }
 }

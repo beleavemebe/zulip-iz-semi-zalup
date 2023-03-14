@@ -1,7 +1,7 @@
-package com.example.coursework.chat.ui.view
+package com.example.coursework.chat.ui.model
 
-data class MessageReaction(
+data class ReactionUi(
     val emote: String,
-    val reactions: Int = 1,
+    val reactionCount: Int = 1,
     val isPressed: Boolean = false,
 )

@@ -1,10 +1,13 @@
-package com.example.coursework.chat.ui
+package com.example.coursework.chat.ui.view
 
 import android.content.Context
 import android.graphics.*
 import android.text.TextPaint
 import android.util.AttributeSet
 import android.view.View
+import com.example.core.ui.HighlightOnPressBackground
+import com.example.core.ui.dp
+import com.example.core.ui.sp
 
 class EmoteReactionView @JvmOverloads constructor(
     context: Context,
@@ -13,7 +16,9 @@ class EmoteReactionView @JvmOverloads constructor(
     defStyleRes: Int = 0
 ) : View(context, attrs, defStyleAttr, defStyleRes) {
 
-    private var reactionEmote = ""
+    var reactionEmote = ""
+        private set
+
     private var reactionCount = ""
     private var pressed = false
 

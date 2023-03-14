@@ -1,18 +1,17 @@
-package com.example.dating.shared.util
+package com.example.coursework.chat.util
 
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Lifecycle.State
 import androidx.lifecycle.Lifecycle.State.*
 import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-@Suppress("unused")
 fun <T> Flow<T>.collectWhenStarted(lifecycle: Lifecycle) = collectWhen(lifecycle, STARTED)
-
-fun <T> Flow<T>.collectWhenResumed(lifecycle: Lifecycle) = collectWhen(lifecycle, RESUMED)
 
 private fun <T> Flow<T>.collectWhen(
     lifecycle: Lifecycle,
@@ -21,7 +20,9 @@ private fun <T> Flow<T>.collectWhen(
     val flow = this
     lifecycle.coroutineScope.launch {
         lifecycle.repeatOnLifecycle(state) {
-            flow.collect()
+            withContext(Dispatchers.Main) {
+                flow.collect()
+            }
         }
     }
 }

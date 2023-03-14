@@ -1,4 +1,7 @@
 package com.example.coursework.chat.ui.model
 
-class ChatState {
-}
+data class ChatState(
+    val items: List<ChatItem> = emptyList(),
+    val messageText: String = "",
+    val isSendButtonVisible: Boolean = false,
+)

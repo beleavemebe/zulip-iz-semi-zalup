@@ -1,10 +1,12 @@
-package com.example.coursework.chat.ui.view
+package com.example.core.ui
 
 import android.util.TypedValue
 import android.view.View
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
+val View.screenWidth: Int
+    get() = context.resources.displayMetrics.widthPixels
 
 fun View.sp(value: Float) = applyDimension(TypedValue.COMPLEX_UNIT_SP, value)
 

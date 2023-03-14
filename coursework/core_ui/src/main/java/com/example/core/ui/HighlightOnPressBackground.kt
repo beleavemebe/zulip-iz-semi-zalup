@@ -1,4 +1,4 @@
-package com.example.coursework.chat.ui.view
+package com.example.core.ui
 
 import android.graphics.Canvas
 import android.graphics.Paint

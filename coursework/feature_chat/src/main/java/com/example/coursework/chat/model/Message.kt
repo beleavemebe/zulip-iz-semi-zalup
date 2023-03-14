@@ -1,8 +1,12 @@
-package com.example.coursework.chat.ui.model
+package com.example.coursework.chat.model
 
-data class MessageModel(
+import java.time.LocalDateTime
+
+data class Message(
+    val id: String,
     val author: String,
     val authorImageUrl: String,
     val message: String,
-    val reactions: List<ReactionModel>,
+    val posted: LocalDateTime,
+    val reactions: List<Reaction>,
 )

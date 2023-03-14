@@ -1,3 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="accent">#2A9D8F</color>
+    <color name="date_header_background">#070707</color>
+    <color name="message_input_field_background">#282828</color>
+    <color name="hint_message_input_field">#CCCCCC</color>
 </resources>

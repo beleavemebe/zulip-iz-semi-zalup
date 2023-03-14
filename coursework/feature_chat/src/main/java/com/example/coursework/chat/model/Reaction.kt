@@ -1,6 +1,6 @@
-package com.example.coursework.chat.ui.model
+package com.example.coursework.chat.model
 
-data class ReactionModel(
+data class Reaction(
     val emojiCode: String,
     val userId: String
 )

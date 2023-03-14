@@ -1,8 +1,12 @@
 package com.example.coursework
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.LinearLayout
+import androidx.appcompat.app.AppCompatActivity
+import com.example.core.ui.FlexBoxLayout
+import com.example.coursework.chat.ui.model.ReactionUi
+import com.example.coursework.chat.ui.view.EmoteReactionView
+import com.example.coursework.chat.ui.view.MessageView
 
 class CatalogActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,9 +35,9 @@ class CatalogActivity : AppCompatActivity() {
             addView(messageView)
             messageView.author = "Roman Shemanovskii"
             messageView.message = "Сейчас ехал в автобусе, со мной ещё два пацана ехали, и ещё женщина в такой смешной шапке, пожилой мужчина, ещё узбек, старушка с дедом, ещё две женщины, одна с ребёнком. Потом зашёл мужик, а женщина в шапке вышла. Потом я сам уже вышел, не знаю, чем все закончилось"
-            messageView.reactions = listOf(
-                Reaction(emote = "\uD83D\uDC14", reactions = 80),
-                Reaction(emote = "\uD83E\uDD21", reactions = 69)
+            messageView.messageReactions = listOf(
+                ReactionUi(emote = "\uD83D\uDC14", reactionCount = 80),
+                ReactionUi(emote = "\uD83E\uDD21", reactionCount = 69)
             )
         }
     }

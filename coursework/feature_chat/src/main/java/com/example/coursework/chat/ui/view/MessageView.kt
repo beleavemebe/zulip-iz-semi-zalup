@@ -1,10 +1,16 @@
-package com.example.coursework.chat.ui
+package com.example.coursework.chat.ui.view
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.view.marginRight
+import com.example.core.ui.FlexBoxLayout
+import com.example.core.ui.dp
+import com.example.core.ui.uiSensitiveProperty
+import com.example.coursework.chat.ui.model.ReactionUi
 import com.example.feature_chat.R
 
 class MessageView @JvmOverloads constructor(
@@ -20,11 +26,11 @@ class MessageView @JvmOverloads constructor(
     private var fbReactions: FlexBoxLayout
 
     var author: String by uiSensitiveProperty("", ::onAuthorUpdate)
-    var authorImgUrl: String by uiSensitiveProperty("", ::onAuthorImgUrlUpdate)
     var message: String by uiSensitiveProperty("", ::onMessageContentUpdate)
-    var reactions: List<Reaction> by uiSensitiveProperty(emptyList(), ::onReactionsUpdated)
+    var messageReactions: List<ReactionUi> by uiSensitiveProperty(emptyList(), ::onReactionsUpdated)
 
     init {
+        isClickable = true
         inflate(context, R.layout.layout_message, this)
         tvMessageAuthor = findViewById(R.id.tvMessageAuthor)
         tvMessageContent = findViewById(R.id.tvMessageContent)
@@ -40,32 +46,46 @@ class MessageView @JvmOverloads constructor(
         tvMessageContent.text = value
     }
 
-    private fun onAuthorImgUrlUpdate(value: String) {
-        // load new image via glide
-    }
-
     private fun onReactionsUpdated(
-        reactions: List<Reaction>,
+        messageReactions: List<ReactionUi>,
     ) {
         fbReactions.removeAllViews()
-        reactions.forEach {
+        if (messageReactions.isNotEmpty()) {
+            messageReactions.forEach {
+                fbReactions.addView(
+                    EmoteReactionView(context).apply {
+                        setData(
+                            pressed = it.isPressed,
+                            emote = it.emote,
+                            reactions = it.reactionCount.toString()
+                        )
+                    }
+                )
+            }
             fbReactions.addView(
-                EmoteReactionView(context).apply {
-                    setData(pressed = it.isPressed, emote = it.emote, reactions = it.reactions.toString())
-                }
+                AddReactionView(context)
             )
         }
-        fbReactions.addView(
-            EmoteReactionView(context).apply {
-                setData(pressed = false, emote = "+", reactions = "")
-            }
-        )
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         measureChildren(widthMeasureSpec, heightMeasureSpec)
-        val width = calcWidth()
+//        measureChildWithMargins(
+//            ivMessageAuthorPic,
+//            widthMeasureSpec,
+//            paddingLeft,
+//            heightMeasureSpec,
+//            0
+//        )
+//        measureChildWithMargins(
+//            tvMessageAuthor,
+//            widthMeasureSpec,
+//            paddingLeft + ivMessageAuthorPic.measuredWidth + ivMessageAuthorPic.marginRight,
+//            heightMeasureSpec,
+//            0
+//        )
+        val width = View.getDefaultSize(calcWidth(), widthMeasureSpec)
         val height = calcHeight()
         setMeasuredDimension(width, height)
     }
@@ -79,59 +99,65 @@ class MessageView @JvmOverloads constructor(
     }
 
     private fun calcWidth(): Int {
-        return maxOf(context.screenWidth, paddingLeft +
+        return paddingLeft +
                 ivRightMargin +
                 maxOf(
                     tvMessageAuthor.measuredWidth,
                     tvMessageContent.measuredWidth,
                     fbReactions.measuredWidth
                 ) +
-                paddingRight)
+                paddingRight
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
-        with(ivMessageAuthorPic) {
-            val left = paddingLeft
-            val top = paddingTop
-            layout(
-                left,
-                top,
-                left + measuredWidth,
-                top + measuredHeight
-            )
-        }
+        layoutImageView(l, t, r, b)
+        layoutMessageAuthor(l, t, r, b)
+        layoutMessageContent(l, t, r, b)
+        layoutReactions(l, t, r, b)
+    }
 
-        with(tvMessageAuthor) {
-            val left = paddingLeft + ivMessageAuthorPic.measuredWidth + ivRightMargin
-            val top = paddingTop
-            layout(
-                left,
-                top,
-                left + measuredWidth,
-                top + measuredHeight
-            )
-        }
+    private fun layoutImageView(l: Int, t: Int, r: Int, b: Int) {
+        val left = paddingLeft
+        val top = paddingTop
+        val view = ivMessageAuthorPic
+        view.layout(
+            left,
+            top,
+            left + view.measuredWidth,
+            top + view.measuredHeight
+        )
+    }
 
-        with(tvMessageContent) {
-            val left = paddingLeft + ivMessageAuthorPic.measuredWidth + ivRightMargin
-            val top = paddingTop + tvMessageAuthor.measuredHeight
-            layout(
-                left,
-                top,
-                left + measuredWidth,
-                top + measuredHeight - paddingRight
-            )
-        }
+    private fun layoutMessageAuthor(l: Int, t: Int, r: Int, b: Int) {
+        val left = paddingLeft + ivMessageAuthorPic.measuredWidth + ivRightMargin
+        val top = paddingTop
+        tvMessageAuthor.layout(
+            left,
+            top,
+            left + tvMessageAuthor.measuredWidth - tvMessageAuthor.paddingRight,
+            top + tvMessageAuthor.measuredHeight
+        )
+    }
 
-        with(fbReactions) {
-            val left = paddingLeft + ivMessageAuthorPic.measuredWidth + ivRightMargin
-            val top = paddingTop + tvMessageAuthor.measuredHeight + tvMessageContent.measuredHeight
-            layout(
-                left,
-                top,
-                left + measuredWidth,
-                top + measuredHeight - paddingRight
-            )
-        }
+    private fun layoutMessageContent(l: Int, t: Int, r: Int, b: Int) {
+        val left = paddingLeft + ivMessageAuthorPic.measuredWidth + ivRightMargin
+        val top = paddingTop + tvMessageAuthor.measuredHeight
+        tvMessageContent.layout(
+            left,
+            top,
+            minOf(r, left + tvMessageContent.measuredWidth) - tvMessageContent.paddingRight,
+            top + tvMessageContent.measuredHeight
+        )
+    }
+
+    private fun layoutReactions(l: Int, t: Int, r: Int, b: Int) {
+        val left = paddingLeft + ivMessageAuthorPic.measuredWidth + ivRightMargin
+        val top = paddingTop + tvMessageAuthor.measuredHeight + tvMessageContent.measuredHeight
+        fbReactions.layout(
+            left,
+            top,
+            left + fbReactions.measuredWidth - fbReactions.paddingRight,
+            top + fbReactions.measuredHeight
+        )
     }
 }

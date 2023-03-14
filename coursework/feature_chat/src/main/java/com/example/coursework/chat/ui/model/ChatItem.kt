@@ -1,4 +1,5 @@
 package com.example.coursework.chat.ui.model
 
-interface ChatItem {
-}
+import ru.tinkoff.mobile.tech.ti_recycler.base.ViewTyped
+
+interface ChatItem : ViewTyped
