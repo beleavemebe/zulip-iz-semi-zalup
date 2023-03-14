@@ -71,20 +71,6 @@ class MessageView @JvmOverloads constructor(
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         measureChildren(widthMeasureSpec, heightMeasureSpec)
-//        measureChildWithMargins(
-//            ivMessageAuthorPic,
-//            widthMeasureSpec,
-//            paddingLeft,
-//            heightMeasureSpec,
-//            0
-//        )
-//        measureChildWithMargins(
-//            tvMessageAuthor,
-//            widthMeasureSpec,
-//            paddingLeft + ivMessageAuthorPic.measuredWidth + ivMessageAuthorPic.marginRight,
-//            heightMeasureSpec,
-//            0
-//        )
         val width = View.getDefaultSize(calcWidth(), widthMeasureSpec)
         val height = calcHeight()
         setMeasuredDimension(width, height)
