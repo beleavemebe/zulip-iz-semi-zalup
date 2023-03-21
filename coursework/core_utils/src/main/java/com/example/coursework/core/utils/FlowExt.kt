@@ -1,4 +1,4 @@
-package com.example.coursework.chat.util
+package com.example.coursework.core.utils
 
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Lifecycle.State

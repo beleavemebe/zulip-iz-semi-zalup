@@ -1,7 +1,6 @@
 package com.example.coursework.chat.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
@@ -12,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.coursework.chat.ui.model.MessageUi
 import com.example.coursework.chat.ui.recycler.ChatViewHolderFactory
-import com.example.coursework.chat.util.collectWhenStarted
+import com.example.coursework.core.utils.collectWhenStarted
 import com.example.feature_chat.R
 import com.example.feature_chat.databinding.FragmentChatBinding
 import kotlinx.coroutines.flow.map

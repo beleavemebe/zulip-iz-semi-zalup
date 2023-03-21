@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="message_count_placeholder">%1$d сообщений</string>
+    <string name="subscribed">Subscribed</string>
+    <string name="all_streams">All streams</string>
+</resources>

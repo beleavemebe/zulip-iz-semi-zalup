@@ -17,6 +17,9 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    buildFeatures {
+        viewBinding true
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -33,7 +36,15 @@ android {
 }
 
 dependencies {
+    implementation project(":feature_main")
     implementation project(":feature_chat")
+    implementation project(":feature_channels")
+    implementation project(":feature_people")
+    implementation project(":feature_profile")
+    implementation project(":core_di")
+    implementation project(":core_ui")
+    implementation 'com.github.kirich1409:viewbindingpropertydelegate-noreflection:1.5.8'
+    implementation 'com.github.terrakok:cicerone:7.1'
     implementation 'androidx.fragment:fragment-ktx:1.6.0-alpha07'
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
