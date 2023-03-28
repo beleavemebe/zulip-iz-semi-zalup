@@ -1,42 +1,15 @@
 plugins {
-    id 'com.android.library'
-    id 'org.jetbrains.kotlin.android'
+    id 'android-library-convention'
 }
 
 android {
     namespace 'com.example.coursework.main'
-    compileSdk 33
-
-    defaultConfig {
-        minSdk 26
-        targetSdk 33
-
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles "consumer-rules.pro"
-    }
-
-    buildFeatures {
-        viewBinding true
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
 }
 
 dependencies {
     implementation project(":core_ui")
     implementation project(':core_di')
-    implementation 'com.github.terrakok:cicerone:7.1'
-    implementation 'com.github.kirich1409:viewbindingpropertydelegate-noreflection:1.5.8'
-    implementation 'com.google.android.material:material:1.8.0'
+    implementation libs.cicerone
+    implementation libs.viewBindingDelegate
+    implementation libs.material
 }

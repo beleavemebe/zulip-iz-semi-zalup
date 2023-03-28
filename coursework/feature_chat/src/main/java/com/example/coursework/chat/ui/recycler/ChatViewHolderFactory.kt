@@ -7,7 +7,6 @@ import com.example.coursework.chat.ui.view.AddReactionView
 import com.example.coursework.chat.ui.view.EmoteReactionView
 import com.example.feature_chat.R
 import ru.tinkoff.mobile.tech.ti_recycler.base.BaseViewHolder
-import ru.tinkoff.mobile.tech.ti_recycler.clicks.TiRecyclerClickListener
 import ru.tinkoff.mobile.tech.ti_recycler_coroutines.base.CoroutinesHolderFactory
 
 class ChatViewHolderFactory(
@@ -19,7 +18,7 @@ class ChatViewHolderFactory(
     override fun createViewHolder(view: View, viewType: Int): BaseViewHolder<out ChatItem> {
         return when (viewType) {
             R.layout.item_message -> MessageUiViewHolder(view, longClicks, reactionsClickListener)
-            R.layout.item_date_header -> DateHeaderUiViewHolder(view, clicks)
+            R.layout.item_date_header -> DateHeaderUiViewHolder(view)
             else -> throw IllegalArgumentException("Unknown view type $viewType")
         }
     }

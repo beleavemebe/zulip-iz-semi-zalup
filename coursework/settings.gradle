@@ -6,6 +6,9 @@ pluginManagement {
     }
 }
 dependencyResolutionManagement {
+    versionCatalogs {
+        create("libs")
+    }
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
@@ -13,7 +16,7 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "coursework"
-include ':app_catalog'
+includeBuild 'build-logic'
 include ':feature_chat'
 include ':core_ui'
 include ':app'

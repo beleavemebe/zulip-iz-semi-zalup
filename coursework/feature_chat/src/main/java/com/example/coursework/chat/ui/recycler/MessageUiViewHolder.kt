@@ -16,10 +16,6 @@ class MessageUiViewHolder(
 ) : BaseViewHolder<MessageUi>(view, longClicks) {
     private val binding = LayoutMessageBinding.bind(view)
 
-    init {
-        longClicks.accept(this)
-    }
-
     override fun bind(item: MessageUi) {
         binding.tvMessageAuthor.text = item.author
         binding.tvMessageContent.text = item.message

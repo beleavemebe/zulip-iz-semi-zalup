@@ -52,7 +52,8 @@
             android:layout_gravity="bottom"
             android:layout_marginBottom="10dp"
             android:background="@null"
-            android:cropToPadding="true"
+            android:scaleX="1.5"
+            android:scaleY="1.5"
             android:src="@android:drawable/ic_menu_add" />
 
         <ImageButton

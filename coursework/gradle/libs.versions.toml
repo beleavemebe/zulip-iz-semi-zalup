@@ -1,0 +1,30 @@
+[versions]
+agp = "7.4.2"
+kotlin = "1.8.0"
+fragmentKtx = "1.6.0-alpha07"
+coroutines = "1.6.4"
+lifecycle = "2.6.1"
+core-ktx = "1.9.0"
+material = "1.8.0"
+cicerone = "7.1"
+viewBindingDelegate = "1.5.8"
+glide = "4.15.0"
+tiRecycler = "2.1.2"
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+
+[libraries]
+fragmentKtx = { module = "androidx.fragment:fragment-ktx", version.ref = "fragmentKtx" }
+core = { module = "androidx.core:core-ktx", version.ref = "core-ktx" }
+lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel", version.ref = "lifecycle" }
+material = { module = "com.google.android.material:material", version.ref = "material" }
+cicerone = { module = "com.github.terrakok:cicerone", version.ref = "cicerone" }
+viewBindingDelegate = { module = "com.github.kirich1409:viewbindingpropertydelegate-noreflection", version.ref = "viewBindingDelegate" }
+glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
+glideCompiler = { module = "com.github.bumptech.glide:compiler", version.ref = "glide" }
+tiRecycler = { module = "ru.tinkoff.mobile:ti-recycler", version.ref = "tiRecycler" }
+tiRecyclerCoroutines = { module = "ru.tinkoff.mobile:ti-recycler-coroutines", version.ref = "tiRecycler" }
+lifecycle-runtimeKtx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle" }
