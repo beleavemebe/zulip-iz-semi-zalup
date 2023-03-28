@@ -6,7 +6,7 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.coursework.chat.ui.model.MessageUi
@@ -24,9 +24,7 @@ import ru.tinkoff.mobile.tech.ti_recycler_coroutines.TiRecyclerCoroutines
 class ChatFragment : Fragment(R.layout.fragment_chat) {
 
     private val binding by viewBinding(FragmentChatBinding::bind)
-    private val viewModel by lazy {
-        ViewModelProvider.NewInstanceFactory.instance.create(ChatViewModel::class.java)
-    }
+    private val viewModel by viewModels<ChatViewModel>()
 
     private val factory by lazy {
         ChatViewHolderFactory(viewModel::sendOrRevokeReaction, ::pickReactionForMessage)
@@ -59,7 +57,6 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
     }
 
     private fun initRecycler(): TiRecyclerCoroutines<ViewTyped> {
-        binding.rvChat.itemAnimator = null
         recycler.adapter.registerAdapterDataObserver(scrollToBottomObserver)
         return recycler.apply(::handleClicks)
     }

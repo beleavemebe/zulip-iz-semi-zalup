@@ -70,13 +70,13 @@ class ChatViewModel : ViewModel() {
     }
 
     fun sendMessage() {
-        MessageRepository.sendMessage(_state.value.messageText)
+        MessageRepository.sendMessage(_state.value.inputText)
         setMessageInput("")
     }
 
     fun setMessageInput(text: String) {
         _state.value = _state.value.copy(
-            messageText = text,
+            inputText = text,
             isSendButtonVisible = text.isNotBlank(),
         )
     }

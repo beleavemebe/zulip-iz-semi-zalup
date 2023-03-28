@@ -1,25 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#1C1C1C"
     android:orientation="vertical">
 
-    <FrameLayout
+    <View
+        android:layout_width="60dp"
+        android:layout_height="5dp"
+        android:layout_gravity="center"
         android:layout_marginTop="10dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:background="@drawable/bg_message_input_field"
+        android:backgroundTint="#555555" />
 
-        <View
-            android:layout_width="60dp"
-            android:layout_gravity="top|center"
-            android:layout_height="5dp"
-            android:background="@drawable/bg_message_input_field"
-            android:backgroundTint="#555555"
-            />
-    </FrameLayout>
-    
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
