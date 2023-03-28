@@ -7,11 +7,8 @@ import com.example.coursework.feature.people.domain.GetOtherUsers
 import com.example.coursework.feature.people.ui.model.PeopleState
 import com.example.coursework.feature.people.ui.model.PeopleUi
 import com.example.coursework.shared.profile.domain.User
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 
 class PeopleViewModel : BaseViewModel() {
     private val _state = MutableStateFlow(PeopleState())
@@ -43,27 +40,31 @@ class PeopleViewModel : BaseViewModel() {
         )
     }
 
-    private suspend fun updateUsers(query: String) {
-        val people = loadUsers(query)
-        _state.value = _state.value.copy(
-            isLoading = false,
-            people = people,
-            notFound = people.isEmpty(),
-            error = null
-        )
+    private fun updateUsers(query: String) {
+        coroutineScope.launch {
+            val people = loadUsers(query)
+            _state.value = _state.value.copy(
+                isLoading = false,
+                people = people,
+                notFound = people.isEmpty(),
+                error = null
+            )
+        }
     }
 
     private suspend fun loadUsers(
         query: String
     ): List<PeopleUi> = cache(key = query) {
-        val allUsers = getOtherUsers()
-        if (query.isBlank()) {
-            allUsers
-        } else {
-            allUsers.filter { user ->
-                query.lowercase() in user.name.lowercase()
-            }
-        }.map(::toPersonUi)
+        withContext(Dispatchers.Default) {
+            val allUsers = getOtherUsers()
+            if (query.isBlank()) {
+                allUsers
+            } else {
+                allUsers.filter { user ->
+                    query.lowercase() in user.name.lowercase()
+                }
+            }.map(::toPersonUi)
+        }
     }
 
     private suspend fun getOtherUsers() = GetOtherUsers().execute()
