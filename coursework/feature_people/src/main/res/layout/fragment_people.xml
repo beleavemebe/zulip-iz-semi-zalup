@@ -9,21 +9,45 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
         android:orientation="vertical">
 
-        <com.example.coursework.feature.people.ui.SearchViewWithPlaceholder
-            android:id="@+id/searchView"
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:queryHint="John Doe" />
+            app:menu="@menu/menu_fragment_channels"
+            app:title="@string/users" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvUsers"
+        <TextView
+            android:id="@+id/tvError"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/design_default_color_error"
+            android:paddingVertical="4dp"
+            android:textAlignment="center"
+            android:visibility="gone" />
+
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            tools:listitem="@layout/item_person" />
+            tools:listitem="@layout/item_person">
 
+            <com.google.android.material.progressindicator.CircularProgressIndicator
+                android:id="@+id/progressIndicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:indeterminate="true"
+                app:indicatorColor="@color/accent" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvUsers"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:listitem="@layout/item_person" />
+        </FrameLayout>
     </LinearLayout>
 
     <TextView

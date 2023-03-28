@@ -2,11 +2,12 @@ package com.example.coursework.feature.people.ui
 
 import android.os.Bundle
 import android.view.View
-import android.widget.SearchView
+import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.example.core.ui.doOnQueryChanged
 import com.example.coursework.core.utils.collectWhenStarted
 import com.example.coursework.feature.people.R
 import com.example.coursework.feature.people.databinding.FragmentPeopleBinding
@@ -30,18 +31,17 @@ class PeopleFragment : Fragment(R.layout.fragment_people) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        collectInputs()
+        initSearchView()
         subscribeToState()
     }
 
-    private fun collectInputs() {
-        binding.searchView.listener = object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean = false
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                viewModel.searchQuery.value = newText.orEmpty()
-                return true
-            }
+    private fun initSearchView() {
+        val searchView = binding.toolbar.menu.findItem(R.id.menu_item_search)
+            .actionView as SearchView
+        searchView.maxWidth = Int.MAX_VALUE
+        searchView.queryHint = getString(R.string.find_users)
+        searchView.doOnQueryChanged { query ->
+            viewModel.searchQuery.value = query
         }
     }
 
@@ -52,6 +52,9 @@ class PeopleFragment : Fragment(R.layout.fragment_people) {
     }
 
     private fun renderState(state: PeopleState) {
+        binding.tvError.isVisible = state.error != null
+        binding.tvError.text = state.error.toString()
+        binding.progressIndicator.isVisible = state.isLoading
         recycler.adapter.items = state.people
         binding.tvNotFound.isVisible = state.notFound
     }

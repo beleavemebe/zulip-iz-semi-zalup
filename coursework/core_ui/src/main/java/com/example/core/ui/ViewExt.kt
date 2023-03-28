@@ -2,6 +2,7 @@ package com.example.core.ui
 
 import android.util.TypedValue
 import android.view.View
+import androidx.appcompat.widget.SearchView
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
@@ -33,3 +34,17 @@ fun <T> uiSensitiveProperty(
     }
 }
 
+fun SearchView.doOnQueryChanged(onQueryChange: (String) -> Unit) {
+    setOnQueryTextListener(
+        object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String): Boolean {
+                onQueryChange(newText)
+                return true
+            }
+        }
+    )
+}

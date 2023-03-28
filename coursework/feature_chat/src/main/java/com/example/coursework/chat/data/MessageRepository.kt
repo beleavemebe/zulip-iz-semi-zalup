@@ -4,11 +4,13 @@ import com.example.coursework.chat.data.MessageRepository.currentUserId
 import com.example.coursework.chat.model.Message
 import com.example.coursework.chat.model.Reaction
 import com.example.coursework.chat.util.emojis
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
-import java.util.UUID
+import java.util.*
 import kotlin.random.Random
 
 object MessageRepository {
@@ -17,12 +19,17 @@ object MessageRepository {
     private val _messages = MutableStateFlow(fakeMessages)
     val messages: Flow<List<Message>> = _messages.asStateFlow()
 
-    fun sendMessage(text: String) {
+    suspend fun sendMessage(
+        text: String
+    ) = withContext(Dispatchers.Default) {
         val oldMessages = _messages.value
         _messages.value = oldMessages + message(text, posted = LocalDateTime.now())
     }
 
-    fun sendOrRevokeReaction(messageId: String, emoji: String) {
+    suspend fun sendOrRevokeReaction(
+        messageId: String,
+        emoji: String
+    ) = withContext(Dispatchers.Default) {
         val oldMessages = _messages.value
         val target = oldMessages.indexOfFirst { it.id == messageId }
         val message = oldMessages[target]

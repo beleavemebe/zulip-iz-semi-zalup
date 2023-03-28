@@ -8,6 +8,7 @@ import com.example.coursework.chat.model.Reaction
 import com.example.coursework.chat.ui.model.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
 class ChatViewModel : ViewModel() {
 
@@ -66,11 +67,15 @@ class ChatViewModel : ViewModel() {
     }
 
     fun sendOrRevokeReaction(messageUi: MessageUi, pickedEmoji: String) {
-        MessageRepository.sendOrRevokeReaction(messageUi.id, pickedEmoji)
+        viewModelScope.launch {
+            MessageRepository.sendOrRevokeReaction(messageUi.id, pickedEmoji)
+        }
     }
 
     fun sendMessage() {
-        MessageRepository.sendMessage(_state.value.inputText)
+        viewModelScope.launch {
+            MessageRepository.sendMessage(_state.value.inputText)
+        }
         setMessageInput("")
     }
 

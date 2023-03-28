@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="not_found">Not found</string>
+    <string name="find_users">Find users</string>
+    <string name="users">Users</string>
 </resources>
