@@ -38,7 +38,7 @@ class ChannelsViewModel : BaseViewModel() {
 
     private fun loadChannels() {
         coroutineScope.launch {
-            _state.value = ChannelsState(
+            _state.value = _state.value.copy(
                 isLoading = false,
                 items = getSubscribedStreams.execute().map(::toChannelUi)
             )
