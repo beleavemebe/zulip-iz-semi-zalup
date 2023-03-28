@@ -17,7 +17,7 @@ private fun View.applyDimension(unit: Int, value: Float) =
 
 fun <T> uiSensitiveProperty(
     initial: T,
-    onChange: (new: T) -> Unit
+    onChange: (new: T) -> Unit = {}
 ): ReadWriteProperty<View, T> {
     return object : ReadWriteProperty<View, T> {
         private var value = initial

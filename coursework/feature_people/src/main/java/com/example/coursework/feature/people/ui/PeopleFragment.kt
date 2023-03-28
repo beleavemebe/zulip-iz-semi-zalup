@@ -2,39 +2,57 @@ package com.example.coursework.feature.people.ui
 
 import android.os.Bundle
 import android.view.View
+import android.widget.SearchView
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.example.coursework.core.utils.collectWhenStarted
 import com.example.coursework.feature.people.R
 import com.example.coursework.feature.people.databinding.FragmentPeopleBinding
-import com.example.coursework.feature.people.domain.GetOtherUsers
-import com.example.coursework.feature.people.ui.model.PeopleUi
+import com.example.coursework.feature.people.ui.model.PeopleState
 import com.example.coursework.feature.people.ui.recycler.PeopleViewHolderFactory
-import com.example.coursework.shared.profile.domain.User
-import ru.tinkoff.mobile.tech.ti_recycler.adapters.SimpleTiAdapter
+import kotlinx.coroutines.flow.onEach
+import ru.tinkoff.mobile.tech.ti_recycler.adapters.AsyncTiAdapter
+import ru.tinkoff.mobile.tech.ti_recycler.base.diff.ViewTypedDiffCallback
 import ru.tinkoff.mobile.tech.ti_recycler_coroutines.TiRecyclerCoroutines
-import ru.tinkoff.mobile.tech.ti_recycler_coroutines.base.CoroutinesHolderFactory
 
 class PeopleFragment : Fragment(R.layout.fragment_people) {
     private val binding by viewBinding(FragmentPeopleBinding::bind)
+    private val viewModel by viewModels<PeopleViewModel>()
+    private val factory = PeopleViewHolderFactory()
     private val recycler by lazy {
         TiRecyclerCoroutines(
             binding.rvUsers,
-            SimpleTiAdapter<PeopleUi, CoroutinesHolderFactory>(PeopleViewHolderFactory())
+            AsyncTiAdapter(factory, ViewTypedDiffCallback()),
         )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        recycler.adapter.items = GetOtherUsers().execute().map(::toPersonUi)
+        collectInputs()
+        subscribeToState()
     }
 
-    private fun toPersonUi(user: User): PeopleUi {
-        return PeopleUi(
-            id = user.id,
-            name = user.name,
-            imageUrl = user.imageUrl,
-            isOnline = user.onlineStatus == User.OnlineStatus.ONLINE,
-            email = user.email
-        )
+    private fun collectInputs() {
+        binding.searchView.listener = object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean = false
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                viewModel.searchQuery.value = newText.orEmpty()
+                return true
+            }
+        }
+    }
+
+    private fun subscribeToState() {
+        viewModel.state
+            .onEach(::renderState)
+            .collectWhenStarted(viewLifecycleOwner.lifecycle)
+    }
+
+    private fun renderState(state: PeopleState) {
+        recycler.adapter.items = state.people
+        binding.tvNotFound.isVisible = state.notFound
     }
 }
