@@ -70,13 +70,13 @@ class ChannelsViewModel : BaseViewModel() {
             oldItems.slice(0 until iofChannel) +
                     channelUi + channelUi.chatUis +
                     oldItems.slice(iofChannel + 1 until oldItems.size)
-        _state.value = ChannelsState(items = newItems)
+        _state.value = _state.value.copy(items = newItems)
     }
 
     private fun hideChatsOfChannel(channelUi: ChannelUi) {
         val oldItems = state.value.items
         val newItems = oldItems.filterNot { it in channelUi.chatUis }.toMutableList()
-        _state.value = ChannelsState(items = newItems.toList())
+        _state.value = _state.value.copy(items = newItems.toList())
     }
 
     fun clickChat(chatUi: ChatUi) {
