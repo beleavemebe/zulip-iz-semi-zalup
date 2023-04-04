@@ -9,7 +9,7 @@ import com.example.feature_chat.R
 import ru.tinkoff.mobile.tech.ti_recycler.base.BaseViewHolder
 import ru.tinkoff.mobile.tech.ti_recycler_coroutines.base.CoroutinesHolderFactory
 
-class ChatViewHolderFactory(
+class TopicViewHolderFactory(
     private val onReactionClicked: (messageUi: MessageUi, emoji: String) -> Unit,
     private val onAddReactionClicked: (messageUi: MessageUi) -> Unit,
 ) : CoroutinesHolderFactory() {
@@ -26,7 +26,7 @@ class ChatViewHolderFactory(
     inner class ReactionsClickListener {
         fun onClick(view: View, messageUi: MessageUi) {
             when (view) {
-                is EmoteReactionView -> onReactionClicked(messageUi, view.reactionEmote)
+                is EmoteReactionView -> onReactionClicked(messageUi, view.emoteName)
                 is AddReactionView -> onAddReactionClicked(messageUi)
             }
         }

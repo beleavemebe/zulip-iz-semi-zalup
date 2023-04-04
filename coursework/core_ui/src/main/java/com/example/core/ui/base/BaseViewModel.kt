@@ -17,6 +17,7 @@ abstract class BaseViewModel : ViewModel(), CacheContainer by CacheContainer.Map
 
     private fun createCoroutineContext(): CoroutineContext {
         return SupervisorJob() + Dispatchers.Main.immediate + CoroutineExceptionHandler { _, throwable ->
+            throwable.printStackTrace()
             handleException(throwable)
         }
     }

@@ -1,4 +1,4 @@
-package com.example.coursework.feature.people.domain
+package com.example.coursework.shared.profile.domain.usecase
 
 import com.example.coursework.shared.profile.domain.User
 import com.example.coursework.shared.profile.domain.UsersRepository

@@ -1,41 +1,58 @@
 package com.example.coursework.chat.data
 
-import com.example.coursework.chat.data.MessageRepository.currentUserId
+import com.example.coursework.chat.data.api.MessagesApi
+import com.example.coursework.chat.data.model.Narrow
 import com.example.coursework.chat.model.Message
-import com.example.coursework.chat.model.Reaction
-import com.example.coursework.chat.util.emojis
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.withContext
-import java.time.LocalDateTime
-import java.util.*
-import kotlin.random.Random
+import com.example.coursework.core.network.NetworkModule
+import com.google.gson.Gson
 
-object MessageRepository {
-    const val currentUserId = "0"
-
-    private val _messages = MutableStateFlow(fakeMessages)
-    val messages: Flow<List<Message>> = _messages.asStateFlow()
-
-    suspend fun sendMessage(
-        text: String
-    ) = withContext(Dispatchers.Default) {
-
-    }
-
-    suspend fun sendOrRevokeReaction(
-        messageId: String,
-        emoji: String
-    ) = withContext(Dispatchers.Default) {
-
-    }
-
+class MessageRepositoryImpl(
+    private val api: MessagesApi,
+) {
     suspend fun loadMessages(
-        stream: String,
+        stream: Int,
         topic: String
     ): List<Message> {
-        
+        val narrow = Narrow("stream" to stream, "topic" to topic)
+        return api.getMessages(
+            anchor = "newest",
+            numAfter = 0,
+            numBefore = 1000,
+            narrow = Gson().toJson(narrow) // TODO разобраться с generic contextual serializers в kotlinx.serialization
+        ).messages.map(MessagesMapper::toMessage)
+    }
+
+    suspend fun sendReaction(
+        messageId: Int,
+        name: String
+    ) {
+        api.addReaction(messageId, name)
+    }
+
+    suspend fun revokeReaction(
+        messageId: Int,
+        name: String
+    ) {
+        api.deleteReaction(messageId, name)
+    }
+
+    suspend fun sendMessage(
+        stream: Int,
+        topic: String,
+        text: String
+    ) {
+        api.sendMessage(
+            stream = stream,
+            topic = topic,
+            content = text
+        )
+    }
+
+    companion object {
+        val instance by lazy {
+            MessageRepositoryImpl(
+                api = MessagesApi.create(NetworkModule.retrofit)
+            )
+        }
     }
 }

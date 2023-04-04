@@ -4,17 +4,22 @@ package com.example.coursework.feature.channels.ui
 
 import com.example.core.ui.base.BaseViewModel
 import com.example.coursework.core.di.ServiceLocator
-import com.example.coursework.feature.channels.domain.Channel
+import com.example.coursework.feature.channels.data.StreamsRepositoryImpl
 import com.example.coursework.feature.channels.domain.GetAllStreams
 import com.example.coursework.feature.channels.domain.GetSubscribedStreams
+import com.example.coursework.feature.channels.domain.GetTopicsForStream
+import com.example.coursework.feature.channels.domain.Stream
 import com.example.coursework.feature.channels.ui.model.*
-import com.example.coursework.shared.chat.Chat
+import com.example.coursework.shared.chat.Topic
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 
 class ChannelsViewModel : BaseViewModel() {
-    private val getAllStreams = GetAllStreams()
-    private val getSubscribedStreams = GetSubscribedStreams()
+    private val repository = StreamsRepositoryImpl.instance
+    private val getAllStreams = GetAllStreams(repository)
+    private val getSubscribedStreams = GetSubscribedStreams(repository)
+    private val getTopicsForStream = GetTopicsForStream(repository)
+
     private val router = ServiceLocator.globalRouter
     private val screens = ServiceLocator.screens
     private val _state = MutableStateFlow(ChannelsState())
@@ -53,34 +58,48 @@ class ChannelsViewModel : BaseViewModel() {
         )
     }
 
-    fun clickChannel(channelUi: ChannelUi) {
-        if (channelUi.isExpanded.not()) {
-            showChatsForChannel(channelUi)
-            channelUi.isExpanded = true
-        } else {
-            hideChatsOfChannel(channelUi)
-            channelUi.isExpanded = false
+    fun clickChannel(streamUi: StreamUi) {
+        coroutineScope.launch(Dispatchers.Default) {
+            if (streamUi.isExpanded.not()) {
+                val topicUis = getTopicsForStream(streamUi.id)
+                showTopicsForChannel(streamUi, topicUis)
+                streamUi.isExpanded = true
+            } else {
+                hideChatsOfChannel(streamUi)
+                streamUi.isExpanded = false
+            }
         }
     }
 
-    private fun showChatsForChannel(channelUi: ChannelUi) {
+    private fun showTopicsForChannel(
+        streamUi: StreamUi,
+        topicUis: List<TopicUi>,
+    ) {
         val oldItems = state.value.items
-        val iofChannel = oldItems.indexOf(channelUi)
+        val iofChannel = oldItems.indexOf(streamUi)
         val newItems: List<ChannelsItem> =
             oldItems.slice(0 until iofChannel) +
-                    channelUi + channelUi.chatUis +
+                    streamUi + topicUis +
                     oldItems.slice(iofChannel + 1 until oldItems.size)
+
         _state.value = _state.value.copy(items = newItems)
     }
 
-    private fun hideChatsOfChannel(channelUi: ChannelUi) {
-        val oldItems = state.value.items
-        val newItems = oldItems.filterNot { it in channelUi.chatUis }.toMutableList()
-        _state.value = _state.value.copy(items = newItems.toList())
+    private fun hideChatsOfChannel(streamUi: StreamUi) {
+        val items = state.value.items
+        val iofChannelUi = items.indexOf(streamUi)
+        var iofNextChannelUi = iofChannelUi + 1
+        while (items[iofNextChannelUi] !is StreamUi) {
+            iofNextChannelUi++
+        }
+
+        val newItems = items.slice(0..iofChannelUi) + items.slice(iofNextChannelUi..items.lastIndex)
+
+        _state.value = _state.value.copy(items = newItems)
     }
 
-    fun clickChat(chatUi: ChatUi) {
-        router.navigateTo(screens.chat())
+    fun clickChat(topicUi: TopicUi) {
+        router.navigateTo(screens.topic(topicUi.streamId, topicUi.name))
     }
 
     fun selectStreamsTab(tab: StreamsTab) {
@@ -117,40 +136,44 @@ class ChannelsViewModel : BaseViewModel() {
         getAllStreams.execute().map(::toChannelUi)
     }
 
-
     private suspend fun getSubscribedStreams() = withContext(Dispatchers.Default) {
         getSubscribedStreams.execute().map(::toChannelUi)
     }
 
+    private suspend fun getTopicsForStream(streamId: Int) = withContext(Dispatchers.Default) {
+        getTopicsForStream.execute(streamId).map { toTopicUi(it, streamId) }
+    }
+
     private fun toChannelUi(
-        channel: Channel
-    ) = ChannelUi(
-        tag = channel.name,
+        stream: Stream
+    ) = StreamUi(
+        id = stream.id,
+        tag = stream.name,
         isExpanded = false,
-        chatUis = channel.chats.map(::toChatUi)
     )
 
-    private fun toChatUi(
-        chat: Chat
-    ) = ChatUi(
-        id = chat.id,
-        name = chat.name,
-        messageCount = chat.messageCount,
-        color = chat.color
+    private fun toTopicUi(
+        topic: Topic,
+        streamId: Int
+    ) = TopicUi(
+        streamId = streamId,
+        name = topic.name,
+        messageCount = topic.messageCount,
+        color = topic.color
     )
 
     private fun matchChannels(
         query: String,
-        channels: List<ChannelUi>
+        channels: List<StreamUi>
     ): List<ChannelsItem> = channels
-        .filter { channelUi ->
-            query.lowercase() in channelUi.tag.lowercase()
-        }
-        .flatMap { channelUi ->
-            if (channelUi.isExpanded) {
-                listOf(channelUi) + channelUi.chatUis
-            } else {
-                listOf(channelUi)
-            }
-        }
+//        .filter { channelUi ->
+//            query.lowercase() in channelUi.tag.lowercase()
+//        }
+//        .flatMap { channelUi ->
+//            if (channelUi.isExpanded) {
+//                listOf(channelUi) + channelUi.topicUis
+//            } else {
+//                listOf(channelUi)
+//            }
+//        }
 }

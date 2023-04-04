@@ -3,14 +3,16 @@ package com.example.coursework.feature.people.ui
 
 import com.example.core.ui.base.BaseViewModel
 import com.example.coursework.core.utils.cache
-import com.example.coursework.feature.people.domain.GetOtherUsers
 import com.example.coursework.feature.people.ui.model.PeopleState
 import com.example.coursework.feature.people.ui.model.PeopleUi
+import com.example.coursework.shared.profile.data.UsersRepositoryImpl
 import com.example.coursework.shared.profile.domain.User
+import com.example.coursework.shared.profile.domain.usecase.GetOtherUsers
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 
 class PeopleViewModel : BaseViewModel() {
+    private val getOtherUsers = GetOtherUsers(UsersRepositoryImpl.instance)
     private val _state = MutableStateFlow(PeopleState())
 
     val state = _state.asStateFlow()
@@ -18,9 +20,7 @@ class PeopleViewModel : BaseViewModel() {
 
     init {
         observeSearchQuery()
-        coroutineScope.launch {
-            updateUsers("")
-        }
+        updateUsers("")
     }
 
     private fun observeSearchQuery() {
@@ -63,11 +63,11 @@ class PeopleViewModel : BaseViewModel() {
                 allUsers.filter { user ->
                     query.lowercase() in user.name.lowercase()
                 }
-            }.map(::toPersonUi)
+            }.map(::toPersonUi).sortedByPresence()
         }
     }
 
-    private suspend fun getOtherUsers() = GetOtherUsers().execute()
+    private suspend fun getOtherUsers() = getOtherUsers.execute()
 
     private fun toPersonUi(
         user: User
@@ -75,7 +75,14 @@ class PeopleViewModel : BaseViewModel() {
         id = user.id,
         name = user.name,
         imageUrl = user.imageUrl,
-        isOnline = user.onlineStatus == User.OnlineStatus.ONLINE,
+        presence = user.presence,
         email = user.email
     )
+
+    private fun List<PeopleUi>.sortedByPresence() = run {
+        sortedWith { o1, o2 ->
+            o1.presence.ordinal - o2.presence.ordinal
+        }
+    }
 }
+

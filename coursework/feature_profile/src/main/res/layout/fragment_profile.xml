@@ -28,42 +28,14 @@
         tools:text="Darrell Steward" />
 
     <TextView
-        android:id="@+id/tvUserStatus"
-        style="@style/Text.Headline3"
-        android:textColor="#A1A1A1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toStartOf="@+id/tvUserOnline"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="@+id/tvUserName"
-        app:layout_constraintTop_toBottomOf="@+id/tvUserName"
-        tools:text="In a meeting" />
-
-    <TextView
         android:id="@+id/tvUserOnline"
         style="@style/Text.Body"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/tvUserStatus"
         app:layout_constraintEnd_toEndOf="@+id/tvUserName"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/tvUserStatus"
+        app:layout_constraintStart_toStartOf="@+id/tvUserName"
+        app:layout_constraintTop_toBottomOf="@+id/tvUserName"
         tools:text="online" />
-
-    <Button
-        android:id="@+id/btnLogout"
-        android:layout_width="150dp"
-        android:layout_height="50dp"
-        android:layout_marginBottom="64dp"
-        android:text="@string/log_out"
-        android:background="?attr/selectableItemBackground"
-        android:textAppearance="@style/Text.Headline3"
-        android:textAllCaps="false"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvUserStatus"
-        app:layout_constraintVertical_bias="1.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

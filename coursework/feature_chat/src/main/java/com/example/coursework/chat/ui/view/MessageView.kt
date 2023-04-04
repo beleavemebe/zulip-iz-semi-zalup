@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.view.marginRight
 import com.example.core.ui.FlexBoxLayout
 import com.example.core.ui.dp
 import com.example.core.ui.uiSensitiveProperty
@@ -51,13 +50,14 @@ class MessageView @JvmOverloads constructor(
     ) {
         fbReactions.removeAllViews()
         if (messageReactions.isNotEmpty()) {
-            messageReactions.forEach {
+            messageReactions.forEach { reactionUi ->
                 fbReactions.addView(
                     EmoteReactionView(context).apply {
                         setData(
-                            pressed = it.isPressed,
-                            emote = it.emote,
-                            reactions = it.reactionCount.toString()
+                            pressed = reactionUi.isPressed,
+                            emote = reactionUi.emote,
+                            emoteName = reactionUi.name,
+                            reactions = reactionUi.reactionCount.toString()
                         )
                     }
                 )

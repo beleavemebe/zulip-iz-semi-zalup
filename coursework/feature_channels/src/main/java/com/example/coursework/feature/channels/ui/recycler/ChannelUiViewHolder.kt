@@ -2,14 +2,14 @@ package com.example.coursework.feature.channels.ui.recycler
 
 import android.view.View
 import com.example.coursework.feature.channels.databinding.ItemChannelBinding
-import com.example.coursework.feature.channels.ui.model.ChannelUi
+import com.example.coursework.feature.channels.ui.model.StreamUi
 import ru.tinkoff.mobile.tech.ti_recycler.base.BaseViewHolder
 import ru.tinkoff.mobile.tech.ti_recycler.clicks.TiRecyclerClickListener
 
 class ChannelUiViewHolder(
     view: View,
     clicks: TiRecyclerClickListener
-) : BaseViewHolder<ChannelUi>(view) {
+) : BaseViewHolder<StreamUi>(view) {
     private val binding = ItemChannelBinding.bind(view)
     private var cachedExpanded = false
 
@@ -20,7 +20,7 @@ class ChannelUiViewHolder(
         }
     }
 
-    override fun bind(item: ChannelUi) {
+    override fun bind(item: StreamUi) {
         binding.tvChannelName.text = item.tag
         cachedExpanded = item.isExpanded
         renderExpanded()

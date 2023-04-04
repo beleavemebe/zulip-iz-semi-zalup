@@ -1,4 +1,4 @@
-package com.example.dating.shared.util
+package com.example.core.ui
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels

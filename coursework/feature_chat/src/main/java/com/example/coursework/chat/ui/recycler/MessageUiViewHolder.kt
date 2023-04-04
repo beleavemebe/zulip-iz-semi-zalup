@@ -1,5 +1,6 @@
 package com.example.coursework.chat.ui.recycler
 
+import android.text.Html
 import android.view.View
 import androidx.core.view.children
 import com.bumptech.glide.Glide
@@ -12,13 +13,13 @@ import ru.tinkoff.mobile.tech.ti_recycler.clicks.TiRecyclerClickListener
 class MessageUiViewHolder(
     view: View,
     longClicks: TiRecyclerClickListener,
-    private val reactionClickListener: ChatViewHolderFactory.ReactionsClickListener
+    private val reactionClickListener: TopicViewHolderFactory.ReactionsClickListener
 ) : BaseViewHolder<MessageUi>(view, longClicks) {
     private val binding = LayoutMessageBinding.bind(view)
 
     override fun bind(item: MessageUi) {
         binding.tvMessageAuthor.text = item.author
-        binding.tvMessageContent.text = item.message
+        binding.tvMessageContent.text = Html.fromHtml(item.message, Html.FROM_HTML_MODE_COMPACT)
 
         val root = binding.root as MessageView
         root.messageReactions = item.reactions

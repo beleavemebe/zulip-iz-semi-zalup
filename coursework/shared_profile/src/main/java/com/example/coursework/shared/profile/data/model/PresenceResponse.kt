@@ -1,3 +1,6 @@
 package com.example.coursework.shared.profile.data.model
 
-data class PresenceResponse()
+@kotlinx.serialization.Serializable
+data class PresenceResponse(
+    val aggregated: PresenceDto
+)

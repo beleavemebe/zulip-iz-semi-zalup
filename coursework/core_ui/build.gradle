@@ -11,4 +11,5 @@ dependencies {
     implementation libs.cicerone
     implementation libs.core
     implementation libs.material
+    implementation libs.fragmentKtx
 }

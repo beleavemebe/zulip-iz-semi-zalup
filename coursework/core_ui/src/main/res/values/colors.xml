@@ -9,4 +9,7 @@
     <color name="neutral_50">#1E1E1E</color>
     <color name="white">#FFFFFFFF</color>
     <color name="accent">#2A9D8F</color>
+    <color name="active">#4AB54D</color>
+    <color name="idle">#FFC107</color>
+    <color name="offline">#00FFFFFF</color>
 </resources>

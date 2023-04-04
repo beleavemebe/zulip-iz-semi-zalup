@@ -1,66 +1,78 @@
 package com.example.coursework.chat.ui
 
 import com.example.core.ui.base.BaseViewModel
-import com.example.coursework.chat.data.MessageRepository
+import com.example.coursework.chat.data.MessageRepositoryImpl
 import com.example.coursework.chat.model.Message
 import com.example.coursework.chat.model.Reaction
 import com.example.coursework.chat.ui.model.*
+import com.example.coursework.core.utils.cache
+import com.example.coursework.shared.profile.data.UsersRepositoryImpl
+import com.example.coursework.shared.profile.domain.usecase.GetCurrentUser
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class ChatViewModel(
-    private val stream: String,
+class TopicViewModel(
+    private val stream: Int,
     private val topic: String
 ) : BaseViewModel() {
-    private val messageRepository = MessageRepository
+    private val messageRepository = MessageRepositoryImpl.instance
+    private val getCurrentUser = GetCurrentUser(UsersRepositoryImpl.instance)
 
-    private val _state = MutableStateFlow(ChatState(emptyList()))
+    private val _state = MutableStateFlow(ChatState())
     val state = _state.asStateFlow()
 
     init {
+        loadMessages()
+    }
+
+    override fun handleException(throwable: Throwable) {
+        super.handleException(throwable)
+        _state.value = _state.value.copy(error = throwable)
+    }
+
+    private fun loadMessages() {
         coroutineScope.launch(Dispatchers.Default) {
-            val items = loadMessages()
-                .let(::toMessageUis)
-                .let(::attachDateHeaders)
-            _state.value = _state.value.copy(items = items)
+            val messages = messageRepository.loadMessages(stream, topic)
+            val items = messages.toMessageUis().attachDateHeaders()
+            _state.value = _state.value.copy(items = items, isLoading = false, error = null)
         }
     }
 
-    private suspend fun loadMessages(): List<Message> {
-        return messageRepository.loadMessages(stream, topic)
+    private suspend fun List<Message>.toMessageUis() = map { message ->
+        MessageUi(
+            id = message.id,
+            author = message.author,
+            authorImageUrl = message.authorImageUrl,
+            message = message.message,
+            posted = message.posted,
+            reactions = message.reactions.toReactionUis()
+        )
     }
 
-    private fun toMessageUis(messages: List<Message>): List<MessageUi> {
-        return messages.map { message ->
-            MessageUi(
-                id = message.id,
-                author = message.author,
-                authorImageUrl = message.authorImageUrl,
-                message = message.message,
-                posted = message.posted,
-                reactions = message.reactions.toReactionUis()
-            )
-        }
-    }
-
-    private fun List<Reaction>.toReactionUis(): List<ReactionUi> {
-        val reactionsByEmote = groupBy { reaction -> reaction.emojiCode }
+    private suspend fun List<Reaction>.toReactionUis(): List<ReactionUi> {
+        val reactionsByEmote = groupBy { reaction -> reaction.emojiCode to reaction.emojiName }
         return reactionsByEmote.entries
-            .map { (emote, reactions) ->
+            .map { (emoteCodeAndName, reactions) ->
                 ReactionUi(
-                    emote = emote,
+                    emote = String(Character.toChars(emoteCodeAndName.first.toInt(16))),
+                    name = emoteCodeAndName.second,
                     reactionCount = reactions.size,
-                    isPressed = MessageRepository.currentUserId in reactionsByEmote[emote]!!.map(
-                        Reaction::userId
-                    )
+                    isPressed = isReactionPressed(reactions)
                 )
             }
             .sortedByDescending(ReactionUi::reactionCount)
     }
 
-    private fun attachDateHeaders(messageUis: List<MessageUi>): List<ChatItem> {
-        val messagesByDate = messageUis.groupBy { it.posted.toLocalDate() }.toSortedMap()
+    private suspend fun isReactionPressed(reactions: List<Reaction>): Boolean {
+        return reactions.any { it.userId ==  getCurrentUser().id }
+    }
+
+    private suspend fun getCurrentUser() = cache("getCurrentUser") { getCurrentUser.execute() }
+
+    private fun List<MessageUi>.attachDateHeaders(): List<ChatItem> {
+        val messagesByDate = groupBy { it.posted.toLocalDate() }.toSortedMap()
         return messagesByDate.keys.map { date ->
             val dateHeader = DateHeaderUi(date)
             val messages = messagesByDate[date]!!.sortedBy(MessageUi::posted)
@@ -71,17 +83,31 @@ class ChatViewModel(
         }.flatten()
     }
 
-    fun sendOrRevokeReaction(messageUi: MessageUi, pickedEmoji: String) {
+    fun sendOrRevokeReaction(messageUi: MessageUi, emoteName: String) {
         coroutineScope.launch {
-            MessageRepository.sendOrRevokeReaction(messageUi.id, pickedEmoji)
+            val targetReaction = messageUi.reactions.firstOrNull {
+                it.name == emoteName
+            }
+            if (targetReaction?.isPressed == true) {
+                messageRepository.revokeReaction(messageUi.id, emoteName)
+            } else {
+                messageRepository.sendReaction(messageUi.id, emoteName)
+            }
+            loadMessages()
         }
     }
 
     fun sendMessage() {
-        coroutineScope.launch {
-            MessageRepository.sendMessage(_state.value.inputText)
-        }
+        val message = _state.value.inputText
+        sendMessage(message)
         setMessageInput("")
+        loadMessages()
+    }
+
+    private fun sendMessage(message: String) {
+        coroutineScope.launch {
+            messageRepository.sendMessage(stream, topic, message)
+        }
     }
 
     fun setMessageInput(text: String) {

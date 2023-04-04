@@ -2,12 +2,12 @@ package com.example.coursework.feature.channels.ui.model
 
 import com.example.coursework.feature.channels.R
 
-data class ChannelUi(
+data class StreamUi(
+    val id: Int,
     val tag: String,
     var isExpanded: Boolean,
-    val chatUis: List<ChatUi>
 ) : ChannelsItem {
-    override val uid: String = tag
+    override val uid: String = id.toString()
     override val viewType: Int = VIEW_TYPE
 
     companion object {

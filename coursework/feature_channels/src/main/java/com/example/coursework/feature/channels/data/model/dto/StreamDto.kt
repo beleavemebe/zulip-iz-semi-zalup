@@ -1,4 +1,4 @@
-package com.example.coursework.feature.channels.data.model
+package com.example.coursework.feature.channels.data.model.dto
 
 @kotlinx.serialization.Serializable
 data class StreamDto(

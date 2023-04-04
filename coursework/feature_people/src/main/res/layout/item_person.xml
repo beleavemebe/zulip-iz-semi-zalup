@@ -17,14 +17,12 @@
         tools:src="@drawable/ic_launcher_foreground" />
 
     <ImageView
-        android:id="@+id/ivOnlineIndicator"
+        android:id="@+id/ivPresenceIndicator"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:src="@drawable/online_oval"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/ivProfilePic"
-        app:layout_constraintEnd_toEndOf="@+id/ivProfilePic"
-        tools:visibility="visible" />
+        app:layout_constraintEnd_toEndOf="@+id/ivProfilePic" />
 
     <TextView
         android:id="@+id/tvUserName"

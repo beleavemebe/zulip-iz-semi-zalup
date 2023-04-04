@@ -22,11 +22,11 @@ class PickEmojiDialog : BottomSheetDialogFragment(R.layout.dialog_pick_emoji) {
     private fun populateFlexbox() {
         val inflater = LayoutInflater.from(requireActivity())
         val slice = emojis.slice(0..100)
-        slice.forEach {
+        slice.forEach { emoji ->
             val textView = inflater.inflate(R.layout.item_emoji, binding.fbEmojis, false) as TextView
-            textView.text = it.getCodeString()
+            textView.text = emoji.getCodeString()
             textView.setOnClickListener {
-                exitFragment(textView.text.toString())
+                exitFragment(emoji.name)
             }
             binding.fbEmojis.addView(textView)
         }

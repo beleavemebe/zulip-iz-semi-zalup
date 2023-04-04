@@ -1,7 +1,10 @@
 package com.example.coursework.chat.ui.view
 
 import android.content.Context
-import android.graphics.*
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.Rect
 import android.text.TextPaint
 import android.util.AttributeSet
 import android.view.View
@@ -17,6 +20,8 @@ class EmoteReactionView @JvmOverloads constructor(
 ) : View(context, attrs, defStyleAttr, defStyleRes) {
 
     var reactionEmote = ""
+        private set
+    var emoteName = ""
         private set
 
     private var reactionCount = ""
@@ -41,11 +46,13 @@ class EmoteReactionView @JvmOverloads constructor(
     fun setData(
         pressed: Boolean,
         emote: String,
+        emoteName: String,
         reactions: String
     ) {
         this.pressed = pressed
         this.background.highlighted = pressed
         this.reactionEmote = emote
+        this.emoteName = emoteName
         this.reactionCount = reactions
         requestLayout()
         invalidate()

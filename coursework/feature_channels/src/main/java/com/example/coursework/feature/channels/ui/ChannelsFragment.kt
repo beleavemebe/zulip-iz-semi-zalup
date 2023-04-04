@@ -32,11 +32,11 @@ class ChannelsFragment : Fragment(R.layout.fragment_channels) {
     }
 
     private fun handleClicks(recycler: TiRecyclerCoroutines<ChannelsItem>) {
-        recycler.clickedItem<ChannelUi>(ChannelUi.VIEW_TYPE)
+        recycler.clickedItem<StreamUi>(StreamUi.VIEW_TYPE)
             .onEach(viewModel::clickChannel)
             .collectWhenStarted(viewLifecycleOwner.lifecycle)
 
-        recycler.clickedItem<ChatUi>(ChatUi.VIEW_TYPE)
+        recycler.clickedItem<TopicUi>(TopicUi.VIEW_TYPE)
             .onEach(viewModel::clickChat)
             .collectWhenStarted(viewLifecycleOwner.lifecycle)
     }

@@ -4,21 +4,21 @@ import android.graphics.drawable.ColorDrawable
 import android.view.View
 import com.example.coursework.feature.channels.R
 import com.example.coursework.feature.channels.databinding.ItemChatBinding
-import com.example.coursework.feature.channels.ui.model.ChatUi
+import com.example.coursework.feature.channels.ui.model.TopicUi
 import ru.tinkoff.mobile.tech.ti_recycler.base.BaseViewHolder
 import ru.tinkoff.mobile.tech.ti_recycler.clicks.TiRecyclerClickListener
 
 class ChatUiViewHolder(
     view: View,
     clicks: TiRecyclerClickListener
-) : BaseViewHolder<ChatUi>(view) {
+) : BaseViewHolder<TopicUi>(view) {
     private val binding = ItemChatBinding.bind(view)
 
     init {
         clicks.accept(this)
     }
 
-    override fun bind(item: ChatUi) {
+    override fun bind(item: TopicUi) {
         val context = binding.root.context
         val background = binding.root.background as? ColorDrawable
             ?: ColorDrawable().also(binding.root::setBackground)

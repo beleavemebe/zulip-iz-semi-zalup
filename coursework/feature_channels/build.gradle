@@ -1,5 +1,6 @@
 plugins {
     id 'android-library-convention'
+    alias libs.plugins.kotlinx.serialization
 }
 
 android {
@@ -10,6 +11,7 @@ dependencies {
     implementation project(":core_di")
     implementation project(":core_ui")
     implementation project(":core_utils")
+    implementation project(":core_network")
     implementation project(":shared_chat")
     implementation libs.cicerone
     implementation libs.fragmentKtx

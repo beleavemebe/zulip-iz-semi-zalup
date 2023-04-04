@@ -2,13 +2,13 @@ package com.example.coursework.feature.channels.ui.model
 
 import com.example.coursework.feature.channels.R
 
-data class ChatUi(
-    val id: String,
+data class TopicUi(
+    val streamId: Int,
     val name: String,
     val messageCount: Int,
     val color: Int,
 ) : ChannelsItem {
-    override val uid: String = id
+    override val uid: String = name
     override val viewType: Int = VIEW_TYPE
 
     companion object {

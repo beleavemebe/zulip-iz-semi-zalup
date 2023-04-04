@@ -10,11 +10,15 @@ cicerone = "7.1"
 viewBindingDelegate = "1.5.8"
 glide = "4.15.0"
 tiRecycler = "2.1.2"
+kotlinx-serialization-json = "1.4.1"
+retrofit = "2.9.0"
+okhttp = "4.10.0"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 
 [libraries]
 fragmentKtx = { module = "androidx.fragment:fragment-ktx", version.ref = "fragmentKtx" }
@@ -28,3 +32,8 @@ glideCompiler = { module = "com.github.bumptech.glide:compiler", version.ref = "
 tiRecycler = { module = "ru.tinkoff.mobile:ti-recycler", version.ref = "tiRecycler" }
 tiRecyclerCoroutines = { module = "ru.tinkoff.mobile:ti-recycler-coroutines", version.ref = "tiRecycler" }
 lifecycle-runtimeKtx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle" }
+kotlinx-serialization-json-retrofit = { module = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter", version = "0.8.0" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
+okhttp-logger = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttp" }
