@@ -29,7 +29,7 @@ class StreamsViewModel : BaseViewModel() {
 
     init {
         observeSearchQuery()
-        loadChannels()
+        loadStreams()
     }
 
     private fun observeSearchQuery() {
@@ -41,7 +41,7 @@ class StreamsViewModel : BaseViewModel() {
             .launchIn(coroutineScope)
     }
 
-    private fun loadChannels() {
+    private fun loadStreams() {
         coroutineScope.launch {
             _state.value = _state.value.copy(
                 isLoading = false,
@@ -167,7 +167,7 @@ class StreamsViewModel : BaseViewModel() {
     private fun matchStreams(
         query: String,
         streams: List<StreamUi>,
-    ): List<StreamsItem> = streams.filter { channelUi ->
-        query.lowercase() in channelUi.tag.lowercase()
+    ): List<StreamsItem> = streams.filter { streamUi ->
+        query.lowercase() in streamUi.tag.lowercase()
     }
 }
