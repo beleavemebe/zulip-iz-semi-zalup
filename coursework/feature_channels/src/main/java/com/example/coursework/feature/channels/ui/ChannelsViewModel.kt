@@ -129,7 +129,7 @@ class ChannelsViewModel : BaseViewModel() {
         if (searchQuery.isNullOrBlank()) {
             return items
         }
-        return matchChannels(searchQuery, items)
+        return matchStreams(searchQuery, items)
     }
 
     private suspend fun getAllStreams() = withContext(Dispatchers.Default) {
@@ -162,18 +162,11 @@ class ChannelsViewModel : BaseViewModel() {
         color = topic.color
     )
 
-    private fun matchChannels(
+    private fun matchStreams(
         query: String,
-        channels: List<StreamUi>
-    ): List<ChannelsItem> = channels
-//        .filter { channelUi ->
-//            query.lowercase() in channelUi.tag.lowercase()
-//        }
-//        .flatMap { channelUi ->
-//            if (channelUi.isExpanded) {
-//                listOf(channelUi) + channelUi.topicUis
-//            } else {
-//                listOf(channelUi)
-//            }
-//        }
+        streams: List<StreamUi>
+    ): List<ChannelsItem> = streams
+        .filter { channelUi ->
+            query.lowercase() in channelUi.tag.lowercase()
+        }
 }
