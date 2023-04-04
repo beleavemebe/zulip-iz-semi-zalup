@@ -89,7 +89,8 @@ class StreamsViewModel : BaseViewModel() {
         val items = state.value.items
         val iofStreamUi = items.indexOf(streamUi)
         var iofNextStreamUi = iofStreamUi + 1
-        while (items[iofNextStreamUi] !is StreamUi) {
+        while (items.getOrNull(iofNextStreamUi) !is StreamUi) {
+            if (items.getOrNull(iofNextStreamUi) == null) break
             iofNextStreamUi++
         }
 
