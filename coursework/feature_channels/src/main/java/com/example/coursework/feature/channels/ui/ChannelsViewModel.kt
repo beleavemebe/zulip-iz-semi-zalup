@@ -141,7 +141,9 @@ class ChannelsViewModel : BaseViewModel() {
     }
 
     private suspend fun getTopicsForStream(streamId: Int) = withContext(Dispatchers.Default) {
-        getTopicsForStream.execute(streamId).map { toTopicUi(it, streamId) }
+        getTopicsForStream.execute(streamId).map { topic ->
+            toTopicUi(topic, streamId)
+        }
     }
 
     private fun toChannelUi(
