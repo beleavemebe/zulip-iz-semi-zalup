@@ -20,7 +20,7 @@ class TopicViewModel(
     private val messageRepository = MessageRepositoryImpl.instance
     private val getCurrentUser = GetCurrentUser(UsersRepositoryImpl.instance)
 
-    private val _state = MutableStateFlow(ChatState())
+    private val _state = MutableStateFlow(TopicState())
     val state = _state.asStateFlow()
 
     init {
@@ -71,7 +71,7 @@ class TopicViewModel(
 
     private suspend fun getCurrentUser() = cache("getCurrentUser") { getCurrentUser.execute() }
 
-    private fun List<MessageUi>.attachDateHeaders(): List<ChatItem> {
+    private fun List<MessageUi>.attachDateHeaders(): List<TopicItem> {
         val messagesByDate = groupBy { it.posted.toLocalDate() }.toSortedMap()
         return messagesByDate.keys.map { date ->
             val dateHeader = DateHeaderUi(date)

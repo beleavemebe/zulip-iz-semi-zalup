@@ -5,7 +5,7 @@ import java.time.LocalDate
 
 data class DateHeaderUi(
     val date: LocalDate,
-) : ChatItem {
+) : TopicItem {
     override val viewType: Int = R.layout.item_date_header
     override val uid: String = date.toString()
 }

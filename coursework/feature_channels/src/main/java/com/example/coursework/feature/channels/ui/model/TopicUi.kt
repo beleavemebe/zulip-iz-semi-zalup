@@ -7,11 +7,11 @@ data class TopicUi(
     val name: String,
     val messageCount: Int,
     val color: Int,
-) : ChannelsItem {
+) : StreamsItem {
     override val uid: String = name
     override val viewType: Int = VIEW_TYPE
 
     companion object {
-        val VIEW_TYPE = R.layout.item_chat
+        val VIEW_TYPE = R.layout.item_topic
     }
 }

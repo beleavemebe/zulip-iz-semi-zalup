@@ -10,9 +10,9 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.core.ui.doOnQueryChanged
 import com.example.coursework.core.utils.collectWhenStarted
 import com.example.coursework.feature.channels.R
-import com.example.coursework.feature.channels.databinding.FragmentChannelsBinding
+import com.example.coursework.feature.channels.databinding.FragmentStreamsBinding
 import com.example.coursework.feature.channels.ui.model.*
-import com.example.coursework.feature.channels.ui.recycler.ChannelsViewHolderFactory
+import com.example.coursework.feature.channels.ui.recycler.StreamsViewHolderFactory
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import kotlinx.coroutines.flow.onEach
@@ -20,20 +20,20 @@ import ru.tinkoff.mobile.tech.ti_recycler.adapters.AsyncTiAdapter
 import ru.tinkoff.mobile.tech.ti_recycler.base.diff.ViewTypedDiffCallback
 import ru.tinkoff.mobile.tech.ti_recycler_coroutines.TiRecyclerCoroutines
 
-class ChannelsFragment : Fragment(R.layout.fragment_channels) {
-    private val viewModel by viewModels<ChannelsViewModel>()
-    private val binding by viewBinding(FragmentChannelsBinding::bind)
-    private val factory = ChannelsViewHolderFactory()
+class StreamsFragment : Fragment(R.layout.fragment_streams) {
+    private val viewModel by viewModels<StreamsViewModel>()
+    private val binding by viewBinding(FragmentStreamsBinding::bind)
+    private val factory = StreamsViewHolderFactory()
     private val recycler by lazy {
-        TiRecyclerCoroutines<ChannelsItem>(
+        TiRecyclerCoroutines<StreamsItem>(
             binding.rvChannels,
             AsyncTiAdapter(factory, ViewTypedDiffCallback())
         ).apply(::handleClicks)
     }
 
-    private fun handleClicks(recycler: TiRecyclerCoroutines<ChannelsItem>) {
+    private fun handleClicks(recycler: TiRecyclerCoroutines<StreamsItem>) {
         recycler.clickedItem<StreamUi>(StreamUi.VIEW_TYPE)
-            .onEach(viewModel::clickChannel)
+            .onEach(viewModel::clickStream)
             .collectWhenStarted(viewLifecycleOwner.lifecycle)
 
         recycler.clickedItem<TopicUi>(TopicUi.VIEW_TYPE)
@@ -77,7 +77,7 @@ class ChannelsFragment : Fragment(R.layout.fragment_channels) {
             .collectWhenStarted(viewLifecycleOwner.lifecycle)
     }
 
-    private fun renderState(state: ChannelsState) {
+    private fun renderState(state: StreamsState) {
         binding.tvError.isVisible = state.error != null
         binding.tvError.text = state.error.toString()
         binding.progressIndicator.isVisible = state.isLoading

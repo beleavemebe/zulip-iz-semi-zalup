@@ -18,8 +18,6 @@ data class MessageDto(
     val sender_realm_str: String,
     val stream_id: Int,
     val subject: String,
-//    val submessages: List<Any>,
     val timestamp: Int,
-//    val topic_links: List<Any>,
     val type: String
 )

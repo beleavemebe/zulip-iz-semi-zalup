@@ -6,7 +6,7 @@ data class StreamUi(
     val id: Int,
     val tag: String,
     var isExpanded: Boolean,
-) : ChannelsItem {
+) : StreamsItem {
     override val uid: String = id.toString()
     override val viewType: Int = VIEW_TYPE
 

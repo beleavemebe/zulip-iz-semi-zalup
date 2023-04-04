@@ -1,8 +1,8 @@
 package com.example.coursework.chat.ui.recycler
 
 import android.view.View
-import com.example.coursework.chat.ui.model.ChatItem
 import com.example.coursework.chat.ui.model.MessageUi
+import com.example.coursework.chat.ui.model.TopicItem
 import com.example.coursework.chat.ui.view.AddReactionView
 import com.example.coursework.chat.ui.view.EmoteReactionView
 import com.example.feature_chat.R
@@ -15,7 +15,7 @@ class TopicViewHolderFactory(
 ) : CoroutinesHolderFactory() {
     private val reactionsClickListener = ReactionsClickListener()
 
-    override fun createViewHolder(view: View, viewType: Int): BaseViewHolder<out ChatItem> {
+    override fun createViewHolder(view: View, viewType: Int): BaseViewHolder<out TopicItem> {
         return when (viewType) {
             R.layout.item_message -> MessageUiViewHolder(view, longClicks, reactionsClickListener)
             R.layout.item_date_header -> DateHeaderUiViewHolder(view)

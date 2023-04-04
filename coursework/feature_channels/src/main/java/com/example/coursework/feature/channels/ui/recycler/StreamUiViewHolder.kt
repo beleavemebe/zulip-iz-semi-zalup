@@ -6,7 +6,7 @@ import com.example.coursework.feature.channels.ui.model.StreamUi
 import ru.tinkoff.mobile.tech.ti_recycler.base.BaseViewHolder
 import ru.tinkoff.mobile.tech.ti_recycler.clicks.TiRecyclerClickListener
 
-class ChannelUiViewHolder(
+class StreamUiViewHolder(
     view: View,
     clicks: TiRecyclerClickListener
 ) : BaseViewHolder<StreamUi>(view) {

@@ -1,9 +1,9 @@
 package com.example.coursework.chat.ui.model
 
-data class ChatState(
+data class TopicState(
     val isLoading: Boolean = true,
     val error: Throwable? = null,
-    val items: List<ChatItem> = emptyList(),
+    val items: List<TopicItem> = emptyList(),
     val inputText: String = "",
     val isSendButtonVisible: Boolean = false,
 )

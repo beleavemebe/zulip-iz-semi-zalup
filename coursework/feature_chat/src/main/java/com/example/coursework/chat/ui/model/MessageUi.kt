@@ -10,7 +10,7 @@ data class MessageUi(
     val message: String,
     val reactions: List<ReactionUi>,
     val posted: LocalDateTime,
-) : ChatItem {
+) : TopicItem {
     override val viewType: Int = VIEW_TYPE
     override val uid: String = id.toString()
 
