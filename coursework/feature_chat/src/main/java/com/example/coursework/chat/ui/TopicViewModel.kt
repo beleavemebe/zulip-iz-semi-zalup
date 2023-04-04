@@ -1,7 +1,6 @@
 package com.example.coursework.chat.ui
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import com.example.core.ui.base.BaseViewModel
 import com.example.coursework.chat.data.MessageRepository
 import com.example.coursework.chat.model.Message
 import com.example.coursework.chat.model.Reaction
@@ -10,20 +9,26 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-class ChatViewModel : ViewModel() {
+class ChatViewModel(
+    private val stream: String,
+    private val topic: String
+) : BaseViewModel() {
+    private val messageRepository = MessageRepository
 
     private val _state = MutableStateFlow(ChatState(emptyList()))
     val state = _state.asStateFlow()
 
     init {
-        MessageRepository.messages
-            .map(::toMessageUis)
-            .map(::attachDateHeaders)
-            .flowOn(Dispatchers.Default)
-            .onEach { items ->
-                _state.value = _state.value.copy(items = items)
-            }
-            .launchIn(viewModelScope)
+        coroutineScope.launch(Dispatchers.Default) {
+            val items = loadMessages()
+                .let(::toMessageUis)
+                .let(::attachDateHeaders)
+            _state.value = _state.value.copy(items = items)
+        }
+    }
+
+    private suspend fun loadMessages(): List<Message> {
+        return messageRepository.loadMessages(stream, topic)
     }
 
     private fun toMessageUis(messages: List<Message>): List<MessageUi> {
@@ -67,13 +72,13 @@ class ChatViewModel : ViewModel() {
     }
 
     fun sendOrRevokeReaction(messageUi: MessageUi, pickedEmoji: String) {
-        viewModelScope.launch {
+        coroutineScope.launch {
             MessageRepository.sendOrRevokeReaction(messageUi.id, pickedEmoji)
         }
     }
 
     fun sendMessage() {
-        viewModelScope.launch {
+        coroutineScope.launch {
             MessageRepository.sendMessage(_state.value.inputText)
         }
         setMessageInput("")
