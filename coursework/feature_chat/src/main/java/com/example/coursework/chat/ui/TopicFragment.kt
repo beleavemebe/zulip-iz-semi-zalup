@@ -5,48 +5,58 @@ import android.view.View
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.core.ui.argument
-import com.example.core.ui.assistedViewModel
+import com.example.coursework.chat.ui.elm.TopicEffect
+import com.example.coursework.chat.ui.elm.TopicEvent
+import com.example.coursework.chat.ui.elm.TopicState
 import com.example.coursework.chat.ui.model.MessageUi
 import com.example.coursework.chat.ui.recycler.TopicViewHolderFactory
 import com.example.coursework.core.utils.collectWhenStarted
 import com.example.feature_chat.R
 import com.example.feature_chat.databinding.FragmentTopicBinding
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import ru.tinkoff.mobile.tech.ti_recycler.adapters.AsyncTiAdapter
-import ru.tinkoff.mobile.tech.ti_recycler.base.ViewTyped
 import ru.tinkoff.mobile.tech.ti_recycler.base.diff.ViewTypedDiffCallback
 import ru.tinkoff.mobile.tech.ti_recycler_coroutines.TiRecyclerCoroutines
+import vivid.money.elmslie.android.base.ElmFragment
+import vivid.money.elmslie.android.storeholder.LifecycleAwareStoreHolder
 
-class TopicFragment : Fragment(R.layout.fragment_topic) {
+class TopicFragment : ElmFragment<TopicEvent, TopicEffect, TopicState>(R.layout.fragment_topic) {
     private val stream: Int by argument(KEY_STREAM)
     private val topic: String by argument(KEY_TOPIC)
 
     private val binding by viewBinding(FragmentTopicBinding::bind)
-    private val viewModel by assistedViewModel {
-        TopicViewModel(stream, topic)
-    }
+    private val viewModel by viewModels<TopicViewModel>()
 
     private val factory by lazy {
-        TopicViewHolderFactory(viewModel::sendOrRevokeReaction, ::pickReactionForMessage)
+        TopicViewHolderFactory(viewModel::toggleReaction, ::pickReactionForMessage)
     }
 
     private val recycler by lazy {
         TiRecyclerCoroutines(binding.rvChat, AsyncTiAdapter(factory, ViewTypedDiffCallback()))
     }
 
-    private val scrollToBottomObserver by lazy { ScrollToBottomOnItemsAdded() }
+    private val scrollToBottomObserver by lazy {
+        ScrollToBottomOnItemsAdded()
+    }
+
+    override val storeHolder by lazy {
+        LifecycleAwareStoreHolder(lifecycle, viewModel::store)
+    }
+
+    override val initEvent by lazy {
+        TopicEvent.Ui.Init(stream, topic)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initEditText()
         initSendButton()
-        observeState(initRecycler())
+        initRecycler()
     }
 
     private fun initEditText() {
@@ -62,12 +72,8 @@ class TopicFragment : Fragment(R.layout.fragment_topic) {
         }
     }
 
-    private fun initRecycler(): TiRecyclerCoroutines<ViewTyped> {
+    private fun initRecycler() {
         recycler.adapter.registerAdapterDataObserver(scrollToBottomObserver)
-        return recycler.apply(::handleClicks)
-    }
-
-    private fun handleClicks(recycler: TiRecyclerCoroutines<ViewTyped>) {
         recycler.longClickedItem<MessageUi>(MessageUi.VIEW_TYPE)
             .onEach(::pickReactionForMessage)
             .collectWhenStarted(viewLifecycleOwner.lifecycle)
@@ -88,26 +94,14 @@ class TopicFragment : Fragment(R.layout.fragment_topic) {
 
     private fun onEmojiPicked(bundle: Bundle, messageUi: MessageUi) {
         val emojiName = requireNotNull(bundle.getString(PickEmojiDialog.EMOJI_RESULT_KEY))
-        viewModel.sendOrRevokeReaction(messageUi, emojiName)
+        viewModel.toggleReaction(messageUi, emojiName)
     }
 
-    private fun observeState(recycler: TiRecyclerCoroutines<ViewTyped>) {
-        listOf(
-            viewModel.state
-                .map { state -> state.isLoading }
-                .onEach(::displayLoading),
-            viewModel.state
-                .map { state -> state.error }
-                .onEach(::displayError),
-            viewModel.state
-                .map { state -> state.items }
-                .onEach(recycler::setItems),
-            viewModel.state
-                .map { state -> state.isSendButtonVisible }
-                .onEach(::setSendButtonVisibility),
-        ).forEach { dataFlow ->
-            dataFlow.collectWhenStarted(viewLifecycleOwner.lifecycle)
-        }
+    override fun render(state: TopicState) {
+        displayLoading(state.isLoading)
+        displayError(state.error)
+        recycler.setItems(state.items)
+        setSendButtonVisibility(state.isSendButtonVisible)
     }
 
     private fun displayLoading(isLoading: Boolean) {

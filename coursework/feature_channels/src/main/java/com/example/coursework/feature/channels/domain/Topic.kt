@@ -1,4 +1,4 @@
-package com.example.coursework.shared.chat
+package com.example.coursework.feature.channels.domain
 
 import android.graphics.Color
 

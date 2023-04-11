@@ -13,6 +13,7 @@ tiRecycler = "2.1.2"
 kotlinx-serialization-json = "1.4.1"
 retrofit = "2.9.0"
 okhttp = "4.10.0"
+elmslie = "2.1.1"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -37,3 +38,10 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 okhttp-logger = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttp" }
+elmslie-core = { module = "com.github.vivid-money.elmslie:elmslie-core", version.ref = "elmslie" }
+elmslie-android = { module = "com.github.vivid-money.elmslie:elmslie-android", version.ref = "elmslie" }
+elmslie-coroutines = { module = "com.github.vivid-money.elmslie:elmslie-coroutines", version.ref = "elmslie" }
+#elmslie-storeHolder = { module = "com.github.vivid-money.elmslie:elmslie-store-persisting", version.ref = "elmslie" }
+
+[bundles]
+elmslie = ["elmslie-core", "elmslie-android", "elmslie-coroutines"]

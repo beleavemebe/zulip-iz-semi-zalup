@@ -19,4 +19,5 @@ dependencies {
     annotationProcessor libs.glideCompiler
     implementation libs.tiRecycler
     implementation libs.tiRecyclerCoroutines
+    implementation libs.bundles.elmslie
 }

@@ -1,4 +1,4 @@
-package com.example.coursework.chat.model
+package com.example.coursework.chat.domain.model
 
 data class Reaction(
     val emojiCode: String,

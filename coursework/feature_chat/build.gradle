@@ -22,4 +22,5 @@ dependencies {
     implementation libs.viewBindingDelegate
     implementation libs.core
     implementation libs.material
+    implementation libs.bundles.elmslie
 }

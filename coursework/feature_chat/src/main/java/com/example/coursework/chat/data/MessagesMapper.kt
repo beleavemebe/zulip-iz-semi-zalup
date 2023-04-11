@@ -2,8 +2,8 @@ package com.example.coursework.chat.data
 
 import com.example.coursework.chat.data.model.dto.MessageDto
 import com.example.coursework.chat.data.model.dto.ReactionDto
-import com.example.coursework.chat.model.Message
-import com.example.coursework.chat.model.Reaction
+import com.example.coursework.chat.domain.model.Message
+import com.example.coursework.chat.domain.model.Reaction
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
@@ -15,7 +15,7 @@ object MessagesMapper {
             authorImageUrl = dto.avatar_url,
             message = dto.content,
             posted = LocalDateTime.ofEpochSecond(dto.timestamp.toLong(), 0, ZoneOffset.MIN),
-            reactions = dto.reactions.map { toReaction(it) }
+            reactions = dto.reactions.map(::toReaction)
         )
     }
 

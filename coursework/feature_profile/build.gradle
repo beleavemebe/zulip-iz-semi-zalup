@@ -15,5 +15,6 @@ dependencies {
     implementation libs.fragmentKtx
     implementation libs.material
     implementation libs.glide
+    implementation libs.bundles.elmslie
     annotationProcessor libs.glideCompiler
 }

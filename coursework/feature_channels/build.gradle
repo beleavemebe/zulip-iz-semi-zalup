@@ -12,11 +12,11 @@ dependencies {
     implementation project(":core_ui")
     implementation project(":core_utils")
     implementation project(":core_network")
-    implementation project(":shared_chat")
     implementation libs.cicerone
     implementation libs.fragmentKtx
     implementation libs.viewBindingDelegate
     implementation libs.material
     implementation libs.tiRecycler
     implementation libs.tiRecyclerCoroutines
+    implementation libs.bundles.elmslie
 }

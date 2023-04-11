@@ -23,8 +23,11 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val screens = ServiceLocator.screens
-        cicerone.router.replaceScreen(screens.channels())
+        if (savedInstanceState == null) {
+            val screens = ServiceLocator.screens
+            cicerone.router.replaceScreen(screens.channels())
+        }
+
         binding.bottomNavigationView.setOnItemSelectedListener { menuItem ->
             handleBottomNavClicked(menuItem)
             true

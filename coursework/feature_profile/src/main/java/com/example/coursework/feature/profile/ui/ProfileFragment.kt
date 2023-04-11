@@ -1,33 +1,33 @@
 package com.example.coursework.feature.profile.ui
 
-import android.os.Bundle
-import android.view.View
 import androidx.core.content.res.ResourcesCompat
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
+import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
+import com.example.coursework.feature.profile.ui.elm.ProfileEffect
+import com.example.coursework.feature.profile.ui.elm.ProfileEvent
+import com.example.coursework.feature.profile.ui.elm.ProfileState
 import com.example.coursework.profile.R
 import com.example.coursework.profile.databinding.FragmentProfileBinding
-import com.example.coursework.shared.profile.data.UsersRepositoryImpl
-import com.example.coursework.shared.profile.domain.User
-import com.example.coursework.shared.profile.domain.usecase.GetCurrentUser
 import com.example.coursework.shared.profile.ui.color
-import kotlinx.coroutines.launch
+import vivid.money.elmslie.android.base.ElmFragment
+import vivid.money.elmslie.android.storeholder.LifecycleAwareStoreHolder
 
-class ProfileFragment : Fragment(R.layout.fragment_profile) {
+class ProfileFragment : ElmFragment<ProfileEvent, ProfileEffect, ProfileState>(R.layout.fragment_profile) {
     private val binding by viewBinding(FragmentProfileBinding::bind)
+    private val viewModel by viewModels<ProfileViewModel>()
 
-    private val getCurrentUser = GetCurrentUser(UsersRepositoryImpl.instance)
+    override val initEvent = ProfileEvent.Init
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        lifecycleScope.launch {
-            renderUser(getCurrentUser.execute())
-        }
+    override val storeHolder by lazy {
+        LifecycleAwareStoreHolder(lifecycle, viewModel::store)
     }
 
-    private fun renderUser(user: User) {
+    override fun render(state: ProfileState) {
+        binding.progressIndicator.isVisible = state.isLoading
+        val user = state.user ?: return
+
         Glide.with(this)
             .load(user.imageUrl)
             .into(binding.ivProfileImage)

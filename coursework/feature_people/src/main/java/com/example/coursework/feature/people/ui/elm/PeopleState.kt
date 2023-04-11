@@ -1,4 +1,6 @@
-package com.example.coursework.feature.people.ui.model
+package com.example.coursework.feature.people.ui.elm
+
+import com.example.coursework.feature.people.ui.model.PeopleUi
 
 data class PeopleState(
     val isLoading: Boolean = true,

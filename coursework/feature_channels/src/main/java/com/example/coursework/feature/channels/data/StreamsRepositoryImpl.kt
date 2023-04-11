@@ -4,7 +4,7 @@ import com.example.coursework.core.network.NetworkModule
 import com.example.coursework.feature.channels.data.api.StreamsApi
 import com.example.coursework.feature.channels.domain.Stream
 import com.example.coursework.feature.channels.domain.StreamsRepository
-import com.example.coursework.shared.chat.Topic
+import com.example.coursework.feature.channels.domain.Topic
 
 class StreamsRepositoryImpl(
     private val api: StreamsApi,

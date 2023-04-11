@@ -4,7 +4,7 @@ import com.example.coursework.feature.channels.data.model.dto.StreamDto
 import com.example.coursework.feature.channels.data.model.dto.SubscribedStreamDto
 import com.example.coursework.feature.channels.data.model.dto.TopicDto
 import com.example.coursework.feature.channels.domain.Stream
-import com.example.coursework.shared.chat.Topic
+import com.example.coursework.feature.channels.domain.Topic
 
 object StreamsMapper {
     fun toStream(dto: StreamDto): Stream {

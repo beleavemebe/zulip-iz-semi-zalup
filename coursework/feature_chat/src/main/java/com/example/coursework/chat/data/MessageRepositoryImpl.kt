@@ -2,14 +2,15 @@ package com.example.coursework.chat.data
 
 import com.example.coursework.chat.data.api.MessagesApi
 import com.example.coursework.chat.data.model.Narrow
-import com.example.coursework.chat.model.Message
+import com.example.coursework.chat.domain.MessageRepository
+import com.example.coursework.chat.domain.model.Message
 import com.example.coursework.core.network.NetworkModule
 import com.google.gson.Gson
 
 class MessageRepositoryImpl(
     private val api: MessagesApi,
-) {
-    suspend fun loadMessages(
+) : MessageRepository {
+    override suspend fun loadMessages(
         stream: Int,
         topic: String
     ): List<Message> {
@@ -22,21 +23,21 @@ class MessageRepositoryImpl(
         ).messages.map(MessagesMapper::toMessage)
     }
 
-    suspend fun sendReaction(
+    override suspend fun sendReaction(
         messageId: Int,
         name: String
     ) {
         api.addReaction(messageId, name)
     }
 
-    suspend fun revokeReaction(
+    override suspend fun revokeReaction(
         messageId: Int,
         name: String
     ) {
         api.deleteReaction(messageId, name)
     }
 
-    suspend fun sendMessage(
+    override suspend fun sendMessage(
         stream: Int,
         topic: String,
         text: String
