@@ -1,0 +1,17 @@
+plugins {
+    id 'android-library-convention'
+    id 'dagger-convention'
+}
+
+android {
+    namespace 'com.example.coursework.main'
+}
+
+dependencies {
+    implementation project(":feature_main_api")
+    implementation project(":core_ui")
+    implementation project(":core_di")
+    implementation libs.cicerone
+    implementation libs.viewBindingDelegate
+    implementation libs.material
+}

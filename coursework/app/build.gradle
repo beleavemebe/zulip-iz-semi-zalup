@@ -1,5 +1,6 @@
 plugins {
     id("android-application-convention")
+    id 'dagger-convention'
 }
 
 android {
@@ -7,11 +8,11 @@ android {
 }
 
 dependencies {
-    implementation project(":feature_main")
+    implementation project(':feature_main_impl')
     implementation project(":feature_chat")
     implementation project(":feature_channels")
     implementation project(":feature_people")
-    implementation project(":feature_profile")
+    implementation project(':feature_profile_impl')
     implementation project(":core_di")
     implementation project(":core_ui")
     implementation libs.viewBindingDelegate

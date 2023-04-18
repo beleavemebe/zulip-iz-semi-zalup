@@ -14,6 +14,7 @@ kotlinx-serialization-json = "1.4.1"
 retrofit = "2.9.0"
 okhttp = "4.10.0"
 elmslie = "2.1.1"
+dagger = "2.44.2"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -33,6 +34,7 @@ glideCompiler = { module = "com.github.bumptech.glide:compiler", version.ref = "
 tiRecycler = { module = "ru.tinkoff.mobile:ti-recycler", version.ref = "tiRecycler" }
 tiRecyclerCoroutines = { module = "ru.tinkoff.mobile:ti-recycler-coroutines", version.ref = "tiRecycler" }
 lifecycle-runtimeKtx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle" }
+lifecycle-viewModelKtx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
 kotlinx-serialization-json-retrofit = { module = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter", version = "0.8.0" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
@@ -42,6 +44,8 @@ elmslie-core = { module = "com.github.vivid-money.elmslie:elmslie-core", version
 elmslie-android = { module = "com.github.vivid-money.elmslie:elmslie-android", version.ref = "elmslie" }
 elmslie-coroutines = { module = "com.github.vivid-money.elmslie:elmslie-coroutines", version.ref = "elmslie" }
 #elmslie-storeHolder = { module = "com.github.vivid-money.elmslie:elmslie-store-persisting", version.ref = "elmslie" }
+dagger = { module = "com.google.dagger:dagger", version.ref = "dagger" }
+daggerCompiler = { module = "com.google.dagger:dagger-compiler", version.ref = "dagger" }
 
 [bundles]
 elmslie = ["elmslie-core", "elmslie-android", "elmslie-coroutines"]

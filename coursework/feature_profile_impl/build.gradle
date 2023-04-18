@@ -1,0 +1,24 @@
+plugins {
+    id 'android-library-convention'
+    id 'dagger-convention'
+}
+
+android {
+    namespace 'com.example.coursework.profile'
+}
+
+dependencies {
+    implementation project(":feature_profile_api")
+    implementation project(":shared_profile")
+    implementation project(":core_di")
+    implementation project(":core_ui")
+    implementation libs.core
+    implementation libs.viewBindingDelegate
+    implementation libs.fragmentKtx
+    implementation libs.material
+    implementation libs.glide
+    implementation libs.bundles.elmslie
+    annotationProcessor libs.glideCompiler
+
+    implementation libs.cicerone
+}

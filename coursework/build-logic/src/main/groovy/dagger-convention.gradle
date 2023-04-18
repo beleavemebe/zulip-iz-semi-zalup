@@ -1,0 +1,8 @@
+plugins {
+    id("kotlin-kapt")
+}
+
+dependencies {
+    implementation libs.dagger
+    kapt libs.daggerCompiler
+}

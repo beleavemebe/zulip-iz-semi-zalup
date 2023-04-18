@@ -7,5 +7,4 @@ import kotlin.properties.Delegates
 object ServiceLocator {
     var screens: Screens by Delegates.notNull()
     var globalRouter: Router by Delegates.notNull()
-    var localRouter: Router by Delegates.notNull()
 }
