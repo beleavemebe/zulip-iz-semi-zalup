@@ -1,9 +1,12 @@
 package com.example.coursework.feature.profile.ui.elm
 
+import com.example.coursework.feature.profile.ui.di.ProfileScope
 import com.example.coursework.feature.profile.ui.elm.ProfileEvent.Init.Companion.CURRENT_USER
 import vivid.money.elmslie.core.store.dsl_reducer.DslReducer
+import javax.inject.Inject
 
-class ProfileReducer : DslReducer<ProfileEvent, ProfileState, ProfileEffect, ProfileCommand>() {
+@ProfileScope
+class ProfileReducer @Inject constructor(): DslReducer<ProfileEvent, ProfileState, ProfileEffect, ProfileCommand>() {
     override fun Result.reduce(event: ProfileEvent) =
         when (event) {
             is ProfileEvent.Init -> loadUser(event)
