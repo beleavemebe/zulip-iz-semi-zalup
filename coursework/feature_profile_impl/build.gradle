@@ -9,7 +9,7 @@ android {
 
 dependencies {
     implementation project(":feature_profile_api")
-    implementation project(":shared_profile")
+    implementation project(":shared_profile_api")
     implementation project(":core_di")
     implementation project(":core_ui")
     implementation libs.core

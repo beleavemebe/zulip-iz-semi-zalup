@@ -1,5 +1,6 @@
 plugins {
     id 'android-library-convention'
+    id 'dagger-convention'
 }
 
 android {

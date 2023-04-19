@@ -8,6 +8,6 @@ android {
 
 dependencies {
     implementation project(":core_di")
-    implementation project(":shared_profile")
+    implementation project(":shared_profile_api")
     implementation libs.cicerone
 }

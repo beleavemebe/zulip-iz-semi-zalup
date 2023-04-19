@@ -1,11 +1,14 @@
 package com.example.coursework.feature.profile.ui.elm
 
-import com.example.coursework.shared.profile.domain.usecase.GetCurrentUser
-import com.example.coursework.shared.profile.domain.usecase.GetUser
+import com.example.coursework.feature.profile.ui.di.ProfileScope
+import com.example.shared.profile.api.domain.usecase.GetCurrentUser
+import com.example.shared.profile.api.domain.usecase.GetUser
 import kotlinx.coroutines.flow.flow
 import vivid.money.elmslie.coroutines.Actor
+import javax.inject.Inject
 
-class ProfileActor(
+@ProfileScope
+class ProfileActor @Inject constructor(
     private val getCurrentUser: GetCurrentUser,
     private val getUser: GetUser,
 ) : Actor<ProfileCommand, ProfileEvent> {

@@ -1,0 +1,12 @@
+plugins {
+    id 'android-library-convention'
+}
+
+android {
+    namespace 'com.example.feature.streams.api'
+}
+
+dependencies {
+    implementation project(":core_di")
+    implementation libs.cicerone
+}

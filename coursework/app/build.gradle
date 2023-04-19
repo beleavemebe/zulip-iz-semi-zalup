@@ -8,11 +8,18 @@ android {
 }
 
 dependencies {
-    implementation project(':feature_main_impl')
-    implementation project(":feature_chat")
-    implementation project(":feature_channels")
-    implementation project(":feature_people")
-    implementation project(':feature_profile_impl')
+    implementation project(":feature_main_api")
+    implementation project(":feature_main_impl")
+    implementation project(":feature_topic_api")
+    implementation project(":feature_topic_impl")
+    implementation project(":feature_streams_api")
+    implementation project(":feature_streams_impl")
+    implementation project(":feature_people_api")
+    implementation project(":feature_people_impl")
+    implementation project(":shared_profile_api")
+    implementation project(":shared_profile_impl")
+    implementation project(":feature_profile_api")
+    implementation project(":feature_profile_impl")
     implementation project(":core_di")
     implementation project(":core_ui")
     implementation libs.viewBindingDelegate

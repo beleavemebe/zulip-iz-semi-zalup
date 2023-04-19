@@ -1,7 +1,0 @@
-plugins {
-    id 'android-library-convention'
-}
-
-android {
-    namespace 'com.example.coursework.shared.chat'
-}

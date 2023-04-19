@@ -1,6 +1,6 @@
 package com.example.coursework.feature.profile.ui.elm
 
-import com.example.coursework.shared.profile.domain.User
+import com.example.shared.profile.api.domain.User
 
 sealed interface ProfileEvent {
     data class Init(val userId: Int) : ProfileEvent {

@@ -10,5 +10,4 @@ android {
 dependencies {
     implementation project(":core_ui")
     implementation libs.cicerone
-    implementation libs.lifecycle.viewModelKtx
 }

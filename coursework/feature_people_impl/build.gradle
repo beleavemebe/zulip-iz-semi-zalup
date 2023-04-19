@@ -1,0 +1,26 @@
+plugins {
+    id 'android-library-convention'
+    id 'dagger-convention'
+}
+
+android {
+    namespace 'com.example.coursework.feature.people.impl'
+}
+
+dependencies {
+    implementation project(":feature_people_api")
+    implementation project(":shared_profile_api")
+    implementation project(":core_di")
+    implementation project(":core_ui")
+    implementation project(":core_utils")
+    implementation libs.core
+    implementation libs.viewBindingDelegate
+    implementation libs.fragmentKtx
+    implementation libs.material
+    implementation libs.glide
+    annotationProcessor libs.glideCompiler
+    implementation libs.tiRecycler
+    implementation libs.tiRecyclerCoroutines
+    implementation libs.bundles.elmslie
+    implementation libs.cicerone
+}

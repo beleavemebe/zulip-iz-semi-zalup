@@ -1,0 +1,14 @@
+plugins {
+    id 'android-library-convention'
+    id 'dagger-convention'
+}
+
+android {
+    namespace 'com.example.shared.profile.api'
+}
+
+dependencies {
+    implementation project(":core_ui")
+    implementation project(":core_di")
+    implementation project(":core_network")
+}

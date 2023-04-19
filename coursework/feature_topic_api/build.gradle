@@ -1,0 +1,13 @@
+plugins {
+    id 'android-library-convention'
+}
+
+android {
+    namespace 'com.example.feature.topic.api'
+}
+
+dependencies {
+    implementation project(":shared_profile_api")
+    implementation project(":core_di")
+    implementation libs.cicerone
+}

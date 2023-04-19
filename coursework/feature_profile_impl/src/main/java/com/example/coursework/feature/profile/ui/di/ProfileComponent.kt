@@ -5,9 +5,9 @@ import com.example.coursework.feature.profile.ui.ProfileFragment
 import com.example.feature.profile.api.ProfileDeps
 import dagger.Component
 
+@ProfileScope
 @Component(
-    modules = [ProfileModule::class, ProfileModule.Bindings::class],
-    dependencies = [ProfileDeps::class]
+    dependencies = [ProfileDeps::class],
 )
 interface ProfileComponent : DaggerComponent {
     fun inject(profileFragment: ProfileFragment)

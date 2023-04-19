@@ -1,11 +1,5 @@
 package com.example.coursework.core.di
 
-//interface FeatureFacade<Deps : BaseDeps, Api : BaseApi> {
-//    fun init(deps: Deps)
-//    fun getApi(): Api
-//    fun clear()
-//}
-
 interface BaseDeps
 
 interface BaseApi
@@ -13,28 +7,38 @@ interface BaseApi
 interface DaggerComponent
 
 abstract class FeatureFacade<Deps : BaseDeps, Api : BaseApi, Component : DaggerComponent> {
-    protected abstract fun createApi(deps: Deps): Api
-    protected abstract fun createComponent(deps: Deps): Component
+    private var _deps: Deps? = null
+    private var _api: Api? = null
+    private var _component: Component? = null
 
-    private var deps: Deps? = null
-    private var api: Api? = null
-    private var component: Component? = null
+    val deps: Deps
+        get() = notNull(_deps)
 
-    fun init(deps: Deps) {
-        if (component == null) {
-            this.deps = deps
-            component = createComponent(deps)
-            api = createApi(deps)
+    val api: Api
+        get() = notNull(_api)
+
+    val component: Component
+        get() = notNull(_component)
+
+    fun init(deps: Deps): FeatureFacade<Deps, Api, Component> {
+        if (_component == null) {
+            _deps = deps
+            _component = createComponent(deps)
+            _api = createApi(component, deps)
         }
+        return this
     }
 
-    fun getDeps(): Deps = requireNotNull(deps)
-
-    fun getApi(): Api = requireNotNull(api)
-
-    fun getComponent(): Component = requireNotNull(component)
-
     fun clear() {
-        component = null
+        _component = null
+        _api = null
+    }
+
+    protected abstract fun createComponent(deps: Deps): Component
+
+    protected abstract fun createApi(component: Component, deps: Deps): Api
+
+    private fun <T> notNull(t: T?) = requireNotNull(t) {
+        "Facade ${this.javaClass.simpleName} was not initialized or already cleared"
     }
 }

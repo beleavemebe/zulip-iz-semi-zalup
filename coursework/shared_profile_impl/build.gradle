@@ -1,0 +1,16 @@
+plugins {
+    id 'android-library-convention'
+    id 'dagger-convention'
+    alias libs.plugins.kotlinx.serialization
+}
+
+android {
+    namespace 'com.example.coursework.shared.profile'
+}
+
+dependencies {
+    implementation project(":shared_profile_api")
+    implementation project(":core_ui")
+    implementation project(":core_di")
+    implementation project(":core_network")
+}

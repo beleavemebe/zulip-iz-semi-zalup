@@ -8,24 +8,22 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
 import com.example.core.ui.argument
 import com.example.core.ui.assistedViewModel
-import com.example.coursework.core.di.DaggerViewModelFactory
 import com.example.coursework.feature.profile.ui.di.ProfileFacade
 import com.example.coursework.feature.profile.ui.elm.ProfileEffect
 import com.example.coursework.feature.profile.ui.elm.ProfileEvent
 import com.example.coursework.feature.profile.ui.elm.ProfileState
+import com.example.coursework.feature.profile.ui.elm.ProfileStoreFactory
 import com.example.coursework.profile.R
 import com.example.coursework.profile.databinding.FragmentProfileBinding
-import com.example.coursework.shared.profile.ui.color
+import com.example.shared.profile.api.ui.color
 import vivid.money.elmslie.android.base.ElmFragment
 import vivid.money.elmslie.android.storeholder.LifecycleAwareStoreHolder
 import javax.inject.Inject
 
 class ProfileFragment : ElmFragment<ProfileEvent, ProfileEffect, ProfileState>(R.layout.fragment_profile) {
-    @Inject lateinit var daggerViewModelFactory: DaggerViewModelFactory
+    @Inject lateinit var storeFactory: ProfileStoreFactory
     private val binding by viewBinding(FragmentProfileBinding::bind)
-    private val viewModel by assistedViewModel {
-        daggerViewModelFactory.create(ProfileViewModel::class.java)
-    }
+    private val viewModel by assistedViewModel { ProfileViewModel(storeFactory) }
     private val userId: Int by argument(KEY_USER_ID)
 
     override val initEvent by lazy {
@@ -37,7 +35,7 @@ class ProfileFragment : ElmFragment<ProfileEvent, ProfileEffect, ProfileState>(R
     }
 
     override fun onAttach(context: Context) {
-        ProfileFacade.getComponent().inject(this)
+        ProfileFacade.component.inject(this)
         super.onAttach(context)
     }
 
@@ -57,11 +55,6 @@ class ProfileFragment : ElmFragment<ProfileEvent, ProfileEffect, ProfileState>(R
                 requireActivity().theme
             )
         )
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        ProfileFacade.clear()
     }
 
     companion object {

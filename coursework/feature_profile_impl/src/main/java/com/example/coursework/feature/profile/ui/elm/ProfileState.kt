@@ -1,6 +1,6 @@
 package com.example.coursework.feature.profile.ui.elm
 
-import com.example.coursework.shared.profile.domain.User
+import com.example.shared.profile.api.domain.User
 
 data class ProfileState(
     val isLoading: Boolean = true,
