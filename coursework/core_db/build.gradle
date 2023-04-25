@@ -1,0 +1,11 @@
+plugins {
+    id 'android-library-convention'
+}
+
+android {
+    namespace 'com.example.coursework.core.database'
+}
+
+dependencies {
+    implementation project(":core_di")
+}

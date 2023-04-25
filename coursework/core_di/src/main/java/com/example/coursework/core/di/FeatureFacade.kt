@@ -1,10 +1,16 @@
 package com.example.coursework.core.di
 
-interface BaseDeps
+interface BaseDeps {
+    companion object : BaseDeps
+}
 
-interface BaseApi
+interface BaseApi {
+    companion object : BaseApi
+}
 
-interface DaggerComponent
+interface DaggerComponent {
+    companion object : DaggerComponent
+}
 
 abstract class FeatureFacade<Deps : BaseDeps, Api : BaseApi, Component : DaggerComponent> {
     private var _deps: Deps? = null
@@ -30,8 +36,9 @@ abstract class FeatureFacade<Deps : BaseDeps, Api : BaseApi, Component : DaggerC
     }
 
     fun clear() {
-        _component = null
+        _deps = null
         _api = null
+        _component = null
     }
 
     protected abstract fun createComponent(deps: Deps): Component

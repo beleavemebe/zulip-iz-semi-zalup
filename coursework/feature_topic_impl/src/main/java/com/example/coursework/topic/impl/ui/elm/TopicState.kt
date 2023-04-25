@@ -8,4 +8,7 @@ data class TopicState(
     val items: List<TopicItem> = emptyList(),
     val inputText: String = "",
     val isSendButtonVisible: Boolean = false,
+    val isLoadingPage: Boolean = false,
+    val oldestAnchor: Int = 0,
+    val newestAnchor: Int = 0,
 )

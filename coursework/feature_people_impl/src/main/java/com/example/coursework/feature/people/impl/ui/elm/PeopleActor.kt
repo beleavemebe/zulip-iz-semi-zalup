@@ -6,9 +6,7 @@ import com.example.coursework.feature.people.impl.di.PeopleScope
 import com.example.coursework.feature.people.impl.ui.model.PeopleUi
 import com.example.shared.profile.api.domain.User
 import com.example.shared.profile.api.domain.usecase.GetOtherUsers
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.withContext
 import vivid.money.elmslie.coroutines.Actor
 import javax.inject.Inject
 
@@ -39,7 +37,6 @@ class PeopleActor @Inject constructor(
     private suspend fun loadUsers(
         query: String = "",
     ): List<PeopleUi> = cache(key = query) {
-        withContext(Dispatchers.Default) {
             val allUsers = getOtherUsers.execute()
             if (query.isBlank()) {
                 allUsers
@@ -48,7 +45,6 @@ class PeopleActor @Inject constructor(
                     query.lowercase() in user.name.lowercase()
                 }
             }.map(::toPersonUi).sortedByPresence()
-        }
     }
 
     private fun toPersonUi(

@@ -16,6 +16,6 @@ object StreamsMapper {
     }
 
     fun toTopic(dto: TopicDto): Topic {
-        return Topic(dto.name, dto.max_id)
+        return Topic(dto.name)
     }
 }

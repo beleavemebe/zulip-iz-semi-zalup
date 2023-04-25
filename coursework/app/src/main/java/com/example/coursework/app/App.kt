@@ -8,7 +8,7 @@ import com.example.coursework.app.di.DaggerAppComponent
 class App : Application() {
     val appComponent by lazy {
         DaggerAppComponent.factory()
-            .create()
+            .create(this)
     }
 }
 

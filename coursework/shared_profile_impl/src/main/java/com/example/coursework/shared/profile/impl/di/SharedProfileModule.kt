@@ -1,5 +1,6 @@
-package com.example.coursework.shared.profile.impl.data
+package com.example.coursework.shared.profile.impl.di
 
+import com.example.coursework.shared.profile.impl.data.UsersRepositoryImpl
 import com.example.coursework.shared.profile.impl.data.api.UsersApi
 import com.example.shared.profile.api.domain.UsersRepository
 import dagger.Binds

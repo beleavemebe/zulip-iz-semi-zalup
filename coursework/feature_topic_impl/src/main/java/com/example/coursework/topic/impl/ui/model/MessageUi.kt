@@ -16,5 +16,11 @@ data class MessageUi(
 
     companion object {
         val VIEW_TYPE =  R.layout.item_message
+
+        fun calcPayload(oldItem: TopicItem, newItem: TopicItem): Any? {
+            if (oldItem !is MessageUi || newItem !is MessageUi) return null
+            if (oldItem.reactions != newItem.reactions) return newItem.reactions
+            return null
+        }
     }
 }

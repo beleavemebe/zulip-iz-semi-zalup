@@ -23,6 +23,14 @@ class TopicViewModel(
         store.accept(TopicEvent.Ui.UpdateInputText(text))
     }
 
+    fun loadPreviousPage() {
+        store.accept(TopicEvent.Ui.LoadPreviousPage)
+    }
+
+    fun loadNextPage() {
+        store.accept(TopicEvent.Ui.LoadNextPage)
+    }
+
     override fun onCleared() {
         super.onCleared()
         TopicFacade.clear()

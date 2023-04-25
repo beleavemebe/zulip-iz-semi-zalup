@@ -8,6 +8,7 @@ android {
 }
 
 dependencies {
+    implementation project(":app_db")
     implementation project(":feature_main_api")
     implementation project(":feature_main_impl")
     implementation project(":feature_topic_api")
@@ -21,6 +22,7 @@ dependencies {
     implementation project(":feature_profile_api")
     implementation project(":feature_profile_impl")
     implementation project(":core_di")
+    implementation project(":core_db")
     implementation project(":core_ui")
     implementation libs.viewBindingDelegate
     implementation libs.cicerone

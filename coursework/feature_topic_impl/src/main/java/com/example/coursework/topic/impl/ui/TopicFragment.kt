@@ -7,7 +7,7 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.commit
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.core.ui.argument
 import com.example.core.ui.assistedViewModel
@@ -18,13 +18,16 @@ import com.example.coursework.topic.impl.ui.elm.TopicEvent
 import com.example.coursework.topic.impl.ui.elm.TopicState
 import com.example.coursework.topic.impl.ui.elm.TopicStoreFactory
 import com.example.coursework.topic.impl.ui.model.MessageUi
+import com.example.coursework.topic.impl.ui.model.TopicItem
 import com.example.coursework.topic.impl.ui.recycler.TopicViewHolderFactory
 import com.example.feature.topic.impl.R
 import com.example.feature.topic.impl.databinding.FragmentTopicBinding
 import kotlinx.coroutines.flow.onEach
 import ru.tinkoff.mobile.tech.ti_recycler.adapters.AsyncTiAdapter
+import ru.tinkoff.mobile.tech.ti_recycler.adapters.BaseTiAdapter
 import ru.tinkoff.mobile.tech.ti_recycler.base.diff.ViewTypedDiffCallback
 import ru.tinkoff.mobile.tech.ti_recycler_coroutines.TiRecyclerCoroutines
+import ru.tinkoff.mobile.tech.ti_recycler_coroutines.base.CoroutinesHolderFactory
 import vivid.money.elmslie.android.base.ElmFragment
 import vivid.money.elmslie.android.storeholder.LifecycleAwareStoreHolder
 import javax.inject.Inject
@@ -37,17 +40,14 @@ class TopicFragment : ElmFragment<TopicEvent, TopicEffect, TopicState>(R.layout.
     private val viewModel by assistedViewModel { TopicViewModel(storeFactory) }
     private val binding by viewBinding(FragmentTopicBinding::bind)
 
-    private val factory by lazy {
-        TopicViewHolderFactory(viewModel::toggleReaction, ::pickReactionForMessage)
+    private val adapter: BaseTiAdapter<TopicItem, CoroutinesHolderFactory> by lazy {
+        AsyncTiAdapter(
+            TopicViewHolderFactory(viewModel::toggleReaction, ::pickReactionForMessage),
+            ViewTypedDiffCallback(TopicItem.payloadMappers)
+        )
     }
 
-    private val recycler by lazy {
-        TiRecyclerCoroutines(binding.rvChat, AsyncTiAdapter(factory, ViewTypedDiffCallback()))
-    }
-
-    private val scrollToBottomObserver by lazy {
-        ScrollToBottomOnItemsAdded()
-    }
+    private lateinit var recycler: TiRecyclerCoroutines<TopicItem>
 
     override val storeHolder by lazy {
         LifecycleAwareStoreHolder(lifecycle, viewModel::store)
@@ -83,10 +83,17 @@ class TopicFragment : ElmFragment<TopicEvent, TopicEffect, TopicState>(R.layout.
     }
 
     private fun initRecycler() {
-        recycler.adapter.registerAdapterDataObserver(scrollToBottomObserver)
+        recycler = TiRecyclerCoroutines(binding.rvChat, adapter)
         recycler.longClickedItem<MessageUi>(MessageUi.VIEW_TYPE)
             .onEach(::pickReactionForMessage)
             .collectWhenStarted(viewLifecycleOwner.lifecycle)
+        binding.rvChat.addOnScrollListener(
+            PagingTriggeringScrollListener(
+                binding.rvChat.layoutManager as LinearLayoutManager,
+                viewModel::loadPreviousPage,
+                viewModel::loadNextPage
+            )
+        )
     }
 
     private fun pickReactionForMessage(messageUi: MessageUi) {
@@ -98,7 +105,6 @@ class TopicFragment : ElmFragment<TopicEvent, TopicEffect, TopicState>(R.layout.
 
         parentFragmentManager.commit {
             add(PickEmojiDialog(), null)
-            addToBackStack(null)
         }
     }
 
@@ -132,13 +138,7 @@ class TopicFragment : ElmFragment<TopicEvent, TopicEffect, TopicState>(R.layout.
 
     override fun onDestroyView() {
         super.onDestroyView()
-        recycler.adapter.unregisterAdapterDataObserver(scrollToBottomObserver)
-    }
-
-    inner class ScrollToBottomOnItemsAdded : RecyclerView.AdapterDataObserver() {
-        override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-            binding.rvChat.smoothScrollToPosition(positionStart + itemCount)
-        }
+        binding.rvChat.clearOnScrollListeners()
     }
 
     companion object {

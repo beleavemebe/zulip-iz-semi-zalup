@@ -15,12 +15,4 @@
         android:textColor="@color/white"
         tools:text="Testing" />
 
-    <TextView
-        android:id="@+id/tvMessageCount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:textColor="@color/white"
-        tools:text="1240 mes" />
-
 </LinearLayout>

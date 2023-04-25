@@ -9,5 +9,6 @@ android {
 dependencies {
     implementation project(":shared_profile_api")
     implementation project(":core_di")
+    implementation project(":core_db")
     implementation libs.cicerone
 }

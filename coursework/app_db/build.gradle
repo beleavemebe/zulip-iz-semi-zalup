@@ -1,0 +1,16 @@
+plugins {
+    id 'android-library-convention'
+    id 'dagger-convention'
+    id 'room-convention'
+}
+
+android {
+    namespace 'com.example.coursework.app.database'
+}
+
+dependencies {
+    implementation project(':core_db')
+    implementation project(":core_di")
+    implementation project(":feature_streams_impl")
+    implementation project(":feature_topic_impl")
+}

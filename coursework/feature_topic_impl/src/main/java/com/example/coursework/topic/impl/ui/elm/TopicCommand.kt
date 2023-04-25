@@ -1,9 +1,21 @@
 package com.example.coursework.topic.impl.ui.elm
 
 sealed interface TopicCommand {
-    data class LoadAllMessages(
+    data class LoadNewestMessages(
         val stream: Int,
         val topic: String,
+    ) : TopicCommand
+
+    data class LoadPreviousPage(
+        val stream: Int,
+        val topic: String,
+        val anchorMessageId: Int
+    ) : TopicCommand
+
+    data class LoadNextPage(
+        val stream: Int,
+        val topic: String,
+        val anchorMessageId: Int
     ) : TopicCommand
     
     data class SendReaction(

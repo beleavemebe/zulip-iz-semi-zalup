@@ -1,4 +1,4 @@
-package com.example.coursework.shared.profile.impl.data
+package com.example.coursework.shared.profile.impl.di
 
 import com.example.coursework.core.di.DaggerComponent
 import com.example.coursework.core.network.NetworkModule

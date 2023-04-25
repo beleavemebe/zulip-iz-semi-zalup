@@ -9,9 +9,7 @@ import com.example.coursework.feature.streams.impl.domain.usecase.GetTopicsForSt
 import com.example.coursework.feature.streams.impl.ui.model.StreamUi
 import com.example.coursework.feature.streams.impl.ui.model.StreamsTab
 import com.example.coursework.feature.streams.impl.ui.model.TopicUi
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.withContext
 import vivid.money.elmslie.coroutines.Actor
 import javax.inject.Inject
 
@@ -50,13 +48,9 @@ class StreamsActor @Inject constructor(
         }
     }
 
-    private suspend fun getAllStreams() = withContext(Dispatchers.Default) {
-        getAllStreams.execute().map(::toStreamUi)
-    }
+    private suspend fun getAllStreams() = getAllStreams.execute().map(::toStreamUi)
 
-    private suspend fun getSubscribedStreams() = withContext(Dispatchers.Default) {
-        getSubscribedStreams.execute().map(::toStreamUi)
-    }
+    private suspend fun getSubscribedStreams() = getSubscribedStreams.execute().map(::toStreamUi)
 
     private fun toStreamUi(
         stream: Stream,
@@ -78,11 +72,10 @@ class StreamsActor @Inject constructor(
         emit(StreamsEvent.Internal.TopicsLoaded(command.streamUi, topics))
     }
 
-    private suspend fun loadTopics(streamId: Int) = withContext(Dispatchers.Default) {
-        getTopicsForStream.execute(streamId).map { topic ->
-            toTopicUi(topic, streamId)
+    private suspend fun loadTopics(streamId: Int) = getTopicsForStream.execute(streamId)
+        .map { topic ->
+                toTopicUi(topic, streamId)
         }
-    }
 
     private fun toTopicUi(
         topic: Topic,
@@ -90,7 +83,6 @@ class StreamsActor @Inject constructor(
     ) = TopicUi(
         streamId = streamId,
         name = topic.name,
-        messageCount = topic.messageCount,
         color = topic.color
     )
 }

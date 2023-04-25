@@ -6,7 +6,7 @@ import retrofit2.http.*
 interface MessagesApi {
     @GET("messages")
     suspend fun getMessages(
-        @Query("anchor") anchor: String,
+        @Query("anchor") anchor: Any,
         @Query("num_before") numBefore: Int,
         @Query("num_after") numAfter: Int,
         @Query("narrow") narrow: String,
