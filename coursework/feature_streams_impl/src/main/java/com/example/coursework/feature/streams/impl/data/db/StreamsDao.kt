@@ -2,6 +2,7 @@ package com.example.coursework.feature.streams.impl.data.db
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.coursework.core.database.BaseDao
 
@@ -13,7 +14,7 @@ interface StreamsDao : BaseDao {
     @Query("DELETE FROM streams WHERE subscribed = :subscribed")
     suspend fun clearStreams(subscribed: Boolean)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun writeStreams(entities: List<StreamEntity>)
 
     @Query("SELECT * FROM topics WHERE streamId = :streamId")
@@ -22,6 +23,6 @@ interface StreamsDao : BaseDao {
     @Query("DELETE FROM topics")
     suspend fun clearTopics()
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun writeTopics(entities: List<TopicEntity>)
 }

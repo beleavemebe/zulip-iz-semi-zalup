@@ -28,4 +28,19 @@ object StreamsMapper {
     fun toTopic(entity: TopicEntity): Topic {
         return Topic(entity.name)
     }
+
+    fun toEntity(stream: Stream, subscribed: Boolean): StreamEntity {
+        return StreamEntity(
+            id = stream.id,
+            name = stream.name,
+            subscribed = subscribed
+        )
+    }
+
+    fun toEntity(topic: Topic, streamId: Int): TopicEntity {
+        return TopicEntity(
+            name = topic.name,
+            streamId = streamId
+        )
+    }
 }

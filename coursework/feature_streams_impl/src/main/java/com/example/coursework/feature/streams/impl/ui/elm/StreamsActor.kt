@@ -3,21 +3,19 @@ package com.example.coursework.feature.streams.impl.ui.elm
 import com.example.coursework.feature.streams.impl.di.StreamsScope
 import com.example.coursework.feature.streams.impl.domain.model.Stream
 import com.example.coursework.feature.streams.impl.domain.model.Topic
-import com.example.coursework.feature.streams.impl.domain.usecase.GetAllStreams
-import com.example.coursework.feature.streams.impl.domain.usecase.GetSubscribedStreams
-import com.example.coursework.feature.streams.impl.domain.usecase.GetTopicsForStream
+import com.example.coursework.feature.streams.impl.domain.repository.StreamsRepository
 import com.example.coursework.feature.streams.impl.ui.model.StreamUi
 import com.example.coursework.feature.streams.impl.ui.model.StreamsTab
 import com.example.coursework.feature.streams.impl.ui.model.TopicUi
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import vivid.money.elmslie.coroutines.Actor
 import javax.inject.Inject
 
 @StreamsScope
 class StreamsActor @Inject constructor(
-    private val getAllStreams: GetAllStreams,
-    private val getSubscribedStreams: GetSubscribedStreams,
-    private val getTopicsForStream: GetTopicsForStream,
+    private val streamsRepository: StreamsRepository
 ) : Actor<StreamsCommand, StreamsEvent> {
     override fun execute(command: StreamsCommand) =
         when (command) {
@@ -29,28 +27,29 @@ class StreamsActor @Inject constructor(
         )
 
     private fun loadStreams(command: StreamsCommand.LoadStreams) = flow {
-        val streams = loadItems(command.query, command.tab)
-        emit(StreamsEvent.Internal.StreamsLoaded(streams))
+        val streams = getStreamsFlow(command.query, command.tab)
+        emitAll(
+            streams.map {
+                StreamsEvent.Internal.StreamsLoaded(it)
+            }
+        )
     }
 
-    private suspend fun loadItems(
+    private fun getStreamsFlow(
         searchQuery: String?,
         tab: StreamsTab,
-    ): List<StreamUi> {
-        val items = when (tab) {
-            StreamsTab.ALL -> getAllStreams()
-            StreamsTab.SUBSCRIBED -> getSubscribedStreams()
-        }
-        return if (searchQuery.isNullOrBlank()) {
-            items
-        } else {
-            matchStreams(searchQuery, items)
-        }
+    ) = when (tab) {
+        StreamsTab.ALL -> streamsRepository.getAllStreams()
+        StreamsTab.SUBSCRIBED -> streamsRepository.getSubscribedStreams()
     }
-
-    private suspend fun getAllStreams() = getAllStreams.execute().map(::toStreamUi)
-
-    private suspend fun getSubscribedStreams() = getSubscribedStreams.execute().map(::toStreamUi)
+        .map { streams -> streams.map(::toStreamUi) }
+        .map { streamUis ->
+            if (searchQuery.isNullOrBlank()) {
+                streamUis
+            } else {
+                matchStreams(searchQuery, streamUis)
+            }
+        }
 
     private fun toStreamUi(
         stream: Stream,
@@ -68,14 +67,21 @@ class StreamsActor @Inject constructor(
     }
 
     private fun loadTopics(command: StreamsCommand.LoadTopics) = flow {
-        val topics = loadTopics(command.streamUi.id)
-        emit(StreamsEvent.Internal.TopicsLoaded(command.streamUi, topics))
+        val topicsFlow = getTopicsFlow(command)
+        emitAll(
+            topicsFlow.map { topicUi ->
+                StreamsEvent.Internal.TopicsLoaded(command.streamUi, topicUi)
+            }
+        )
     }
 
-    private suspend fun loadTopics(streamId: Int) = getTopicsForStream.execute(streamId)
-        .map { topic ->
-                toTopicUi(topic, streamId)
-        }
+    private fun getTopicsFlow(command: StreamsCommand.LoadTopics) =
+        streamsRepository.getTopics(command.streamUi.id)
+            .map { topicList ->
+                topicList.map { topic ->
+                    toTopicUi(topic, command.streamUi.id)
+                }
+            }
 
     private fun toTopicUi(
         topic: Topic,
