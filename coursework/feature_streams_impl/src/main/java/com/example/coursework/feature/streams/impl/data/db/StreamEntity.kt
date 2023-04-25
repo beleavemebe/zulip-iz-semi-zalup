@@ -7,4 +7,5 @@ import androidx.room.PrimaryKey
 data class StreamEntity(
     @PrimaryKey val id: Int,
     val name: String,
+    val subscribed: Boolean,
 )
