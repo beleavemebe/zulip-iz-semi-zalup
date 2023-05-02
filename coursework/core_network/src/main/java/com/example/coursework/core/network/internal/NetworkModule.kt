@@ -5,8 +5,6 @@ import android.util.Log
 import androidx.viewbinding.BuildConfig
 import com.example.coursework.core.network.internal.AuthorizationInterceptor
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
-import dagger.Module
-import dagger.Provides
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -14,16 +12,13 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 
-@Module
-object NetworkModule {
-    @Provides
-    fun provideJson(): Json = Json {
+internal object NetworkModule {
+    fun createJson(): Json = Json {
         ignoreUnknownKeys = true
         prettyPrint = BuildConfig.DEBUG
     }
 
-    @Provides
-    fun provideOkHttpClient(): OkHttpClient = OkHttpClient.Builder()
+    fun createOkHttpClient(): OkHttpClient = OkHttpClient.Builder()
         .addInterceptor(AuthorizationInterceptor())
         .addInterceptor(
             HttpLoggingInterceptor { Log.d("http-debug", it) }
@@ -32,8 +27,8 @@ object NetworkModule {
         .build()
 
 
-    @Provides
-    fun provideRetrofit(
+    fun createRetrofit(
+        baseUrl: String,
         okHttpClient: OkHttpClient,
         json: Json,
     ): Retrofit = Retrofit.Builder()
