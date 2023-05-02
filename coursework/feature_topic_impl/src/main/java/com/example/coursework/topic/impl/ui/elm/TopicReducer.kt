@@ -8,8 +8,7 @@ import javax.inject.Inject
 import kotlin.properties.Delegates
 
 @TopicScope
-class TopicReducer @Inject constructor() :
-    DslReducer<TopicEvent, TopicState, TopicEffect, TopicCommand>() {
+class TopicReducer @Inject constructor() : DslReducer<TopicEvent, TopicState, TopicEffect, TopicCommand>() {
     private var stream: Int by Delegates.notNull()
     private var topic: String by Delegates.notNull()
 
@@ -21,10 +20,10 @@ class TopicReducer @Inject constructor() :
             is TopicEvent.Ui.UpdateInputText -> updateInput(event.value)
             is TopicEvent.Ui.LoadPreviousPage -> loadPreviousPage()
             is TopicEvent.Ui.LoadNextPage -> loadNextPage()
-            is TopicEvent.Internal.MessagesLoaded -> showMessages(event.messages)
-            is TopicEvent.Internal.CaughtError -> showError(event.error)
+            is TopicEvent.Internal.MessagesLoaded -> onMessagesLoaded(event)
             is TopicEvent.Internal.PreviousPageLoaded -> onPreviousPageLoaded(event)
             is TopicEvent.Internal.NextPageLoaded -> onNextPageLoaded(event)
+            is TopicEvent.Internal.CaughtError -> showError(event.error)
         }
 
     private fun Result.init(stream: Int, topic: String) {
@@ -146,14 +145,14 @@ class TopicReducer @Inject constructor() :
         }
     }
 
-    private fun Result.loadPreviousPage() = loadPage {
+    private fun Result.loadPreviousPage() = loadPage(unless = state.canLoadOlderMessages.not()) {
         state { copy(items = listOf(LoadingUi) + items) }
         commands {
             +TopicCommand.LoadPreviousPage(stream, topic, state.oldestAnchor)
         }
     }
 
-    private fun Result.loadNextPage() = loadPage {
+    private fun Result.loadNextPage() = loadPage(unless = state.canLoadNewerMessages.not()) {
         state { copy(items = items + LoadingUi) }
         commands {
             +TopicCommand.LoadNextPage(stream, topic, state.newestAnchor)
@@ -161,21 +160,24 @@ class TopicReducer @Inject constructor() :
     }
 
     private inline fun Result.loadPage(
+        unless: Boolean,
         block: Result.() -> Unit,
     ) {
-        if (state.isLoadingPage) return
+        if (unless || state.isLoadingPage) return
         state { copy(isLoadingPage = true) }
         block()
     }
 
-    private fun Result.showMessages(messages: List<MessageUi>) {
+    private fun Result.onMessagesLoaded(event: TopicEvent.Internal.MessagesLoaded) {
         state {
             copy(
-                items = messages.attachDateHeaders(),
-                oldestAnchor = messages.first().id,
-                newestAnchor = messages.last().id,
+                items = event.messages.attachDateHeaders(),
+                oldestAnchor = event.messages.firstOrNull()?.id ?: 0,
+                newestAnchor = event.messages.lastOrNull()?.id ?: 0,
+                canLoadOlderMessages = event.hasReachedOldestMessage.not(),
+                canLoadNewerMessages = event.hasReachedNewestMessage.not(),
                 isLoading = false,
-                error = null
+                error = null,
             )
         }
     }
@@ -191,8 +193,22 @@ class TopicReducer @Inject constructor() :
         if (page.isEmpty()) {
             onEmptyPageLoaded()
         } else {
-            val items = state.items.appendPreviousPage(page)
-            updateItems(items)
+            val hasDroppedNewerMessages: Boolean
+            val messages = page.plus(state.items.filterIsInstance<MessageUi>())
+                .run {
+                    val itemsToDrop = size - VISIBLE_MESSAGES_WINDOW
+                    val needToDropItems = itemsToDrop > 0
+                    hasDroppedNewerMessages = needToDropItems
+                    if (needToDropItems) dropLast(itemsToDrop) else this
+                }
+
+            state {
+                state.setUpdatedMessages(messages)
+                    .copy(
+                        canLoadOlderMessages = event.hasReachedTheEnd.not(),
+                        canLoadNewerMessages = hasDroppedNewerMessages
+                    )
+            }
         }
     }
 
@@ -201,8 +217,22 @@ class TopicReducer @Inject constructor() :
         if (page.isEmpty()) {
             onEmptyPageLoaded()
         } else {
-            val items = state.items.appendNextPage(page)
-            updateItems(items)
+            val hasDroppedOlderMessages: Boolean
+            val messages = state.items.filterIsInstance<MessageUi>().plus(page)
+                .run {
+                    val itemsToDrop = size - VISIBLE_MESSAGES_WINDOW
+                    val needToDropItems = itemsToDrop > 0
+                    hasDroppedOlderMessages = needToDropItems
+                    if (itemsToDrop > 0) drop(itemsToDrop) else this
+                }
+
+            state {
+                state.setUpdatedMessages(messages)
+                    .copy(
+                        canLoadNewerMessages = event.hasReachedTheEnd.not(),
+                        canLoadOlderMessages = hasDroppedOlderMessages
+                    )
+            }
         }
     }
 
@@ -215,32 +245,14 @@ class TopicReducer @Inject constructor() :
         }
     }
 
-    private fun List<TopicItem>.appendPreviousPage(page: List<MessageUi>): List<MessageUi> =
-        page.plus(this.filterIsInstance<MessageUi>())
-            .run {
-                val itemsToDrop = size - VISIBLE_MESSAGES_WINDOW
-                if (itemsToDrop > 0) dropLast(itemsToDrop) else this
-            }
-
-    private fun List<TopicItem>.appendNextPage(page: List<MessageUi>): List<MessageUi> =
-        this.filterIsInstance<MessageUi>().plus(page)
-            .run {
-                val itemsToDrop = size - VISIBLE_MESSAGES_WINDOW
-                if (itemsToDrop > 0) drop(itemsToDrop) else this
-            }
-
-    private fun Result.updateItems(
+    private fun TopicState.setUpdatedMessages(
         items: List<MessageUi>,
-    ) {
-        state {
-            copy(
-                isLoadingPage = false,
-                oldestAnchor = items.first().id,
-                newestAnchor = items.last().id,
-                items = items.attachDateHeaders()
-            )
-        }
-    }
+    ): TopicState = copy(
+        isLoadingPage = false,
+        oldestAnchor = items.first().id,
+        newestAnchor = items.last().id,
+        items = items.attachDateHeaders()
+    )
 
     private fun List<MessageUi>.attachDateHeaders(): List<TopicItem> {
         val messagesByDate = groupBy { msg -> msg.posted.toLocalDate() }.toSortedMap()

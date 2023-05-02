@@ -12,7 +12,9 @@ import retrofit2.create
 @Module(includes = [SharedProfileModule.Bindings::class])
 object SharedProfileModule {
     @Provides
-    fun provideUsersApi(retrofit: Retrofit): UsersApi = retrofit.create()
+    fun provideUsersApi(
+        retrofit: Retrofit
+    ): UsersApi = retrofit.create()
 
     @Module
     interface Bindings {

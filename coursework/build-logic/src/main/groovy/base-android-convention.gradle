@@ -10,7 +10,11 @@ android {
         targetSdk 33
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunnerArguments clearPackageData: 'true'
         consumerProguardFiles "consumer-rules.pro"
+    }
+    testOptions {
+        execution 'ANDROIDX_TEST_ORCHESTRATOR'
     }
 
     buildFeatures {
@@ -28,5 +32,8 @@ android {
     }
     kotlinOptions {
         jvmTarget = '11'
+    }
+    packagingOptions {
+        exclude 'META-INF/*'
     }
 }

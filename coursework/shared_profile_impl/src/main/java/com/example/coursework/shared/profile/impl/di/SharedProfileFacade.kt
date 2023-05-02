@@ -6,7 +6,7 @@ import com.example.shared.profile.api.SharedProfileDeps
 
 object SharedProfileFacade : FeatureFacade<SharedProfileDeps, SharedProfileApi, SharedProfileComponent>() {
     override fun createComponent(deps: SharedProfileDeps): SharedProfileComponent {
-        return DaggerSharedProfileComponent.factory().create(SharedProfileDeps.Stub)
+        return DaggerSharedProfileComponent.factory().create(deps)
     }
 
     override fun createApi(component: SharedProfileComponent, deps: SharedProfileDeps): SharedProfileApi {

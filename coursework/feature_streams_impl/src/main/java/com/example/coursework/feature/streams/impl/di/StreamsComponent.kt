@@ -1,7 +1,6 @@
 package com.example.coursework.feature.streams.impl.di
 
 import com.example.coursework.core.di.DaggerComponent
-import com.example.coursework.core.network.NetworkModule
 import com.example.coursework.feature.streams.impl.ui.StreamsFragment
 import com.example.feature.streams.api.StreamsDeps
 import dagger.Component
@@ -9,7 +8,7 @@ import dagger.Component
 @StreamsScope
 @Component(
     dependencies = [StreamsDeps::class],
-    modules = [NetworkModule::class, StreamsModule::class]
+    modules = [StreamsModule::class]
 )
 interface StreamsComponent : DaggerComponent {
     fun inject(streamsFragment: StreamsFragment)

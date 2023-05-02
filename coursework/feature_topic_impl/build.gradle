@@ -29,4 +29,18 @@ dependencies {
     implementation libs.material
     implementation libs.bundles.elmslie
     implementation libs.cicerone
+
+
+    debugImplementation 'androidx.fragment:fragment-testing:1.5.7'
+    testImplementation "junit:junit:4.13.2"
+    testImplementation "androidx.arch.core:core-testing:2.2.0"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"
+    testImplementation "io.mockk:mockk:1.13.5"
+    androidTestImplementation "io.mockk:mockk-android:1.13.3"
+
+    androidTestImplementation "androidx.test.ext:junit:1.1.5"
+    androidTestImplementation "com.kaspersky.android-components:kaspresso:1.5.1"
+    androidTestImplementation "com.squareup.okhttp3:mockwebserver:4.10.0"
+    androidTestImplementation "androidx.test:runner:1.5.2"
+    androidTestUtil "androidx.test:orchestrator:1.4.2"
 }

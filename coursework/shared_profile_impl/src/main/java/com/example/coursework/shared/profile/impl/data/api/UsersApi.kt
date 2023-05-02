@@ -1,8 +1,6 @@
 package com.example.coursework.shared.profile.impl.data.api
 
 import com.example.coursework.shared.profile.impl.data.model.*
-import retrofit2.Retrofit
-import retrofit2.create
 import retrofit2.http.GET
 import retrofit2.http.Path
 
@@ -25,8 +23,4 @@ interface UsersApi {
 
     @GET("realm/presence")
     suspend fun getPresenceOfAllUsers(): AllUsersPresenceResponse
-
-    companion object {
-        fun create(retrofit: Retrofit) = retrofit.create<UsersApi>()
-    }
 }

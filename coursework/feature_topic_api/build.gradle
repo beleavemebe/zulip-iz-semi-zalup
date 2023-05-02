@@ -11,4 +11,5 @@ dependencies {
     implementation project(":core_di")
     implementation project(":core_db")
     implementation libs.cicerone
+    implementation libs.retrofit
 }

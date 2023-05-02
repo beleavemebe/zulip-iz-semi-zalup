@@ -1,9 +1,8 @@
 @file:OptIn(ExperimentalSerializationApi::class)
-package com.example.coursework.core.network
+package com.example.coursework.core.network.internal
 
 import android.util.Log
 import androidx.viewbinding.BuildConfig
-import com.example.coursework.core.network.internal.AuthorizationInterceptor
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
@@ -33,7 +32,7 @@ internal object NetworkModule {
         json: Json,
     ): Retrofit = Retrofit.Builder()
         .client(okHttpClient)
-        .baseUrl("https://tinkoff-android-spring-2023.zulipchat.com/api/v1/")
+        .baseUrl(baseUrl)
         .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
         .build()
 }

@@ -29,6 +29,7 @@ class StreamsRepositoryImpl @Inject constructor(
             emit(localStreams)
         }
 
+        // TODO cachedOrNull
         val remoteStreams =  if (subscribed) {
             requireNotNull(api.getSubscribedStreams().subscriptions).map(mapper::toStream)
         } else {

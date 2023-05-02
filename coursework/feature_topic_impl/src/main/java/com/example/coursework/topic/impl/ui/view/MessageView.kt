@@ -19,10 +19,10 @@ class MessageView @JvmOverloads constructor(
     defStyleRes: Int = 0,
 ) : ViewGroup(context, attrs, defStyleAttr, defStyleRes) {
     private val ivRightMargin = dp(9f).toInt()
-    private var tvMessageAuthor: TextView
-    private var tvMessageContent: TextView
-    private var ivMessageAuthorPic: ImageView
-    private var fbReactions: FlexBoxLayout
+    private val tvMessageAuthor: TextView by lazy { findViewById(R.id.tvMessageAuthor) }
+    private val tvMessageContent: TextView by lazy { findViewById(R.id.tvMessageContent) }
+    private val ivMessageAuthorPic: ImageView by lazy { findViewById(R.id.ivMessageAuthorPic) }
+    private val fbReactions: FlexBoxLayout by lazy { findViewById(R.id.fbReactions) }
 
     var author: String by uiSensitiveProperty("", ::onAuthorUpdate)
     var message: String by uiSensitiveProperty("", ::onMessageContentUpdate)
@@ -30,11 +30,6 @@ class MessageView @JvmOverloads constructor(
 
     init {
         isClickable = true
-        inflate(context, R.layout.layout_message, this)
-        tvMessageAuthor = findViewById(R.id.tvMessageAuthor)
-        tvMessageContent = findViewById(R.id.tvMessageContent)
-        ivMessageAuthorPic = findViewById(R.id.ivMessageAuthorPic)
-        fbReactions = findViewById(R.id.fbReactions)
     }
 
     private fun onAuthorUpdate(value: String) {

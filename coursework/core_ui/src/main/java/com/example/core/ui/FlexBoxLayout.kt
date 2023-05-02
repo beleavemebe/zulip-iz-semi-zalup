@@ -20,6 +20,7 @@ class FlexBoxLayout @JvmOverloads constructor(
     private val helper: FlexBoxHelper
 
     init {
+        isClickable = true
         val attributes = context.obtainStyledAttributes(attrs, R.styleable.FlexBoxLayout, 0, 0)
         helper = FlexBoxHelper(
             maxWidth = screenWidth,

@@ -42,9 +42,12 @@ class TopicActor @Inject constructor(
                 stream = command.stream,
                 topic = command.topic,
                 forceRemote = fetchCacheFirst.not()
-            ).map { messages ->
-                val messageUis = messages.toMessageUis()
-                TopicEvent.Internal.MessagesLoaded(messageUis)
+            ).map { result ->
+                TopicEvent.Internal.MessagesLoaded(
+                    hasReachedOldestMessage = result.containsOldestMessage,
+                    hasReachedNewestMessage = result.containsNewestMessage,
+                    messages = result.messages.toMessageUis()
+                )
             }
         )
     }
@@ -68,17 +71,27 @@ class TopicActor @Inject constructor(
     }
 
     private fun loadPreviousPage(command: TopicCommand.LoadPreviousPage) = flow {
-        val messages = messageRepository.loadPreviousPage(
+        val result = messageRepository.loadPreviousPage(
             command.stream, command.topic, command.anchorMessageId
-        ).toMessageUis()
-        emit(TopicEvent.Internal.PreviousPageLoaded(messages))
+        )
+        emit(
+            TopicEvent.Internal.PreviousPageLoaded(
+                hasReachedTheEnd = result.containsOldestMessage,
+                messages = result.messages.toMessageUis()
+            )
+        )
     }
 
     private fun loadNextPage(command: TopicCommand.LoadNextPage) = flow {
-        val messages = messageRepository.loadNextPage(
+        val result = messageRepository.loadNextPage(
             command.stream, command.topic, command.anchorMessageId
-        ).toMessageUis()
-        emit(TopicEvent.Internal.NextPageLoaded(messages))
+        )
+        emit(
+            TopicEvent.Internal.NextPageLoaded(
+                hasReachedTheEnd = result.containsNewestMessage,
+                messages = result.messages.toMessageUis()
+            )
+        )
     }
 
     private suspend fun List<Message>.toMessageUis() = map { message ->

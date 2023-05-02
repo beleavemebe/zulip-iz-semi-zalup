@@ -13,9 +13,22 @@ sealed interface TopicEvent {
     }
 
     sealed interface Internal : TopicEvent {
-        data class MessagesLoaded(val messages: List<MessageUi>) : Internal
-        data class PreviousPageLoaded(val messages: List<MessageUi>) : Internal
-        data class NextPageLoaded(val messages: List<MessageUi>) : Internal
+        data class MessagesLoaded(
+            val hasReachedOldestMessage: Boolean,
+            val hasReachedNewestMessage: Boolean,
+            val messages: List<MessageUi>
+        ) : Internal
+
+        data class PreviousPageLoaded(
+            val hasReachedTheEnd: Boolean,
+            val messages: List<MessageUi>
+        ) : Internal
+
+        data class NextPageLoaded(
+            val hasReachedTheEnd: Boolean,
+            val messages: List<MessageUi>
+        ) : Internal
+
         data class CaughtError(val error: Throwable) : Internal
     }
 }

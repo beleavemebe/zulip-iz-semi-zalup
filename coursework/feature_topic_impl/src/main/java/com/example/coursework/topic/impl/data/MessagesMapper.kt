@@ -5,7 +5,9 @@ import com.example.coursework.topic.impl.data.db.MessageWithReactions
 import com.example.coursework.topic.impl.data.db.ReactionEntity
 import com.example.coursework.topic.impl.data.model.dto.MessageDto
 import com.example.coursework.topic.impl.data.model.dto.ReactionDto
+import com.example.coursework.topic.impl.data.model.response.MessagesResponse
 import com.example.coursework.topic.impl.domain.model.Message
+import com.example.coursework.topic.impl.domain.model.MessagesResult
 import com.example.coursework.topic.impl.domain.model.Reaction
 import java.time.LocalDateTime
 import java.time.ZoneOffset
@@ -68,6 +70,16 @@ object MessagesMapper {
             emojiCode = entity.emojiCode,
             emojiName = entity.emojiName,
             userId = entity.userId
+        )
+    }
+
+    fun toResult(topic: String, response: MessagesResponse): MessagesResult {
+        return MessagesResult(
+            containsOldestMessage = response.found_oldest,
+            containsNewestMessage = response.found_newest,
+            messages = response.messages.map { dto ->
+                toMessage(topic, dto)
+            }
         )
     }
 }

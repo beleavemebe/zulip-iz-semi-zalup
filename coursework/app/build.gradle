@@ -24,6 +24,7 @@ dependencies {
     implementation project(":core_di")
     implementation project(":core_db")
     implementation project(":core_ui")
+    implementation project(":core_network")
     implementation libs.viewBindingDelegate
     implementation libs.cicerone
     implementation libs.fragmentKtx

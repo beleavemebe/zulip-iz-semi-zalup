@@ -8,6 +8,9 @@ import com.example.coursework.core.database.di.CoreDbApi
 import com.example.coursework.core.database.di.CoreDbDeps
 import com.example.coursework.core.database.di.CoreDbFacade
 import com.example.coursework.core.di.GlobalCicerone
+import com.example.coursework.core.network.di.CoreNetworkApi
+import com.example.coursework.core.network.di.CoreNetworkDeps
+import com.example.coursework.core.network.di.CoreNetworkFacade
 import com.example.coursework.feature.people.impl.PeopleFacade
 import com.example.coursework.feature.profile.ui.di.ProfileFacade
 import com.example.coursework.feature.streams.impl.StreamsFacade
@@ -31,6 +34,7 @@ import com.github.terrakok.cicerone.Router
 import com.github.terrakok.cicerone.androidx.FragmentScreen
 import dagger.Module
 import dagger.Provides
+import javax.inject.Provider
 
 @Module
 object FeatureGluingModule {
@@ -49,8 +53,12 @@ object FeatureGluingModule {
     }
     
     @Provides
-    fun provideSharedProfileDeps(): SharedProfileDeps {
-        return SharedProfileDeps.Stub
+    fun provideSharedProfileDeps(
+        coreNetworkApi: CoreNetworkApi
+    ): SharedProfileDeps {
+        return object : SharedProfileDeps {
+            override val retrofit = coreNetworkApi.retrofit
+        }
     }
 
     @Provides
@@ -91,16 +99,19 @@ object FeatureGluingModule {
     @Provides
     fun provideStreamsDeps(
         @GlobalCicerone cicerone: Cicerone<Router>,
-        topicDeps: TopicDeps,
+        coreNetworkApi: CoreNetworkApi,
+        topicApiProvider: Provider<TopicApi>,
         coreDbApi: CoreDbApi
     ): StreamsDeps {
         return object : StreamsDeps {
+            override val retrofit = coreNetworkApi.retrofit
+
             override val globalCicerone = cicerone
 
             override val daoProvider = coreDbApi.daoProvider
 
             override fun getTopicScreen(stream: Int, topic: String): FragmentScreen =
-                provideTopicApi(topicDeps).getTopicScreen(stream, topic)
+                topicApiProvider.get().getTopicScreen(stream, topic)
         }
     }
 
@@ -161,5 +172,19 @@ object FeatureGluingModule {
         deps: CoreDbDeps
     ): CoreDbApi {
         return CoreDbFacade.init(deps).api
+    }
+
+    @Provides
+    fun provideCoreNetworkDeps(
+        appComponent: AppComponent
+    ): CoreNetworkDeps {
+        return CoreNetworkDeps()
+    }
+
+    @Provides
+    fun provideCoreNetworkApi(
+        coreNetworkDeps: CoreNetworkDeps
+    ): CoreNetworkApi {
+        return CoreNetworkFacade.init(coreNetworkDeps).api
     }
 }

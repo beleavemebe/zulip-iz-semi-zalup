@@ -1,6 +1,6 @@
 package com.example.coursework.topic.impl.domain
 
-import com.example.coursework.topic.impl.domain.model.Message
+import com.example.coursework.topic.impl.domain.model.MessagesResult
 import kotlinx.coroutines.flow.Flow
 
 interface MessageRepository {
@@ -8,19 +8,19 @@ interface MessageRepository {
         stream: Int,
         topic: String,
         forceRemote: Boolean = false
-    ): Flow<List<Message>>
+    ): Flow<MessagesResult>
 
     suspend fun loadPreviousPage(
         stream: Int,
         topic: String,
         anchor: Int,
-    ): List<Message>
+    ): MessagesResult
 
     suspend fun loadNextPage(
         stream: Int,
         topic: String,
         anchor: Int,
-    ): List<Message>
+    ): MessagesResult
 
     suspend fun sendReaction(
         messageId: Int,

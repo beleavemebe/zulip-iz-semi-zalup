@@ -3,6 +3,7 @@ package com.example.coursework.topic.impl.ui
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.VisibleForTesting
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
@@ -145,11 +146,13 @@ class TopicFragment : ElmFragment<TopicEvent, TopicEffect, TopicState>(R.layout.
         private const val KEY_STREAM = "KEY_STREAM"
         private const val KEY_TOPIC = "KEY_TOPIC"
 
+        @VisibleForTesting
+        fun createArguments(stream: Int, topic: String) = bundleOf(
+            KEY_STREAM to stream, KEY_TOPIC to topic
+        )
+
         fun newInstance(stream: Int, topic: String) = TopicFragment().apply {
-            arguments = bundleOf(
-                KEY_STREAM to stream,
-                KEY_TOPIC to topic
-            )
+            arguments = createArguments(stream, topic)
         }
     }
 }

@@ -27,11 +27,19 @@ abstract class FeatureFacade<Deps : BaseDeps, Api : BaseApi, Component : DaggerC
         get() = notNull(_component)
 
     fun init(deps: Deps): FeatureFacade<Deps, Api, Component> {
-        if (_component == null) {
-            _deps = deps
-            _component = createComponent(deps)
-            _api = createApi(component, deps)
-        }
+        val component = createComponent(deps)
+        val api = createApi(component, deps)
+        return init(deps, api, component)
+    }
+
+    fun init(
+        deps: Deps,
+        api: Api,
+        component: Component,
+    ): FeatureFacade<Deps, Api, Component> {
+        if (_deps == null) _deps = deps
+        if (_api == null) _api = api
+        if (_component == null) _component = component
         return this
     }
 

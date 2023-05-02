@@ -8,6 +8,7 @@ import android.graphics.Rect
 import android.text.TextPaint
 import android.util.AttributeSet
 import android.view.View
+import androidx.annotation.VisibleForTesting
 import com.example.core.ui.HighlightOnPressBackground
 import com.example.core.ui.dp
 import com.example.core.ui.sp
@@ -25,7 +26,9 @@ class EmoteReactionView @JvmOverloads constructor(
         private set
 
     private var reactionCount = ""
-    private var pressed = false
+    @VisibleForTesting
+    var pressed = false
+        private set
 
     private val padding = dp(9f)
 

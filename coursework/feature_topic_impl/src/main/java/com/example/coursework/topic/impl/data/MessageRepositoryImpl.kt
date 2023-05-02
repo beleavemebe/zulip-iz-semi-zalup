@@ -5,6 +5,7 @@ import com.example.coursework.topic.impl.data.db.TopicDao
 import com.example.coursework.topic.impl.data.model.Narrow
 import com.example.coursework.topic.impl.domain.MessageRepository
 import com.example.coursework.topic.impl.domain.model.Message
+import com.example.coursework.topic.impl.domain.model.MessagesResult
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -20,17 +21,17 @@ class MessageRepositoryImpl @Inject constructor(
         stream: Int,
         topic: String,
         forceRemote: Boolean
-    ): Flow<List<Message>> = flow {
+    ): Flow<MessagesResult> = flow {
         if (forceRemote.not()) {
             val localMessages = dao.getCachedMessages(topic).map(MessagesMapper::toMessage)
             if (localMessages.isNotEmpty()) {
-                emit(localMessages)
+                emit(MessagesResult(messages = localMessages))
             }
         }
 
-        val remoteMessages = loadNewestMessages(stream, topic)
-        emit(remoteMessages)
-        writeMessagesToDb(topic, remoteMessages)
+        val remoteMessagesResult = loadNewestMessages(stream, topic)
+        emit(remoteMessagesResult)
+        writeMessagesToDb(topic, remoteMessagesResult.messages)
     }
 
     private suspend fun writeMessagesToDb(topic: String, messages: List<Message>) {
@@ -52,27 +53,29 @@ class MessageRepositoryImpl @Inject constructor(
     private suspend fun loadNewestMessages(
         stream: Int,
         topic: String,
-    ) = api.getMessages(
-        anchor = "newest",
-        numBefore = PRELOADED_AMOUNT,
-        numAfter = 0,
-        narrow = getNarrowJson(stream, topic)
-    ).messages.map { dto ->
-        MessagesMapper.toMessage(topic, dto)
+    ): MessagesResult {
+        return api.getMessages(
+            anchor = "newest",
+            numBefore = PRELOADED_AMOUNT,
+            numAfter = 0,
+            narrow = getNarrowJson(stream, topic)
+        ).let { response ->
+            MessagesMapper.toResult(topic, response)
+        }
     }
 
     override suspend fun loadPreviousPage(
         stream: Int,
         topic: String,
         anchor: Int,
-    ): List<Message> {
+    ): MessagesResult {
         return api.getMessages(
             anchor = anchor,
             numBefore = PAGE_SIZE,
             numAfter = 0,
             narrow = getNarrowJson(stream, topic)
-        ).messages.map { dto ->
-            MessagesMapper.toMessage(topic, dto)
+        ).let { response ->
+            MessagesMapper.toResult(topic, response)
         }
     }
 
@@ -80,14 +83,14 @@ class MessageRepositoryImpl @Inject constructor(
         stream: Int,
         topic: String,
         anchor: Int,
-    ): List<Message> {
+    ): MessagesResult {
         return api.getMessages(
             anchor = anchor,
             numBefore = 0,
             numAfter = PAGE_SIZE,
             narrow = getNarrowJson(stream, topic)
-        ).messages.map {
-            dto -> MessagesMapper.toMessage(topic, dto)
+        ).let { response ->
+            MessagesMapper.toResult(topic, response)
         }
     }
 

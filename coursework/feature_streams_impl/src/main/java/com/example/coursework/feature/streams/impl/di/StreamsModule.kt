@@ -14,7 +14,9 @@ import retrofit2.create
 @Module(includes = [StreamsModule.Bindings::class])
 object StreamsModule {
     @Provides
-    fun provideStreamsApi(retrofit: Retrofit): StreamsApi = retrofit.create()
+    fun provideStreamsApi(
+        retrofit: Retrofit
+    ): StreamsApi = retrofit.create()
 
     @Provides
     fun provideStreamsDao(

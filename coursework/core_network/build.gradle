@@ -8,6 +8,7 @@ android {
 }
 
 dependencies {
+    implementation project(":core_di")
     api libs.okhttp
     api libs.retrofit
     api libs.kotlinx.serialization.json

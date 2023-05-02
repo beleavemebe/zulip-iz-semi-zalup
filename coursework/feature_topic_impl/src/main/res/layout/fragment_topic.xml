@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:background="@color/design_default_color_error"
         android:paddingVertical="4dp"
-        android:textAlignment="center"
+        android:gravity="center"
         android:visibility="gone" />
 
     <FrameLayout
