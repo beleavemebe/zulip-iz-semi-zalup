@@ -31,6 +31,10 @@ class TopicViewModel(
         store.accept(TopicEvent.Ui.LoadNextPage)
     }
 
+    fun goBack() {
+        store.accept(TopicEvent.Ui.ClickGoBack)
+    }
+
     override fun onCleared() {
         super.onCleared()
         TopicFacade.clear()

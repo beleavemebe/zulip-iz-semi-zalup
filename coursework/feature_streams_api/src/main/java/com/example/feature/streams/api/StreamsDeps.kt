@@ -12,5 +12,9 @@ interface StreamsDeps : BaseDeps {
     val globalCicerone: Cicerone<Router>
     val daoProvider: DaoProvider
 
-    fun getTopicScreen(stream: Int, topic: String): FragmentScreen
+    fun getTopicScreen(
+        streamId: Int,
+        stream: String,
+        topic: String
+    ): FragmentScreen
 }

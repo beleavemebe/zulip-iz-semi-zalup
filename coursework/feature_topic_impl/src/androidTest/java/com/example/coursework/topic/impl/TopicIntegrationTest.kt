@@ -3,7 +3,6 @@ package com.example.coursework.topic.impl
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.core.ui.FlexBoxLayout
-import com.example.coursework.core.database.DaoProvider
 import com.example.coursework.core.network.di.CoreNetworkDeps
 import com.example.coursework.core.network.di.CoreNetworkFacade
 import com.example.coursework.topic.impl.data.db.TopicDao
@@ -12,7 +11,6 @@ import com.example.coursework.topic.impl.ui.view.EmoteReactionView
 import com.example.feature.topic.api.TopicDeps
 import com.example.shared.profile.api.domain.User
 import com.example.shared.profile.api.domain.UserPresence
-import com.example.shared.profile.api.domain.usecase.GetCurrentUser
 import com.kaspersky.kaspresso.testcases.api.testcase.TestCase
 import io.mockk.coEvery
 import io.mockk.every
@@ -30,19 +28,14 @@ class TopicIntegrationTest : TestCase() {
     @get:Rule
     val mockWebServer = MockWebServer()
 
-//    @JvmField
-//    @RegisterExtension
-//    val executorExtension = MockBackgroundExecutorExtension()
-
     @Before
     fun before() {
         TopicFacade.init(
-            object : TopicDeps {
-                override val retrofit = CoreNetworkFacade.init(
+            TopicDeps(
+                retrofit = CoreNetworkFacade.init(
                     deps = CoreNetworkDeps(mockWebServer.url("/").toString())
-                ).api.retrofit
-
-                override val getCurrentUser = mockk<GetCurrentUser> {
+                ).api.retrofit,
+                getCurrentUser = mockk {
                     coEvery { execute() } returns User(
                         id = 604397,
                         name = "Roman Shemanovskii",
@@ -50,16 +43,16 @@ class TopicIntegrationTest : TestCase() {
                         presence = UserPresence.ACTIVE,
                         imageUrl = "https://zulip-avatars.s3.amazonaws.com/54137/8701cd432f4a3a44a9439f1e5213f2206115887e?version=2"
                     )
-                }
-
-                override val daoProvider = mockk<DaoProvider> {
+                },
+                daoProvider = mockk {
                     val topicDaoMock = mockk<TopicDao>(relaxUnitFun = true) {
                         coEvery { getCachedMessages(any()) } returns emptyList()
                     }
 
                     every { get(TopicDao::class) } returns topicDaoMock
-                }
-            }
+                },
+                globalCicerone = mockk()
+            )
         )
     }
 
@@ -85,8 +78,8 @@ class TopicIntegrationTest : TestCase() {
             }
         }
 
-        val scenario = launchFragmentInContainer<TopicFragment>(
-            fragmentArgs = TopicFragment.createArguments(379888, "general"),
+        launchFragmentInContainer<TopicFragment>(
+            fragmentArgs = TopicFragment.createArguments(379888, "general", "general"),
             themeResId = com.google.android.material.R.style.Theme_MaterialComponents_DayNight_NoActionBar
         )
 
@@ -190,7 +183,7 @@ class TopicIntegrationTest : TestCase() {
         }
 
         launchFragmentInContainer<TopicFragment>(
-            fragmentArgs = TopicFragment.createArguments(379888, "general"),
+            fragmentArgs = TopicFragment.createArguments(379888, "general", "general"),
             themeResId = com.google.android.material.R.style.Theme_MaterialComponents_DayNight_NoActionBar
         )
 
@@ -211,7 +204,7 @@ class TopicIntegrationTest : TestCase() {
         }
 
         launchFragmentInContainer<TopicFragment>(
-            fragmentArgs = TopicFragment.createArguments(379888, "general"),
+            fragmentArgs = TopicFragment.createArguments(379888, "general", "general"),
             themeResId = com.google.android.material.R.style.Theme_MaterialComponents_DayNight_NoActionBar
         )
 

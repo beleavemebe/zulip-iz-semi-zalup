@@ -34,7 +34,8 @@ import vivid.money.elmslie.android.storeholder.LifecycleAwareStoreHolder
 import javax.inject.Inject
 
 class TopicFragment : ElmFragment<TopicEvent, TopicEffect, TopicState>(R.layout.fragment_topic) {
-    private val stream: Int by argument(KEY_STREAM)
+    private val streamId: Int by argument(KEY_STREAM_ID)
+    private val stream: String by argument(KEY_STREAM)
     private val topic: String by argument(KEY_TOPIC)
 
     @Inject lateinit var storeFactory: TopicStoreFactory
@@ -55,7 +56,7 @@ class TopicFragment : ElmFragment<TopicEvent, TopicEffect, TopicState>(R.layout.
     }
 
     override val initEvent by lazy {
-        TopicEvent.Ui.Init(stream, topic)
+        TopicEvent.Ui.Init(streamId, topic)
     }
 
     override fun onAttach(context: Context) {
@@ -65,9 +66,16 @@ class TopicFragment : ElmFragment<TopicEvent, TopicEffect, TopicState>(R.layout.
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initToolbar()
         initEditText()
         initSendButton()
         initRecycler()
+    }
+
+    private fun initToolbar() {
+        binding.toolbar.title = stream
+        binding.toolbar.setNavigationOnClickListener { viewModel.goBack() }
+        binding.tvTopic.text = getString(R.string.placeholder_topic, topic)
     }
 
     private fun initEditText() {
@@ -143,16 +151,19 @@ class TopicFragment : ElmFragment<TopicEvent, TopicEffect, TopicState>(R.layout.
     }
 
     companion object {
+        private const val KEY_STREAM_ID = "KEY_STREAM_ID"
         private const val KEY_STREAM = "KEY_STREAM"
         private const val KEY_TOPIC = "KEY_TOPIC"
 
         @VisibleForTesting
-        fun createArguments(stream: Int, topic: String) = bundleOf(
-            KEY_STREAM to stream, KEY_TOPIC to topic
+        fun createArguments(streamId: Int, stream: String, topic: String) = bundleOf(
+            KEY_STREAM_ID to streamId,
+            KEY_STREAM to stream,
+            KEY_TOPIC to topic
         )
 
-        fun newInstance(stream: Int, topic: String) = TopicFragment().apply {
-            arguments = createArguments(stream, topic)
+        fun newInstance(streamId: Int, stream: String, topic: String) = TopicFragment().apply {
+            arguments = createArguments(streamId, stream, topic)
         }
     }
 }

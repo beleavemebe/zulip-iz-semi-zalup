@@ -68,23 +68,22 @@ class StreamsReducer @Inject constructor(
     ) {
         val items = state.items
         val iofStreamUi = items.indexOf(event.streamUi)
-        var iofNextStreamUi = iofStreamUi + 1
-        while (items.getOrNull(iofNextStreamUi) !is StreamUi) {
-            if (items.getOrNull(iofNextStreamUi) == null) break
-            iofNextStreamUi++
-        }
-        val newItems = items.slice(0..iofStreamUi) +
-                items.slice(iofNextStreamUi..items.lastIndex)
 
+        var iofNextStream = iofStreamUi + 1
+        while (items.getOrNull(iofNextStream) !is StreamUi) {
+            if (items.getOrNull(iofNextStream) == null) break
+            iofNextStream++
+        }
+
+        val itemsBeforeStream = items.slice(0 until iofStreamUi)
+        val itemsAfterStream = items.slice(iofNextStream..items.lastIndex)
         state {
-            copy(items = newItems)
+            copy(items = itemsBeforeStream + event.streamUi.copy(isExpanded = false) + itemsAfterStream)
         }
-
-        event.streamUi.isExpanded = false
     }
 
-    private fun goToTopic(event: StreamsEvent.Ui.ClickTopic) {
-        val screen = deps.getTopicScreen(event.topicUi.streamId, event.topicUi.name)
+    private fun Result.goToTopic(event: StreamsEvent.Ui.ClickTopic) {
+        val screen = deps.getTopicScreen(event.topicUi.streamId, event.topicUi.stream, event.topicUi.name)
         deps.globalCicerone.router.navigateTo(screen)
     }
 
@@ -104,17 +103,23 @@ class StreamsReducer @Inject constructor(
         event: StreamsEvent.Internal.TopicsLoaded,
     ) {
         val oldItems = state.items
-        val iofChannel = oldItems.indexOf(event.streamUi)
-        val newItems =
-            oldItems.slice(0 until iofChannel) +
-                    event.streamUi + event.topicUis +
-                    oldItems.slice(iofChannel + 1 until oldItems.size)
-
-        state {
-            copy(items = newItems)
+        val iofStream = oldItems.indexOfFirst { item ->
+            item is StreamUi && item.id == event.streamUi.id
         }
 
-        event.streamUi.isExpanded = true
+        var iofNextStream = iofStream + 1
+        while (oldItems.getOrNull(iofNextStream) !is StreamUi) {
+            if (oldItems.getOrNull(iofNextStream) == null) break
+            iofNextStream++
+        }
+
+        val itemsBeforeStream = oldItems.slice(0 until iofStream)
+        val expandedStreamWithTopics = listOf(event.streamUi.copy(isExpanded = true)) + event.topicUis
+        val itemsAfterStream = oldItems.slice(iofNextStream until oldItems.size)
+
+        state {
+            copy(items = itemsBeforeStream + expandedStreamWithTopics + itemsAfterStream)
+        }
     }
 
     private fun Result.showError(

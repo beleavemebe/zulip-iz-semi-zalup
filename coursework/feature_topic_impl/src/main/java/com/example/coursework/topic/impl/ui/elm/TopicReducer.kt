@@ -3,12 +3,16 @@ package com.example.coursework.topic.impl.ui.elm
 import com.example.coursework.topic.impl.di.TopicScope
 import com.example.coursework.topic.impl.ui.model.*
 import com.example.coursework.topic.impl.util.emojis
+import com.github.terrakok.cicerone.Cicerone
+import com.github.terrakok.cicerone.Router
 import vivid.money.elmslie.core.store.dsl_reducer.DslReducer
 import javax.inject.Inject
 import kotlin.properties.Delegates
 
 @TopicScope
-class TopicReducer @Inject constructor() : DslReducer<TopicEvent, TopicState, TopicEffect, TopicCommand>() {
+class TopicReducer @Inject constructor(
+    private val cicerone: Cicerone<Router>
+) : DslReducer<TopicEvent, TopicState, TopicEffect, TopicCommand>() {
     private var stream: Int by Delegates.notNull()
     private var topic: String by Delegates.notNull()
 
@@ -20,6 +24,7 @@ class TopicReducer @Inject constructor() : DslReducer<TopicEvent, TopicState, To
             is TopicEvent.Ui.UpdateInputText -> updateInput(event.value)
             is TopicEvent.Ui.LoadPreviousPage -> loadPreviousPage()
             is TopicEvent.Ui.LoadNextPage -> loadNextPage()
+            is TopicEvent.Ui.ClickGoBack -> goBack()
             is TopicEvent.Internal.MessagesLoaded -> onMessagesLoaded(event)
             is TopicEvent.Internal.PreviousPageLoaded -> onPreviousPageLoaded(event)
             is TopicEvent.Internal.NextPageLoaded -> onNextPageLoaded(event)
@@ -166,6 +171,10 @@ class TopicReducer @Inject constructor() : DslReducer<TopicEvent, TopicState, To
         if (unless || state.isLoadingPage) return
         state { copy(isLoadingPage = true) }
         block()
+    }
+
+    private fun Result.goBack() {
+        cicerone.router.backTo(null)
     }
 
     private fun Result.onMessagesLoaded(event: TopicEvent.Internal.MessagesLoaded) {

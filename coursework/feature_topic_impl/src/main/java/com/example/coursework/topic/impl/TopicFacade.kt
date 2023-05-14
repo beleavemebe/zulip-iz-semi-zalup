@@ -16,10 +16,11 @@ object TopicFacade : FeatureFacade<TopicDeps, TopicApi, TopicComponent>() {
     override fun createApi(component: TopicComponent, deps: TopicDeps): TopicApi {
         return object : TopicApi {
             override fun getTopicScreen(
-                stream: Int,
+                streamId: Int,
+                stream: String,
                 topic: String,
             ) = FragmentScreen {
-                TopicFragment.newInstance(stream, topic)
+                TopicFragment.newInstance(streamId, stream, topic)
             }
         }
     }

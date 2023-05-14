@@ -65,7 +65,38 @@ class MessageView @JvmOverloads constructor(
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        measureChildren(widthMeasureSpec, heightMeasureSpec)
+
+        measureChildWithMargins(
+            ivMessageAuthorPic,
+            widthMeasureSpec,
+            0,
+            heightMeasureSpec,
+            0
+        )
+
+        measureChildWithMargins(
+            tvMessageAuthor,
+            widthMeasureSpec,
+            ivMessageAuthorPic.measuredWidth,
+            heightMeasureSpec,
+            0
+        )
+        measureChildWithMargins(
+            tvMessageContent,
+            widthMeasureSpec,
+            ivMessageAuthorPic.measuredWidth,
+            heightMeasureSpec,
+            tvMessageAuthor.measuredHeight
+        )
+        measureChildWithMargins(
+            fbReactions,
+            widthMeasureSpec,
+            ivMessageAuthorPic.measuredWidth,
+            heightMeasureSpec,
+            tvMessageAuthor.measuredHeight + tvMessageContent.measuredHeight
+        )
+
+
         val width = View.getDefaultSize(calcWidth(), widthMeasureSpec)
         val height = calcHeight()
         setMeasuredDimension(width, height)
@@ -141,4 +172,15 @@ class MessageView @JvmOverloads constructor(
             top + fbReactions.measuredHeight
         )
     }
+
+
+    override fun generateDefaultLayoutParams(): LayoutParams = MarginLayoutParams(
+        LayoutParams.MATCH_PARENT,
+        LayoutParams.WRAP_CONTENT
+    )
+
+    override fun generateLayoutParams(attrs: AttributeSet?): LayoutParams = MarginLayoutParams(context, attrs)
+
+    override fun generateLayoutParams(p: LayoutParams?): LayoutParams = MarginLayoutParams(p)
+
 }

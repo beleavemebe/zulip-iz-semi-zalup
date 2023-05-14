@@ -3,4 +3,5 @@
     <string name="hint_message_input_field">Написать…</string>
     <string name="desc_send_message">Отправить сообщение</string>
     <string name="add_new_reaction">Добавить новую реакцию</string>
+    <string name="placeholder_topic">Topic: %1$s</string>
 </resources>

@@ -7,6 +7,7 @@ sealed interface TopicEvent {
         data class Init(val stream: Int, val topic: String) : Ui
         data class ToggleReaction(val messageUi: MessageUi, val emoteName: String) : Ui
         data class UpdateInputText(val value: String) : Ui
+        object ClickGoBack : Ui
         object ClickSendMessage : Ui
         object LoadPreviousPage : TopicEvent
         object LoadNextPage : TopicEvent

@@ -4,6 +4,7 @@ import android.content.Context
 import com.example.coursework.app.database.di.AppDbApi
 import com.example.coursework.app.database.di.AppDbDeps
 import com.example.coursework.app.database.di.AppDbFacade
+import com.example.coursework.core.database.DaoProvider
 import com.example.coursework.core.database.di.CoreDbApi
 import com.example.coursework.core.database.di.CoreDbDeps
 import com.example.coursework.core.database.di.CoreDbFacade
@@ -29,20 +30,25 @@ import com.example.feature.topic.api.TopicApi
 import com.example.feature.topic.api.TopicDeps
 import com.example.shared.profile.api.SharedProfileApi
 import com.example.shared.profile.api.SharedProfileDeps
+import com.example.shared.profile.api.domain.usecase.GetCurrentUser
 import com.github.terrakok.cicerone.Cicerone
 import com.github.terrakok.cicerone.Router
 import com.github.terrakok.cicerone.androidx.FragmentScreen
 import dagger.Module
 import dagger.Provides
+import retrofit2.Retrofit
 import javax.inject.Provider
 
 @Module
 object FeatureGluingModule {
     @Provides
     fun provideTopicDeps(
-        appComponent: AppComponent
+        retrofit: Retrofit,
+        getCurrentUser: GetCurrentUser,
+        daoProvider: DaoProvider,
+        @GlobalCicerone globalCicerone: Cicerone<Router>
     ): TopicDeps {
-        return appComponent
+        return TopicDeps(retrofit, getCurrentUser, daoProvider, globalCicerone)
     }
 
     @Provides
@@ -110,8 +116,8 @@ object FeatureGluingModule {
 
             override val daoProvider = coreDbApi.daoProvider
 
-            override fun getTopicScreen(stream: Int, topic: String): FragmentScreen =
-                topicApiProvider.get().getTopicScreen(stream, topic)
+            override fun getTopicScreen(streamId: Int, stream: String, topic: String): FragmentScreen =
+                topicApiProvider.get().getTopicScreen(streamId, stream, topic)
         }
     }
 
@@ -175,9 +181,7 @@ object FeatureGluingModule {
     }
 
     @Provides
-    fun provideCoreNetworkDeps(
-        appComponent: AppComponent
-    ): CoreNetworkDeps {
+    fun provideCoreNetworkDeps(): CoreNetworkDeps {
         return CoreNetworkDeps()
     }
 

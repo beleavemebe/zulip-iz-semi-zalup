@@ -63,9 +63,12 @@ class StreamsFragment : ElmFragment<StreamsEvent, StreamsEffect, StreamsState>(R
     }
 
     private fun initRecycler() {
-        recycler = TiRecyclerCoroutines<StreamsItem>(
+        recycler = TiRecyclerCoroutines(
             binding.rvChannels,
-            AsyncTiAdapter(StreamsViewHolderFactory(), ViewTypedDiffCallback())
+            AsyncTiAdapter(
+                StreamsViewHolderFactory(),
+                ViewTypedDiffCallback(StreamsItem.payloadMappers)
+            )
         ).apply(::handleClicks)
     }
 

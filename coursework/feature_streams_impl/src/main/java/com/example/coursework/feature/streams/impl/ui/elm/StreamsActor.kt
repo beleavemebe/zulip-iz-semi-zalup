@@ -55,7 +55,7 @@ class StreamsActor @Inject constructor(
         stream: Stream,
     ) = StreamUi(
         id = stream.id,
-        tag = stream.name,
+        name = stream.name,
         isExpanded = false,
     )
 
@@ -63,7 +63,7 @@ class StreamsActor @Inject constructor(
         query: String,
         streams: List<StreamUi>,
     ): List<StreamUi> = streams.filter { streamUi ->
-        query.lowercase() in streamUi.tag.lowercase()
+        query.lowercase() in streamUi.name.lowercase()
     }
 
     private fun loadTopics(command: StreamsCommand.LoadTopics) = flow {
@@ -79,15 +79,17 @@ class StreamsActor @Inject constructor(
         streamsRepository.getTopics(command.streamUi.id)
             .map { topicList ->
                 topicList.map { topic ->
-                    toTopicUi(topic, command.streamUi.id)
+                    toTopicUi(topic, command.streamUi.name, command.streamUi.id)
                 }
             }
 
     private fun toTopicUi(
         topic: Topic,
+        stream: String,
         streamId: Int,
     ) = TopicUi(
         streamId = streamId,
+        stream = stream,
         name = topic.name,
         color = topic.color
     )

@@ -4,7 +4,6 @@ import android.content.Context
 import com.example.coursework.app.MainActivity
 import com.example.feature.people.api.PeopleDeps
 import com.example.feature.profile.api.ProfileDeps
-import com.example.feature.topic.api.TopicDeps
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton
@@ -13,7 +12,7 @@ import javax.inject.Singleton
 @Component(
     modules = [FeatureGluingModule::class, ApiUnpackingModule::class, RoutersModule::class]
 )
-interface AppComponent : ProfileDeps, PeopleDeps, TopicDeps {
+interface AppComponent : ProfileDeps, PeopleDeps {
     fun inject(mainActivity: MainActivity)
 
     @Component.Factory

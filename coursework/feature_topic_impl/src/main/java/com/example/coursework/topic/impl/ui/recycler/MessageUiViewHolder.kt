@@ -18,7 +18,6 @@ class MessageUiViewHolder(
 ) : BaseViewHolder<MessageUi>(view, longClicks) {
     private val binding = LayoutMessageBinding.bind(view)
 
-
     @Suppress("UNCHECKED_CAST")
     override fun bind(item: MessageUi, payload: List<Any>) {
         val reactionsPayload = payload.getOrNull(0) as? List<ReactionUi>

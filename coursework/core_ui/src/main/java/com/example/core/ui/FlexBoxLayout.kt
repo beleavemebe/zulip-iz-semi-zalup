@@ -40,15 +40,16 @@ class FlexBoxLayout @JvmOverloads constructor(
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+        helper.maxWidth = MeasureSpec.getSize(widthMeasureSpec)
         measureChildren(widthMeasureSpec, heightMeasureSpec)
         helper.updateModel(model, childCount, ::getChildAt)
-        setMeasuredDimension(model.width, model.height)
+        setMeasuredDimension(resolveSize(model.width, widthMeasureSpec), model.height)
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
         model.children.forEach { child ->
             with(child) {
-                view.layout(left, top, left + view.measuredWidth, top + view.measuredWidth)
+                view.layout(left, top, left + view.measuredWidth, top + view.measuredHeight)
             }
         }
     }
@@ -63,7 +64,7 @@ internal class FlexBoxModel(
 internal class FlexBoxChild(val left: Int, val top: Int, val view: View)
 
 internal class FlexBoxHelper(
-    private val maxWidth: Int,
+    var maxWidth: Int,
     private val verticalSpacing: Int,
     private val horizontalSpacing: Int,
     private val paddingLeft: Int,

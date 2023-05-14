@@ -8,6 +8,26 @@
     android:background="#121212"
     android:orientation="vertical">
 
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/accent"
+        app:titleTextColor="@color/text_primary"
+        app:navigationIcon="@drawable/ic_back"
+        app:navigationIconTint="@color/tint_primary"
+        />
+
+    <TextView
+        android:id="@+id/tvTopic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/neutral_40"
+        android:textColor="@color/text_secondary"
+        android:textAppearance="@style/Text.Headline4"
+        android:paddingVertical="4dp"
+        android:gravity="center" />
+
     <TextView
         android:id="@+id/tvError"
         android:layout_width="match_parent"

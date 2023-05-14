@@ -4,6 +4,7 @@ import com.example.coursework.feature.streams.R
 
 data class TopicUi(
     val streamId: Int,
+    val stream: String,
     val name: String,
     val color: Int,
 ) : StreamsItem {
