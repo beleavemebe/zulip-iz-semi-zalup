@@ -267,7 +267,7 @@ class TopicReducer @Inject constructor() : DslReducer<TopicEvent, TopicState, To
     }
 
     companion object {
-        private const val VISIBLE_MESSAGES_WINDOW = 80
+        private const val VISIBLE_MESSAGES_WINDOW = 150
     }
 }
 

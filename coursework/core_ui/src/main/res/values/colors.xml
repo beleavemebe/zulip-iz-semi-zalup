@@ -12,4 +12,8 @@
     <color name="active">#4AB54D</color>
     <color name="idle">#FFC107</color>
     <color name="offline">#00FFFFFF</color>
+
+    <color name="text_primary">@color/white</color>
+    <color name="text_secondary">#99FFFFFF</color>
+    <color name="tint_primary">@color/white</color>
 </resources>

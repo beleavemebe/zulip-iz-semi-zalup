@@ -17,8 +17,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/neutral_50"
-            app:menu="@menu/menu_fragment_channels"
-            app:title="@string/users" />
+            app:menu="@menu/menu_fragment_people"
+            app:title="@string/users"
+            app:titleTextColor="@color/text_primary" />
 
         <TextView
             android:id="@+id/tvError"

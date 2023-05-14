@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Text" parent="TextAppearance.AppCompat" />
+    <style name="AutoCompleteText" parent="Widget.AppCompat.AutoCompleteTextView">
+        <item name="android:textColorHint">@color/text_secondary</item>
+        <item name="android:textColor">@color/text_primary</item>
+    </style>
+
+    <style name="Text" parent="TextAppearance.AppCompat">
+        <item name="android:textColorHint">@color/text_secondary</item>
+        <item name="android:textColor">@color/text_primary</item>
+    </style>
 
     <style name="Text.Headline1">
         <item name="android:textSize">32sp</item>

@@ -2,6 +2,6 @@
 <resources>
     <string name="subscribed">Subscribed</string>
     <string name="all_streams">All streams</string>
-    <string name="find_channels">Find channels</string>
+    <string name="find_streams">Find streams</string>
     <string name="streams">Streams</string>
 </resources>

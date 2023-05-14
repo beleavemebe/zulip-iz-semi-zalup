@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/menu_item_search"
-        android:icon="@android:drawable/ic_menu_search"
-        android:title="@string/find_channels"
+        android:icon="@drawable/ic_search_24"
+        android:title="@string/find_streams"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="ifRoom" />
 </menu>

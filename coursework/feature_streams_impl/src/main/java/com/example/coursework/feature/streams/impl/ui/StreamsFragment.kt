@@ -83,7 +83,7 @@ class StreamsFragment : ElmFragment<StreamsEvent, StreamsEffect, StreamsState>(R
         val searchView = binding.toolbar.menu.findItem(R.id.menu_item_search)
             .actionView as SearchView
         searchView.maxWidth = Int.MAX_VALUE
-        searchView.queryHint = getString(R.string.find_channels)
+        searchView.queryHint = getString(R.string.find_streams)
         searchView.doOnQueryChanged { query ->
             viewModel.searchQuery.value = query
         }
