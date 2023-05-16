@@ -6,8 +6,9 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/ivProfileImage"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Coursework"
         android:layout_width="180dp"
         android:layout_height="180dp"
         android:layout_marginTop="40dp"

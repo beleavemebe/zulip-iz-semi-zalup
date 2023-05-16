@@ -2,6 +2,7 @@
 
 package com.example.coursework.feature.streams.impl.ui
 
+import androidx.lifecycle.viewModelScope
 import com.example.core.ui.base.BaseViewModel
 import com.example.coursework.feature.streams.impl.StreamsFacade
 import com.example.coursework.feature.streams.impl.ui.elm.StreamsEvent
@@ -30,7 +31,7 @@ class StreamsViewModel(
             .debounce(250L)
             .mapLatest(StreamsEvent.Ui::UpdateSearchQuery)
             .onEach(store::accept)
-            .launchIn(coroutineScope)
+            .launchIn(viewModelScope)
     }
 
     fun selectStreamsTab(tab: StreamsTab) {

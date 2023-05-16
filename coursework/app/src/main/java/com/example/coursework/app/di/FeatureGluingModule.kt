@@ -9,6 +9,7 @@ import com.example.coursework.core.database.di.CoreDbApi
 import com.example.coursework.core.database.di.CoreDbDeps
 import com.example.coursework.core.database.di.CoreDbFacade
 import com.example.coursework.core.di.GlobalCicerone
+import com.example.coursework.core.di.LocalCicerone
 import com.example.coursework.core.network.di.CoreNetworkApi
 import com.example.coursework.core.network.di.CoreNetworkDeps
 import com.example.coursework.core.network.di.CoreNetworkFacade
@@ -130,11 +131,13 @@ object FeatureGluingModule {
 
     @Provides
     fun provideMainDeps(
+        @LocalCicerone localCicerone: Cicerone<Router>,
         streamsApi: StreamsApi,
         peopleApi: PeopleApi,
         profileApi: ProfileApi
     ): MainDeps {
         return object : MainDeps {
+            override val localCicerone = localCicerone
             override fun getStreamsScreen() = streamsApi.getStreamsScreen()
             override fun getPeopleScreen() = peopleApi.getPeopleScreen()
             override fun getProfileScreen() = profileApi.getProfileScreen(null)

@@ -1,6 +1,7 @@
 @file:OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
 package com.example.coursework.feature.people.impl.ui
 
+import androidx.lifecycle.viewModelScope
 import com.example.core.ui.base.BaseViewModel
 import com.example.coursework.feature.people.impl.PeopleFacade
 import com.example.coursework.feature.people.impl.ui.elm.PeopleEvent
@@ -24,7 +25,7 @@ class PeopleViewModel(storeFactory: PeopleStoreFactory) : BaseViewModel() {
             .debounce(250L)
             .mapLatest(PeopleEvent.Ui::UpdateSearchQuery)
             .onEach(store::accept)
-            .launchIn(coroutineScope)
+            .launchIn(viewModelScope)
     }
 
     override fun onCleared() {

@@ -7,7 +7,9 @@ import com.example.feature.main.api.MainDeps
 import com.github.terrakok.cicerone.androidx.FragmentScreen
 
 object MainFacade : FeatureFacade<MainDeps, MainApi, MainComponent>() {
-    override fun createComponent(deps: MainDeps) = MainComponent.Stub
+    override fun createComponent(deps: MainDeps): MainComponent {
+        return DaggerMainComponent.factory().create(deps)
+    }
 
     override fun createApi(component: MainComponent, deps: MainDeps): MainApi {
         return object : MainApi {

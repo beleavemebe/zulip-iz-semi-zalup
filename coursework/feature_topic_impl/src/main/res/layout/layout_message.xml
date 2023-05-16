@@ -22,16 +22,16 @@
         android:layout_marginEnd="8dp"
         android:textColor="@color/white"
         android:textSize="16sp"
-        tools:text="Scoop diddy whoop\nScoop di-, Scoop di-, Scoop di whoop"
-        />
+        tools:text="Scoop diddy whoop\nScoop di-, Scoop di-, Scoop di whoop" />
 
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/ivMessageAuthorPic"
         android:layout_width="37dp"
         android:layout_height="37dp"
         android:layout_marginStart="12dp"
         android:layout_marginEnd="22dp"
         android:contentDescription="@null"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Coursework"
         tools:src="@drawable/ic_launcher_foreground" />
 
     <com.example.core.ui.FlexBoxLayout

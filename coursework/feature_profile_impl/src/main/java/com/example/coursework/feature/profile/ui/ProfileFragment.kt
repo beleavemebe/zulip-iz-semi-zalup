@@ -15,7 +15,6 @@ import com.example.coursework.feature.profile.ui.elm.ProfileState
 import com.example.coursework.feature.profile.ui.elm.ProfileStoreFactory
 import com.example.coursework.profile.R
 import com.example.coursework.profile.databinding.FragmentProfileBinding
-import com.example.shared.profile.api.ui.color
 import vivid.money.elmslie.android.base.ElmFragment
 import vivid.money.elmslie.android.storeholder.LifecycleAwareStoreHolder
 import javax.inject.Inject
