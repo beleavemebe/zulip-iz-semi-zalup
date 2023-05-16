@@ -1,51 +1,28 @@
 package com.example.coursework.topic.impl.ui.recycler
 
-import android.text.Html
 import android.view.View
-import androidx.core.view.children
 import com.bumptech.glide.Glide
-import com.example.coursework.topic.impl.ui.model.MessageUi
-import com.example.coursework.topic.impl.ui.model.ReactionUi
-import com.example.coursework.topic.impl.ui.view.MessageView
+import com.example.coursework.topic.impl.ui.model.ForeignMessageUi
 import com.example.feature.topic.impl.databinding.LayoutMessageBinding
-import ru.tinkoff.mobile.tech.ti_recycler.base.BaseViewHolder
 import ru.tinkoff.mobile.tech.ti_recycler.clicks.TiRecyclerClickListener
+
 
 class MessageUiViewHolder(
     view: View,
     longClicks: TiRecyclerClickListener,
-    private val reactionClickListener: TopicViewHolderFactory.ReactionsClickListener
-) : BaseViewHolder<MessageUi>(view, longClicks) {
+    reactionClickListener: TopicViewHolderFactory.ReactionsClickListener
+) : BaseMessageUiViewHolder<ForeignMessageUi>(view, longClicks, reactionClickListener) {
     private val binding = LayoutMessageBinding.bind(view)
 
-    @Suppress("UNCHECKED_CAST")
-    override fun bind(item: MessageUi, payload: List<Any>) {
-        val reactionsPayload = payload.getOrNull(0) as? List<ReactionUi>
-        if (reactionsPayload != null) {
-            bindReactions(item)
-        } else {
-            super.bind(item, payload)
-        }
-    }
+    override val root = binding.root
+    override val tvMessageContent = binding.tvMessageContent
+    override val fbReactions = binding.fbReactions
 
-    override fun bind(item: MessageUi) {
+    override fun bind(item: ForeignMessageUi) {
+        super.bind(item)
         binding.tvMessageAuthor.text = item.author
-        binding.tvMessageContent.text = Html.fromHtml(item.message, Html.FROM_HTML_MODE_COMPACT)
-
-        bindReactions(item)
-
-        Glide.with(binding.root)
+        Glide.with(root)
             .load(item.authorImageUrl)
             .into(binding.ivMessageAuthorPic)
-    }
-
-    private fun bindReactions(item: MessageUi) {
-        val root = binding.root as MessageView
-        root.messageReactions = item.reactions
-        binding.fbReactions.children.toList().forEach { view ->
-            view.setOnClickListener {
-                reactionClickListener.onClick(view, item)
-            }
-        }
     }
 }

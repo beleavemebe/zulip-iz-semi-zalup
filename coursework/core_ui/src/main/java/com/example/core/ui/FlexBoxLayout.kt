@@ -103,8 +103,8 @@ internal class FlexBoxHelper(
             }
         }
 
-        model.width = reachedWidth
-        model.height = currTop + currRowHeight + verticalSpacing + paddingBottom
+        model.width = reachedWidth - horizontalSpacing
+        model.height = currTop + currRowHeight + paddingBottom
         model.children = children
     }
 }

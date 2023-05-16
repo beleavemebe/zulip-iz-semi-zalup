@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import com.example.core.ui.*
-import com.example.coursework.topic.impl.ui.model.ReactionUi
 import com.example.feature.topic.impl.R
 
 class OwnMessageView @JvmOverloads constructor(
@@ -24,32 +23,9 @@ class OwnMessageView @JvmOverloads constructor(
         ResourcesCompat.getDrawable(resources, R.drawable.bg_own_message_content, null)!!
     }
 
-    var messageReactions: List<ReactionUi> by uiSensitiveProperty(emptyList(), ::onReactionsUpdated)
-
     init {
         isClickable = true
         setWillNotDraw(false)
-    }
-
-    private fun onReactionsUpdated(
-        messageReactions: List<ReactionUi>,
-    ) {
-        fbReactions.removeAllViews()
-        if (messageReactions.isNotEmpty()) {
-            messageReactions.forEach { reactionUi ->
-                fbReactions.addView(
-                    EmoteReactionView(context).apply {
-                        setData(
-                            pressed = reactionUi.isPressed,
-                            emote = reactionUi.emote,
-                            emoteName = reactionUi.name,
-                            reactions = reactionUi.reactionCount.toString()
-                        )
-                    }
-                )
-            }
-            fbReactions.addView(AddReactionView(context))
-        }
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {

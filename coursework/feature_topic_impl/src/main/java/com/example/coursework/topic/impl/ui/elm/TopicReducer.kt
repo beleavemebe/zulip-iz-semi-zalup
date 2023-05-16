@@ -74,12 +74,12 @@ class TopicReducer @Inject constructor(
     }
 
     private fun MessageUi.removeReaction(targetReaction: ReactionUi) =
-        copy(
+        updateReactions(
             reactions = reactions - targetReaction
         )
 
     private fun MessageUi.uncheckReaction(targetReaction: ReactionUi) =
-        copy(
+        updateReactions(
             reactions = reactions.modify(targetReaction) { reactionUi ->
                 reactionUi.copy(
                     reactionCount = reactionUi.reactionCount - 1,
@@ -97,7 +97,7 @@ class TopicReducer @Inject constructor(
         state {
             copy(
                 items = items.modifiedAt(msgToUpdateIndex) { item ->
-                    (item as MessageUi).copy(
+                    (item as MessageUi).updateReactions(
                         reactions = if (targetReaction != null) {
                             item.reactions.setExistingReactionPressed(targetReaction)
                         } else {

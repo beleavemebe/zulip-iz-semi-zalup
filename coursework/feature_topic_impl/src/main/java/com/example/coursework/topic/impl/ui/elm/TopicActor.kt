@@ -6,7 +6,8 @@ import com.example.coursework.topic.impl.di.TopicScope
 import com.example.coursework.topic.impl.domain.MessageRepository
 import com.example.coursework.topic.impl.domain.model.Message
 import com.example.coursework.topic.impl.domain.model.Reaction
-import com.example.coursework.topic.impl.ui.model.MessageUi
+import com.example.coursework.topic.impl.ui.model.ForeignMessageUi
+import com.example.coursework.topic.impl.ui.model.OwnMessageUi
 import com.example.coursework.topic.impl.ui.model.ReactionUi
 import com.example.shared.profile.api.domain.usecase.GetCurrentUser
 import kotlinx.coroutines.flow.emitAll
@@ -95,14 +96,24 @@ class TopicActor @Inject constructor(
     }
 
     private suspend fun List<Message>.toMessageUis() = map { message ->
-        MessageUi(
-            id = message.id,
-            author = message.author,
-            authorImageUrl = message.authorImageUrl,
-            message = message.message,
-            posted = message.posted,
-            reactions = message.reactions.toReactionUis()
-        )
+        // FIXME правильно, конечно, просто дедлайн слишком близок чтоб менять сущность domain. my bad
+        if (message.author == getCurrentUser().name) {
+            OwnMessageUi(
+                id = message.id,
+                message = message.message,
+                posted = message.posted,
+                reactions = message.reactions.toReactionUis()
+            )
+        } else {
+            ForeignMessageUi(
+                id = message.id,
+                message = message.message,
+                posted = message.posted,
+                reactions = message.reactions.toReactionUis(),
+                author = message.author,
+                authorImageUrl = message.authorImageUrl
+            )
+        }
     }
 
     private suspend fun List<Reaction>.toReactionUis(): List<ReactionUi> {
