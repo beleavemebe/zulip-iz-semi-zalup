@@ -2,6 +2,7 @@ package com.example.core.ui
 
 import android.util.TypedValue
 import android.view.View
+import android.view.ViewGroup.MarginLayoutParams
 import androidx.appcompat.widget.SearchView
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
@@ -48,3 +49,15 @@ fun SearchView.doOnQueryChanged(onQueryChange: (String) -> Unit) {
         }
     )
 }
+
+val View.leftMargin: Int
+    get() = (layoutParams as MarginLayoutParams).leftMargin
+
+val View.rightMargin: Int
+    get() = (layoutParams as MarginLayoutParams).rightMargin
+
+val View.topMargin: Int
+    get() = (layoutParams as MarginLayoutParams).topMargin
+
+val View.bottomMargin: Int
+    get() = (layoutParams as MarginLayoutParams).bottomMargin

@@ -7,15 +7,11 @@ import com.github.terrakok.cicerone.Cicerone
 import com.github.terrakok.cicerone.Router
 import vivid.money.elmslie.core.store.dsl_reducer.DslReducer
 import javax.inject.Inject
-import kotlin.properties.Delegates
 
 @TopicScope
 class TopicReducer @Inject constructor(
     private val cicerone: Cicerone<Router>
 ) : DslReducer<TopicEvent, TopicState, TopicEffect, TopicCommand>() {
-    private var stream: Int by Delegates.notNull()
-    private var topic: String by Delegates.notNull()
-
     override fun Result.reduce(event: TopicEvent) =
         when (event) {
             is TopicEvent.Ui.Init -> init(event.stream, event.topic)
@@ -32,8 +28,9 @@ class TopicReducer @Inject constructor(
         }
 
     private fun Result.init(stream: Int, topic: String) {
-        this@TopicReducer.stream = stream
-        this@TopicReducer.topic = topic
+        state {
+            copy(stream = stream, topic = topic)
+        }
         commands {
             +TopicCommand.LoadNewestMessages(stream, topic)
         }
@@ -72,7 +69,7 @@ class TopicReducer @Inject constructor(
         }
 
         commands {
-            +TopicCommand.RevokeReaction(stream, topic, messageUi.id, emoteName)
+            +TopicCommand.RevokeReaction(state.stream, state.topic, messageUi.id, emoteName)
         }
     }
 
@@ -112,7 +109,7 @@ class TopicReducer @Inject constructor(
         }
 
         commands {
-            +TopicCommand.SendReaction(stream, topic, messageUi.id, emoteName)
+            +TopicCommand.SendReaction(state.stream, state.topic, messageUi.id, emoteName)
         }
     }
 
@@ -136,7 +133,7 @@ class TopicReducer @Inject constructor(
 
     private fun Result.sendMessage() {
         commands {
-            +TopicCommand.SendMessage(stream, topic, state.inputText)
+            +TopicCommand.SendMessage(state.stream, state.topic, state.inputText)
         }
         updateInput("")
     }
@@ -153,14 +150,14 @@ class TopicReducer @Inject constructor(
     private fun Result.loadPreviousPage() = loadPage(unless = state.canLoadOlderMessages.not()) {
         state { copy(items = listOf(LoadingUi) + items) }
         commands {
-            +TopicCommand.LoadPreviousPage(stream, topic, state.oldestAnchor)
+            +TopicCommand.LoadPreviousPage(state.stream, state.topic, state.oldestAnchor)
         }
     }
 
     private fun Result.loadNextPage() = loadPage(unless = state.canLoadNewerMessages.not()) {
         state { copy(items = items + LoadingUi) }
         commands {
-            +TopicCommand.LoadNextPage(stream, topic, state.newestAnchor)
+            +TopicCommand.LoadNextPage(state.stream, state.topic, state.newestAnchor)
         }
     }
 

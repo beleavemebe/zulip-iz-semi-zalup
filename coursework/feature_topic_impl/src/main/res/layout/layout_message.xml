@@ -2,13 +2,14 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/black"
+    tools:background="@color/black"
     tools:parentTag="com.example.coursework.topic.impl.ui.view.MessageView">
 
     <TextView
         android:id="@+id/tvMessageAuthor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:textColor="@color/accent"
         android:textSize="14sp"
         tools:text="Darrell Steward" />
@@ -17,15 +18,19 @@
         android:id="@+id/tvMessageContent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
         android:textColor="@color/white"
         android:textSize="16sp"
-        tools:text="Сейчас ехал в автоsбусе, со мной ещё два пацана ехали, и ещё женщина в такой смешной шапке, пожилой мужчина, ещё узбек, старушка с дедом, ещё две женщины, одна с ребёнком. Потом зашёл мужик, а женщина в шапке вышла. Потом я сам уже вышел, не знаю, чем все закончилось" />
+        tools:text="Scoop diddy whoop\nScoop di-, Scoop di-, Scoop di whoop"
+        />
 
     <ImageView
         android:id="@+id/ivMessageAuthorPic"
         android:layout_width="37dp"
         android:layout_height="37dp"
-        android:layout_marginRight="12dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="22dp"
         android:contentDescription="@null"
         tools:src="@drawable/ic_launcher_foreground" />
 
@@ -33,6 +38,8 @@
         android:id="@+id/fbReactions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="8dp"
         app:horizontalSpacing="8dp"
         app:verticalSpacing="10dp" />
 </merge>

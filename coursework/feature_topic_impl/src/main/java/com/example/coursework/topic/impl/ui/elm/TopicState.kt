@@ -3,6 +3,8 @@ package com.example.coursework.topic.impl.ui.elm
 import com.example.coursework.topic.impl.ui.model.TopicItem
 
 data class TopicState(
+    val stream: Int = 0,
+    val topic: String = "",
     val isLoading: Boolean = true,
     val error: Throwable? = null,
     val items: List<TopicItem> = emptyList(),

@@ -9,6 +9,9 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.setPadding
 import com.example.core.ui.HighlightOnPressBackground
 import com.example.core.ui.dp
+import com.example.coursework.topic.impl.ui.view.ReactionViewDefaults.backgroundCornerRadius
+import com.example.coursework.topic.impl.ui.view.ReactionViewDefaults.reactionViewHeight
+import com.example.coursework.topic.impl.ui.view.ReactionViewDefaults.reactionViewWidth
 import com.example.feature.topic.impl.R
 
 class AddReactionView @JvmOverloads constructor(
@@ -17,14 +20,13 @@ class AddReactionView @JvmOverloads constructor(
     defStyleAttr: Int = 0,
     defStyleRes: Int = 0
 ) : ViewGroup(context, attrs, defStyleAttr, defStyleRes) {
-    private val size = dp(44f).toInt()
-
-    private val backgroundCornerRadius = dp(10f)
+    private val width = reactionViewWidth
+    private val height = reactionViewHeight
     private val background = HighlightOnPressBackground(backgroundCornerRadius)
 
     private val imageView = ImageView(context, attrs, defStyleAttr, defStyleRes).apply {
         val drawable = AppCompatResources.getDrawable(context, R.drawable.ic_add)!!
-        val color = context.getColor(com.example.core_ui.R.color.white)
+        val color = context.getColor(com.example.core_ui.R.color.tint_primary)
         drawable.setTint(color)
         setImageDrawable(drawable)
         contentDescription = context.getString(R.string.add_new_reaction)
@@ -40,7 +42,7 @@ class AddReactionView @JvmOverloads constructor(
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        setMeasuredDimension(size, size)
+        setMeasuredDimension(width, height)
     }
 
     override fun onDraw(canvas: Canvas) {

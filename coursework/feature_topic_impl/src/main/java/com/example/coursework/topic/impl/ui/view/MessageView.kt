@@ -1,14 +1,14 @@
 package com.example.coursework.topic.impl.ui.view
 
 import android.content.Context
+import android.graphics.Canvas
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
-import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import com.example.core.ui.FlexBoxLayout
-import com.example.core.ui.dp
-import com.example.core.ui.uiSensitiveProperty
+import androidx.core.content.res.ResourcesCompat
+import com.example.core.ui.*
 import com.example.coursework.topic.impl.ui.model.ReactionUi
 import com.example.feature.topic.impl.R
 
@@ -18,26 +18,20 @@ class MessageView @JvmOverloads constructor(
     defStyleAttr: Int = 0,
     defStyleRes: Int = 0,
 ) : ViewGroup(context, attrs, defStyleAttr, defStyleRes) {
-    private val ivRightMargin = dp(9f).toInt()
     private val tvMessageAuthor: TextView by lazy { findViewById(R.id.tvMessageAuthor) }
     private val tvMessageContent: TextView by lazy { findViewById(R.id.tvMessageContent) }
     private val ivMessageAuthorPic: ImageView by lazy { findViewById(R.id.ivMessageAuthorPic) }
     private val fbReactions: FlexBoxLayout by lazy { findViewById(R.id.fbReactions) }
 
-    var author: String by uiSensitiveProperty("", ::onAuthorUpdate)
-    var message: String by uiSensitiveProperty("", ::onMessageContentUpdate)
+    private val messageContentBackground: Drawable by lazy {
+        ResourcesCompat.getDrawable(resources, R.drawable.bg_message_content, null)!!
+    }
+
     var messageReactions: List<ReactionUi> by uiSensitiveProperty(emptyList(), ::onReactionsUpdated)
 
     init {
         isClickable = true
-    }
-
-    private fun onAuthorUpdate(value: String) {
-        tvMessageAuthor.text = value
-    }
-
-    private fun onMessageContentUpdate(value: String) {
-        tvMessageContent.text = value
+        setWillNotDraw(false)
     }
 
     private fun onReactionsUpdated(
@@ -66,113 +60,146 @@ class MessageView @JvmOverloads constructor(
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
 
+        var totalWidthUsed = paddingLeft
+        var totalHeightUsed = 0
+
         measureChildWithMargins(
             ivMessageAuthorPic,
             widthMeasureSpec,
-            0,
+            totalWidthUsed,
             heightMeasureSpec,
-            0
+            totalHeightUsed
         )
+
+        totalWidthUsed += ivMessageAuthorPic.leftMargin +
+                ivMessageAuthorPic.measuredWidth +
+                ivMessageAuthorPic.rightMargin
 
         measureChildWithMargins(
             tvMessageAuthor,
             widthMeasureSpec,
-            ivMessageAuthorPic.measuredWidth,
+            totalWidthUsed,
             heightMeasureSpec,
-            0
+            totalHeightUsed
         )
+
+        totalHeightUsed += tvMessageAuthor.topMargin + tvMessageAuthor.measuredHeight + tvMessageContent.topMargin
+
         measureChildWithMargins(
             tvMessageContent,
             widthMeasureSpec,
-            ivMessageAuthorPic.measuredWidth,
+            totalWidthUsed,
             heightMeasureSpec,
-            tvMessageAuthor.measuredHeight
+            totalHeightUsed
         )
+
+        totalHeightUsed += tvMessageContent.measuredHeight + fbReactions.topMargin
+
         measureChildWithMargins(
             fbReactions,
             widthMeasureSpec,
-            ivMessageAuthorPic.measuredWidth,
+            totalWidthUsed,
             heightMeasureSpec,
-            tvMessageAuthor.measuredHeight + tvMessageContent.measuredHeight
+            totalHeightUsed
         )
 
 
-        val width = View.getDefaultSize(calcWidth(), widthMeasureSpec)
-        val height = calcHeight()
+        totalHeightUsed += fbReactions.measuredHeight + fbReactions.bottomMargin
+        totalWidthUsed = maxOf(
+            totalWidthUsed + tvMessageContent.measuredWidth + tvMessageContent.rightMargin,
+            totalWidthUsed + fbReactions.measuredWidth,
+            totalWidthUsed + tvMessageAuthor.measuredWidth
+        )
+
+        val width = resolveSize(totalWidthUsed, widthMeasureSpec)
+        val height = resolveSize(totalHeightUsed, heightMeasureSpec)
         setMeasuredDimension(width, height)
     }
 
-    private fun calcHeight(): Int {
-        return paddingTop +
-                tvMessageAuthor.measuredHeight +
-                tvMessageContent.measuredHeight +
-                fbReactions.measuredHeight +
-                paddingBottom
-    }
-
-    private fun calcWidth(): Int {
-        return paddingLeft +
-                ivRightMargin +
-                maxOf(
-                    tvMessageAuthor.measuredWidth,
-                    tvMessageContent.measuredWidth,
-                    fbReactions.measuredWidth
-                ) +
-                paddingRight
-    }
-
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
-        layoutImageView(l, t, r, b)
-        layoutMessageAuthor(l, t, r, b)
-        layoutMessageContent(l, t, r, b)
-        layoutReactions(l, t, r, b)
+        placeMessageContentBackground()
+        layoutImageView()
+        layoutMessageAuthor()
+        layoutMessageContent()
+        layoutReactions()
     }
 
-    private fun layoutImageView(l: Int, t: Int, r: Int, b: Int) {
-        val left = paddingLeft
+    private fun placeMessageContentBackground() {
+        val left = paddingLeft +
+                ivMessageAuthorPic.leftMargin +
+                ivMessageAuthorPic.measuredWidth +
+                (ivMessageAuthorPic.rightMargin / 2)
         val top = paddingTop
-        val view = ivMessageAuthorPic
-        view.layout(
-            left,
-            top,
-            left + view.measuredWidth,
-            top + view.measuredHeight
-        )
+        val right = left +
+                (ivMessageAuthorPic.rightMargin / 2) +
+                maxOf(
+                    tvMessageContent.measuredWidth,
+                    tvMessageAuthor.measuredWidth
+                ) +
+                tvMessageContent.rightMargin
+        val bottom = top +
+                tvMessageAuthor.topMargin +
+                tvMessageAuthor.measuredHeight +
+                tvMessageContent.topMargin +
+                tvMessageContent.measuredHeight +
+                (fbReactions.topMargin / 2)
+
+        messageContentBackground.setBounds(left, top, right, bottom)
     }
 
-    private fun layoutMessageAuthor(l: Int, t: Int, r: Int, b: Int) {
-        val left = paddingLeft + ivMessageAuthorPic.measuredWidth + ivRightMargin
-        val top = paddingTop
-        tvMessageAuthor.layout(
-            left,
-            top,
-            left + tvMessageAuthor.measuredWidth - tvMessageAuthor.paddingRight,
-            top + tvMessageAuthor.measuredHeight
-        )
+    private fun layoutImageView() {
+        val left = paddingLeft + ivMessageAuthorPic.leftMargin
+        val top = paddingTop + ivMessageAuthorPic.topMargin
+        val right = left + ivMessageAuthorPic.measuredWidth
+        val bottom = top + ivMessageAuthorPic.measuredHeight
+        ivMessageAuthorPic.layout(left, top, right, bottom)
     }
 
-    private fun layoutMessageContent(l: Int, t: Int, r: Int, b: Int) {
-        val left = paddingLeft + ivMessageAuthorPic.measuredWidth + ivRightMargin
-        val top = paddingTop + tvMessageAuthor.measuredHeight
-        tvMessageContent.layout(
-            left,
-            top,
-            minOf(r, left + tvMessageContent.measuredWidth) - tvMessageContent.paddingRight,
-            top + tvMessageContent.measuredHeight
-        )
+    private fun layoutMessageAuthor() {
+        val left = paddingLeft +
+                ivMessageAuthorPic.leftMargin +
+                ivMessageAuthorPic.measuredWidth +
+                ivMessageAuthorPic.rightMargin
+        val top = paddingTop + tvMessageAuthor.topMargin
+        val right = left + tvMessageAuthor.measuredWidth
+        val bottom = top + tvMessageAuthor.measuredHeight
+        tvMessageAuthor.layout(left, top, right, bottom)
     }
 
-    private fun layoutReactions(l: Int, t: Int, r: Int, b: Int) {
-        val left = paddingLeft + ivMessageAuthorPic.measuredWidth + ivRightMargin
-        val top = paddingTop + tvMessageAuthor.measuredHeight + tvMessageContent.measuredHeight
-        fbReactions.layout(
-            left,
-            top,
-            left + fbReactions.measuredWidth - fbReactions.paddingRight,
-            top + fbReactions.measuredHeight
-        )
+    private fun layoutMessageContent() {
+        val left = paddingLeft +
+                ivMessageAuthorPic.leftMargin +
+                ivMessageAuthorPic.measuredWidth +
+                ivMessageAuthorPic.rightMargin
+        val top = paddingTop +
+                tvMessageAuthor.topMargin +
+                tvMessageAuthor.measuredHeight +
+                tvMessageContent.topMargin
+        val right = left + tvMessageContent.measuredWidth - paddingRight
+        val bottom = top + tvMessageContent.measuredHeight
+        tvMessageContent.layout(left, top, right, bottom)
     }
 
+    private fun layoutReactions() {
+        val left = paddingLeft +
+                ivMessageAuthorPic.leftMargin +
+                ivMessageAuthorPic.measuredWidth +
+                (ivMessageAuthorPic.rightMargin / 2)
+        val top = paddingTop +
+                tvMessageAuthor.topMargin +
+                tvMessageAuthor.measuredHeight +
+                tvMessageContent.topMargin +
+                tvMessageContent.measuredHeight +
+                fbReactions.topMargin
+        val right = left + fbReactions.measuredWidth
+        val bottom = top + fbReactions.measuredHeight
+        fbReactions.layout(left, top, right, bottom)
+    }
+
+    override fun onDraw(canvas: Canvas) {
+        super.onDraw(canvas)
+        messageContentBackground.draw(canvas)
+    }
 
     override fun generateDefaultLayoutParams(): LayoutParams = MarginLayoutParams(
         LayoutParams.MATCH_PARENT,

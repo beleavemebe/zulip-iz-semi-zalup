@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:background="@color/black"
+    tools:parentTag="com.example.coursework.topic.impl.ui.view.OwnMessageView">
+
+    <TextView
+        android:id="@+id/tvMessageContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="22dp"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        tools:text="Scoop diddy whoop\nScoop di-, Scoop di-, Scoop di whooooooop"
+        />
+
+    <com.example.core.ui.FlexBoxLayout
+        android:id="@+id/fbReactions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="8dp"
+        app:horizontalSpacing="8dp"
+        app:verticalSpacing="10dp" />
+</merge>
