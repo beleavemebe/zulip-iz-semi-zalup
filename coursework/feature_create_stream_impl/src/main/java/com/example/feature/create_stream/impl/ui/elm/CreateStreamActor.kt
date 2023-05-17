@@ -26,9 +26,10 @@ class CreateStreamActor @Inject constructor(
     }
 
     private fun createStream(command: CreateStreamCommand.CreateStream) = flow {
-        val isStreamNameValid = runCatching {
-            getIsStreamNameValid.execute(command.occupiedStreamNames, command.streamName)
-        }.getOrDefault(IsStreamNameValid.NAME_OCCUPIED)
+        val isStreamNameValid = getIsStreamNameValid.execute(
+            command.occupiedStreamNames,
+            command.streamName
+        )
 
         if (isStreamNameValid == IsStreamNameValid.VALID) {
             streamsRepository.createStream(command.streamName)

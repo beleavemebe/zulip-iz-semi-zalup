@@ -115,7 +115,6 @@ class TopicActor @Inject constructor(
     }
 
     private suspend fun List<Message>.toMessageUis() = map { message ->
-        // FIXME правильно, конечно, просто дедлайн слишком близок чтоб менять сущность domain. my bad
         if (message.author == getCurrentUser().name) {
             OwnMessageUi(
                 id = message.id,
