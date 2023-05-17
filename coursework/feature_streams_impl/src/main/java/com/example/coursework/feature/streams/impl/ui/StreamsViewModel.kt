@@ -7,12 +7,11 @@ import com.example.core.ui.base.BaseViewModel
 import com.example.coursework.feature.streams.impl.StreamsFacade
 import com.example.coursework.feature.streams.impl.ui.elm.StreamsEvent
 import com.example.coursework.feature.streams.impl.ui.elm.StreamsStoreFactory
-import com.example.coursework.feature.streams.impl.ui.model.StreamUi
-import com.example.coursework.feature.streams.impl.ui.model.StreamsTab
-import com.example.coursework.feature.streams.impl.ui.model.TopicUi
+import com.example.coursework.feature.streams.impl.ui.model.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
+import java.lang.ref.WeakReference
 
 class StreamsViewModel(
     storeFactory: StreamsStoreFactory
@@ -42,8 +41,25 @@ class StreamsViewModel(
         store.accept(StreamsEvent.Ui.ClickStream(streamUi))
     }
 
-    fun clickChat(topicUi: TopicUi) {
+    fun clickTopic(topicUi: TopicUi) {
         store.accept(StreamsEvent.Ui.ClickTopic(topicUi))
+    }
+
+    fun clickCreateStream() {
+        store.accept(StreamsEvent.Ui.ClickCreateStream)
+        StreamsFacade.onStreamCreated = WeakReference(::onStreamCreated)
+    }
+
+    private fun onStreamCreated(name: String) {
+        store.accept(StreamsEvent.Internal.StreamCreated(name))
+    }
+
+    fun clickViewAllMessages(viewAllMessagesUi: ViewAllMessagesUi) {
+        store.accept(StreamsEvent.Ui.ClickViewAllMessages)
+    }
+
+    fun clickCreateTopic(createTopicUi: CreateTopicUi) {
+        store.accept(StreamsEvent.Ui.ClickCreateTopic)
     }
 
     override fun onCleared() {

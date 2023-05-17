@@ -36,13 +36,10 @@
             android:layout_weight="1"
             tools:listitem="@layout/item_person">
 
-            <com.google.android.material.progressindicator.CircularProgressIndicator
-                android:id="@+id/progressIndicator"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:indeterminate="true"
-                app:indicatorColor="@color/accent" />
+            <include
+                android:id="@+id/shimmer"
+                layout="@layout/fragment_people_shimmer"
+                />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvUsers"

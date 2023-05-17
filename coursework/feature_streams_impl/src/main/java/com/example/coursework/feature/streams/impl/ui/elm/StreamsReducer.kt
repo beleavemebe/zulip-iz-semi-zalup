@@ -1,7 +1,7 @@
 package com.example.coursework.feature.streams.impl.ui.elm
 
 import com.example.coursework.feature.streams.impl.di.StreamsScope
-import com.example.coursework.feature.streams.impl.ui.model.StreamUi
+import com.example.coursework.feature.streams.impl.ui.model.*
 import com.example.feature.streams.api.StreamsDeps
 import vivid.money.elmslie.core.store.dsl_reducer.DslReducer
 import javax.inject.Inject
@@ -17,8 +17,12 @@ class StreamsReducer @Inject constructor(
             is StreamsEvent.Ui.SelectStreamsTab -> selectStreamsTab(event)
             is StreamsEvent.Ui.ClickStream -> toggleStream(event)
             is StreamsEvent.Ui.ClickTopic -> goToTopic(event)
+            is StreamsEvent.Ui.ClickCreateStream -> createStream()
+            is StreamsEvent.Ui.ClickCreateTopic -> createTopic()
+            is StreamsEvent.Ui.ClickViewAllMessages -> viewAllMessages()
             is StreamsEvent.Internal.StreamsLoaded -> showStreams(event)
             is StreamsEvent.Internal.TopicsLoaded -> showTopics(event)
+            is StreamsEvent.Internal.StreamCreated -> onStreamCreated(event)
             is StreamsEvent.Internal.CaughtError -> showError(event)
         }
 
@@ -55,30 +59,33 @@ class StreamsReducer @Inject constructor(
         event: StreamsEvent.Ui.ClickStream,
     ) {
         if (event.streamUi.isExpanded) {
-            collapseStream(event)
+            showStreamContent(event.streamUi, emptyList())
         } else {
+            showStreamContent(event.streamUi, listOf(TopicShimmerUi, TopicShimmerUi, TopicShimmerUi))
             commands {
                 +StreamsCommand.LoadTopics(event.streamUi)
             }
         }
     }
 
-    private fun Result.collapseStream(
-        event: StreamsEvent.Ui.ClickStream,
-    ) {
-        val items = state.items
-        val iofStreamUi = items.indexOf(event.streamUi)
+    private fun Result.showStreamContent(streamUi: StreamUi, content: List<StreamsItem>) {
+        val oldItems = state.items
+        val iofStream = oldItems.indexOfFirst { item ->
+            item is StreamUi && item.id == streamUi.id
+        }
 
-        var iofNextStream = iofStreamUi + 1
-        while (items.getOrNull(iofNextStream) !is StreamUi) {
-            if (items.getOrNull(iofNextStream) == null) break
+        var iofNextStream = iofStream + 1
+        while (oldItems.getOrNull(iofNextStream) !is StreamUi) {
+            if (oldItems.getOrNull(iofNextStream) == null) break
             iofNextStream++
         }
 
-        val itemsBeforeStream = items.slice(0 until iofStreamUi)
-        val itemsAfterStream = items.slice(iofNextStream..items.lastIndex)
+        val itemsBeforeStream = oldItems.slice(0 until iofStream)
+        val streamAndContent = listOf(streamUi.copy(isExpanded = content.isNotEmpty())) + content
+        val itemsAfterStream = oldItems.slice(iofNextStream until oldItems.size)
+
         state {
-            copy(items = itemsBeforeStream + event.streamUi.copy(isExpanded = false) + itemsAfterStream)
+            copy(items = itemsBeforeStream + streamAndContent + itemsAfterStream)
         }
     }
 
@@ -102,24 +109,7 @@ class StreamsReducer @Inject constructor(
     private fun Result.showTopics(
         event: StreamsEvent.Internal.TopicsLoaded,
     ) {
-        val oldItems = state.items
-        val iofStream = oldItems.indexOfFirst { item ->
-            item is StreamUi && item.id == event.streamUi.id
-        }
-
-        var iofNextStream = iofStream + 1
-        while (oldItems.getOrNull(iofNextStream) !is StreamUi) {
-            if (oldItems.getOrNull(iofNextStream) == null) break
-            iofNextStream++
-        }
-
-        val itemsBeforeStream = oldItems.slice(0 until iofStream)
-        val expandedStreamWithTopics = listOf(event.streamUi.copy(isExpanded = true)) + event.topicUis
-        val itemsAfterStream = oldItems.slice(iofNextStream until oldItems.size)
-
-        state {
-            copy(items = itemsBeforeStream + expandedStreamWithTopics + itemsAfterStream)
-        }
+        showStreamContent(event.streamUi, event.topicUis + ViewAllMessagesUi + CreateTopicUi)
     }
 
     private fun Result.showError(
@@ -130,6 +120,29 @@ class StreamsReducer @Inject constructor(
                 isLoading = false,
                 error = event.error,
             )
+        }
+    }
+
+    private fun Result.createStream() {
+        deps.globalCicerone.router.navigateTo(deps.getCreateStreamScreen())
+    }
+
+    private fun Result.viewAllMessages() {
+        // todo put in a separate module
+    }
+
+    private fun Result.createTopic() {
+        // todo put in a separate module
+        deps.globalCicerone.router.navigateTo()
+    }
+
+    private fun Result.onStreamCreated(event: StreamsEvent.Internal.StreamCreated) {
+        commands {
+            +StreamsCommand.LoadStreams(state.streamsTab, state.query, forceRemote = true)
+        }
+
+        effects {
+            +StreamsEffect.ShowStreamCreatedToast(event.name)
         }
     }
 }

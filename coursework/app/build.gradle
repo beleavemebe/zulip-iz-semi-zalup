@@ -15,6 +15,12 @@ dependencies {
     implementation project(":feature_topic_impl")
     implementation project(":feature_streams_api")
     implementation project(":feature_streams_impl")
+    implementation project(":feature_streams_api")
+    implementation project(":feature_streams_impl")
+    implementation project(":feature_create_stream_api")
+    implementation project(":feature_create_stream_impl")
+    implementation project(":shared_streams_api")
+    implementation project(":shared_streams_impl")
     implementation project(":feature_people_api")
     implementation project(":feature_people_impl")
     implementation project(":shared_profile_api")
@@ -29,7 +35,6 @@ dependencies {
     implementation libs.cicerone
     implementation libs.fragmentKtx
     implementation libs.core
-    implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation libs.material
     implementation libs.bundles.elmslie
 }

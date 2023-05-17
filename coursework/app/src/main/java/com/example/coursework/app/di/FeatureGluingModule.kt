@@ -13,12 +13,17 @@ import com.example.coursework.core.di.LocalCicerone
 import com.example.coursework.core.network.di.CoreNetworkApi
 import com.example.coursework.core.network.di.CoreNetworkDeps
 import com.example.coursework.core.network.di.CoreNetworkFacade
+import com.example.coursework.feature.create_stream.api.CreateStreamApi
+import com.example.coursework.feature.create_stream.api.CreateStreamDeps
 import com.example.coursework.feature.people.impl.PeopleFacade
 import com.example.coursework.feature.profile.ui.di.ProfileFacade
 import com.example.coursework.feature.streams.impl.StreamsFacade
 import com.example.coursework.main.di.MainFacade
 import com.example.coursework.shared.profile.impl.di.SharedProfileFacade
+import com.example.coursework.shared_streams.api.SharedStreamsApi
+import com.example.coursework.shared_streams.api.SharedStreamsDeps
 import com.example.coursework.topic.impl.TopicFacade
+import com.example.feature.create_stream.impl.CreateStreamFacade
 import com.example.feature.main.api.MainApi
 import com.example.feature.main.api.MainDeps
 import com.example.feature.people.api.PeopleApi
@@ -32,9 +37,9 @@ import com.example.feature.topic.api.TopicDeps
 import com.example.shared.profile.api.SharedProfileApi
 import com.example.shared.profile.api.SharedProfileDeps
 import com.example.shared.profile.api.domain.usecase.GetCurrentUser
+import com.example.shared_streams.impl.coursework.SharedStreamsFacade
 import com.github.terrakok.cicerone.Cicerone
 import com.github.terrakok.cicerone.Router
-import com.github.terrakok.cicerone.androidx.FragmentScreen
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
@@ -58,7 +63,7 @@ object FeatureGluingModule {
     ): TopicApi {
         return TopicFacade.init(deps).api
     }
-    
+
     @Provides
     fun provideSharedProfileDeps(
         coreNetworkApi: CoreNetworkApi
@@ -73,6 +78,24 @@ object FeatureGluingModule {
         deps: SharedProfileDeps
     ): SharedProfileApi {
         return SharedProfileFacade.init(deps).api
+    }
+    
+    @Provides
+    fun provideSharedStreamsDeps(
+        coreNetworkApi: CoreNetworkApi,
+        coreDbApi: CoreDbApi
+    ): SharedStreamsDeps {
+        return object : SharedStreamsDeps {
+            override val retrofit = coreNetworkApi.retrofit
+            override val daoProvider = coreDbApi.daoProvider
+        }
+    }
+
+    @Provides
+    fun provideSharedStreamsApi(
+        deps: SharedStreamsDeps
+    ): SharedStreamsApi {
+        return SharedStreamsFacade.init(deps).api
     }
 
     @Provides
@@ -98,27 +121,51 @@ object FeatureGluingModule {
 
     @Provides
     fun provideProfileApi(
-        profileDeps: ProfileDeps
+        deps: ProfileDeps
     ): ProfileApi {
-        return ProfileFacade.init(profileDeps).api
+        return ProfileFacade.init(deps).api
+    }
+
+    @Provides
+    fun provideCreateStreamDeps(
+        @GlobalCicerone globalCicerone: Cicerone<Router>,
+        sharedStreamsApi: SharedStreamsApi,
+    ): CreateStreamDeps {
+        return object : CreateStreamDeps {
+            override val globalCicerone = globalCicerone
+            override val streamsRepository = sharedStreamsApi.streamsRepository
+
+            override fun onStreamCreated(name: String) {
+                globalCicerone.router.backTo(null)
+                StreamsFacade.onStreamCreated?.get()?.invoke(name)
+            }
+        }
+    }
+
+    @Provides
+    fun provideCreateStreamApi(
+        deps: CreateStreamDeps
+    ): CreateStreamApi {
+        return CreateStreamFacade.init(deps).api
     }
 
     @Provides
     fun provideStreamsDeps(
         @GlobalCicerone cicerone: Cicerone<Router>,
-        coreNetworkApi: CoreNetworkApi,
+        sharedStreamsApi: SharedStreamsApi,
         topicApiProvider: Provider<TopicApi>,
-        coreDbApi: CoreDbApi
+        createStreamApiProvider: Provider<CreateStreamApi>,
     ): StreamsDeps {
         return object : StreamsDeps {
-            override val retrofit = coreNetworkApi.retrofit
-
             override val globalCicerone = cicerone
+            
+            override val streamsRepository = sharedStreamsApi.streamsRepository
 
-            override val daoProvider = coreDbApi.daoProvider
-
-            override fun getTopicScreen(streamId: Int, stream: String, topic: String): FragmentScreen =
+            override fun getTopicScreen(streamId: Int, stream: String, topic: String) = 
                 topicApiProvider.get().getTopicScreen(streamId, stream, topic)
+
+            override fun getCreateStreamScreen() = 
+                createStreamApiProvider.get().getCreateStreamScreen()
         }
     }
 

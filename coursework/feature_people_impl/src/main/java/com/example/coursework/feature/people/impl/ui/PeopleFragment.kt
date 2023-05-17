@@ -44,7 +44,7 @@ class PeopleFragment : ElmFragment<PeopleEvent, PeopleEffect, PeopleState>(R.lay
     override fun render(state: PeopleState) {
         binding.tvError.isVisible = state.error != null
         binding.tvError.text = state.error.toString()
-        binding.progressIndicator.isVisible = state.isLoading
+        binding.shimmer.root.isVisible = state.isLoading
         recycler.adapter.items = state.people
         binding.tvNotFound.isVisible = state.notFound
     }

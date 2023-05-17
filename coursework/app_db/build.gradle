@@ -11,6 +11,6 @@ android {
 dependencies {
     implementation project(':core_db')
     implementation project(":core_di")
-    implementation project(":feature_streams_impl")
+    implementation project(":shared_streams_impl")
     implementation project(":feature_topic_impl")
 }

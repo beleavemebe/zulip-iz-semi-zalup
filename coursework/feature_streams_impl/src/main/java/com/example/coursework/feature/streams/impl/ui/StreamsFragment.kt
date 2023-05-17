@@ -3,6 +3,7 @@ package com.example.coursework.feature.streams.impl.ui
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -16,10 +17,7 @@ import com.example.coursework.feature.streams.impl.ui.elm.StreamsEffect
 import com.example.coursework.feature.streams.impl.ui.elm.StreamsEvent
 import com.example.coursework.feature.streams.impl.ui.elm.StreamsState
 import com.example.coursework.feature.streams.impl.ui.elm.StreamsStoreFactory
-import com.example.coursework.feature.streams.impl.ui.model.StreamUi
-import com.example.coursework.feature.streams.impl.ui.model.StreamsItem
-import com.example.coursework.feature.streams.impl.ui.model.StreamsTab
-import com.example.coursework.feature.streams.impl.ui.model.TopicUi
+import com.example.coursework.feature.streams.impl.ui.model.*
 import com.example.coursework.feature.streams.impl.ui.recycler.StreamsViewHolderFactory
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
@@ -50,6 +48,11 @@ class StreamsFragment : ElmFragment<StreamsEvent, StreamsEffect, StreamsState>(R
         recycler.adapter.items = state.items
     }
 
+    override fun handleEffect(effect: StreamsEffect) =
+        when (effect) {
+            is StreamsEffect.ShowStreamCreatedToast -> showStreamCreatedToast(effect)
+        }
+
     override fun onAttach(context: Context) {
         StreamsFacade.component.inject(this)
         super.onAttach(context)
@@ -60,6 +63,7 @@ class StreamsFragment : ElmFragment<StreamsEvent, StreamsEffect, StreamsState>(R
         initRecycler()
         initTabListener()
         initSearchView()
+        initCreateStreamButton()
     }
 
     private fun initRecycler() {
@@ -78,7 +82,15 @@ class StreamsFragment : ElmFragment<StreamsEvent, StreamsEffect, StreamsState>(R
             .collectWhenStarted(viewLifecycleOwner.lifecycle)
 
         recycler.clickedItem<TopicUi>(TopicUi.VIEW_TYPE)
-            .onEach(viewModel::clickChat)
+            .onEach(viewModel::clickTopic)
+            .collectWhenStarted(viewLifecycleOwner.lifecycle)
+
+        recycler.clickedItem<ViewAllMessagesUi>(ViewAllMessagesUi.VIEW_TYPE)
+            .onEach(viewModel::clickViewAllMessages)
+            .collectWhenStarted(viewLifecycleOwner.lifecycle)
+
+        recycler.clickedItem<CreateTopicUi>(CreateTopicUi.VIEW_TYPE)
+            .onEach(viewModel::clickCreateTopic)
             .collectWhenStarted(viewLifecycleOwner.lifecycle)
     }
 
@@ -89,6 +101,13 @@ class StreamsFragment : ElmFragment<StreamsEvent, StreamsEffect, StreamsState>(R
         searchView.queryHint = getString(R.string.find_streams)
         searchView.doOnQueryChanged { query ->
             viewModel.searchQuery.value = query
+        }
+    }
+
+    private fun initCreateStreamButton() {
+        binding.toolbar.menu.findItem(R.id.menu_item_create_stream).setOnMenuItemClickListener {
+            viewModel.clickCreateStream()
+            true
         }
     }
 
@@ -103,6 +122,14 @@ class StreamsFragment : ElmFragment<StreamsEvent, StreamsEffect, StreamsState>(R
                 }
             }
         })
+    }
+
+    private fun showStreamCreatedToast(effect: StreamsEffect.ShowStreamCreatedToast) {
+        Toast.makeText(
+            requireContext(),
+            getString(R.string.placeholder_stream_created, effect.name),
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
     companion object {

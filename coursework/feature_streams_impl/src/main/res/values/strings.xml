@@ -4,4 +4,8 @@
     <string name="all_streams">All streams</string>
     <string name="find_streams">Find streams</string>
     <string name="streams">Streams</string>
+    <string name="create_stream">Create stream</string>
+    <string name="placeholder_stream_created">Stream %1$s created</string>
+    <string name="create_topic">create topic</string>
+    <string name="view_all_messages">view all messages</string>
 </resources>

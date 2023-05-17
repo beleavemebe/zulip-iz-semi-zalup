@@ -1,0 +1,14 @@
+plugins {
+    id 'android-library-convention'
+}
+
+android {
+    namespace 'com.example.coursework.shared_streams.api'
+}
+
+dependencies {
+    api project(":core_di")
+    api project(":core_db")
+    api libs.retrofit
+    implementation libs.bundles.coroutines
+}

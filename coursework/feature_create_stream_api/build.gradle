@@ -1,0 +1,13 @@
+plugins {
+    id 'android-library-convention'
+}
+
+android {
+    namespace 'com.example.coursework.feature.create_stream.api'
+}
+
+dependencies {
+    api project(":shared_streams_api")
+    api project(":core_di")
+    api libs.cicerone
+}

@@ -1,0 +1,18 @@
+plugins {
+    id 'android-library-convention'
+    id 'dagger-convention'
+}
+
+android {
+    namespace 'com.example.feature.create_stream.impl'
+}
+
+dependencies {
+    implementation project(":shared_streams_api")
+    implementation project(":feature_create_stream_api")
+    implementation project(":core_ui")
+    implementation libs.bundles.elmslie
+    implementation libs.fragmentKtx
+    implementation libs.material
+    implementation libs.viewBindingDelegate
+}

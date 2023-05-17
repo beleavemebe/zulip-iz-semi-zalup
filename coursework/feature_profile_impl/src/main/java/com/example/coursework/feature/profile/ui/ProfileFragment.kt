@@ -39,7 +39,7 @@ class ProfileFragment : ElmFragment<ProfileEvent, ProfileEffect, ProfileState>(R
     }
 
     override fun render(state: ProfileState) {
-        binding.progressIndicator.isVisible = state.isLoading
+        binding.shimmer.root.isVisible = state.isLoading
         val user = state.user ?: return
 
         Glide.with(this)

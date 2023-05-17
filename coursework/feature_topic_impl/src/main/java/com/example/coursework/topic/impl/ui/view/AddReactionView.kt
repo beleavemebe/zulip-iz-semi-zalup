@@ -13,6 +13,8 @@ import com.example.coursework.topic.impl.ui.view.ReactionViewDefaults.background
 import com.example.coursework.topic.impl.ui.view.ReactionViewDefaults.reactionViewHeight
 import com.example.coursework.topic.impl.ui.view.ReactionViewDefaults.reactionViewWidth
 import com.example.feature.topic.impl.R
+import com.example.core_ui.R as core_ui_R
+
 
 class AddReactionView @JvmOverloads constructor(
     context: Context,
@@ -25,7 +27,7 @@ class AddReactionView @JvmOverloads constructor(
     private val background = HighlightOnPressBackground(backgroundCornerRadius)
 
     private val imageView = ImageView(context, attrs, defStyleAttr, defStyleRes).apply {
-        val drawable = AppCompatResources.getDrawable(context, R.drawable.ic_add)!!
+        val drawable = AppCompatResources.getDrawable(context, core_ui_R.drawable.ic_add)!!
         val color = context.getColor(com.example.core_ui.R.color.tint_primary)
         drawable.setTint(color)
         setImageDrawable(drawable)

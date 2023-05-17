@@ -7,6 +7,7 @@ import com.example.coursework.feature.streams.impl.ui.StreamsFragment
 import com.example.feature.streams.api.StreamsApi
 import com.example.feature.streams.api.StreamsDeps
 import com.github.terrakok.cicerone.androidx.FragmentScreen
+import java.lang.ref.WeakReference
 
 object StreamsFacade : FeatureFacade<StreamsDeps, StreamsApi, StreamsComponent>() {
     override fun createComponent(deps: StreamsDeps): StreamsComponent {
@@ -20,4 +21,7 @@ object StreamsFacade : FeatureFacade<StreamsDeps, StreamsApi, StreamsComponent>(
             }
         }
     }
+
+    var onStreamCreated: WeakReference<(name: String) -> Unit>? = null
+        internal set
 }

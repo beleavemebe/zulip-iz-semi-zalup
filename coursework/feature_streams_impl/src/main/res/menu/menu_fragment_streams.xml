@@ -7,4 +7,11 @@
         android:title="@string/find_streams"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/menu_item_create_stream"
+        android:icon="@drawable/ic_add"
+        android:title="@string/create_stream"
+        app:showAsAction="ifRoom"
+        />
 </menu>

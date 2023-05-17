@@ -9,6 +9,7 @@ android {
 dependencies {
     implementation project(":core_di")
     implementation project(":core_db")
+    implementation project(":shared_streams_api")
     implementation libs.cicerone
     implementation libs.retrofit
 }

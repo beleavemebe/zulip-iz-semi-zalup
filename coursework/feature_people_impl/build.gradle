@@ -23,4 +23,5 @@ dependencies {
     implementation libs.tiRecyclerCoroutines
     implementation libs.bundles.elmslie
     implementation libs.cicerone
+    implementation libs.shimmer
 }

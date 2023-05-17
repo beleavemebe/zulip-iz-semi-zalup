@@ -8,7 +8,6 @@ import dagger.Component
 @StreamsScope
 @Component(
     dependencies = [StreamsDeps::class],
-    modules = [StreamsModule::class]
 )
 interface StreamsComponent : DaggerComponent {
     fun inject(streamsFragment: StreamsFragment)

@@ -7,7 +7,7 @@ android {
 }
 
 dependencies {
-    implementation project(":core_utils")
+    api project(":core_utils")
     implementation libs.cicerone
     implementation libs.core
     implementation libs.material

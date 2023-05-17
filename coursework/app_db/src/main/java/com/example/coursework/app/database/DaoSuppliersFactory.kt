@@ -1,7 +1,7 @@
 package com.example.coursework.app.database
 
-import com.example.coursework.feature.streams.impl.data.db.StreamsDao
 import com.example.coursework.topic.impl.data.db.TopicDao
+import com.example.shared_streams.impl.coursework.data.db.StreamsDao
 import javax.inject.Inject
 
 class DaoSuppliersFactory @Inject constructor(

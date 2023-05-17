@@ -1,0 +1,19 @@
+plugins {
+    id 'android-library-convention'
+    id 'dagger-convention'
+    id 'room-convention'
+    alias libs.plugins.kotlinx.serialization
+}
+
+android {
+    namespace 'com.example.shared_streams.impl.coursework'
+}
+
+dependencies {
+    implementation project(":shared_streams_api")
+    implementation project(":core_utils")
+    implementation project(":core_ui")
+    implementation project(":core_di")
+    implementation project(":core_network")
+    implementation libs.bundles.coroutines
+}

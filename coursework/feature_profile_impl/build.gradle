@@ -21,4 +21,5 @@ dependencies {
     annotationProcessor libs.glideCompiler
 
     implementation libs.cicerone
+    implementation libs.shimmer
 }

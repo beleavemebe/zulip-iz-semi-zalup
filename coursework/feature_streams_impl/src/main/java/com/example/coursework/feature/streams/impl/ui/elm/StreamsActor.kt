@@ -1,12 +1,12 @@
 package com.example.coursework.feature.streams.impl.ui.elm
 
 import com.example.coursework.feature.streams.impl.di.StreamsScope
-import com.example.coursework.feature.streams.impl.domain.model.Stream
-import com.example.coursework.feature.streams.impl.domain.model.Topic
-import com.example.coursework.feature.streams.impl.domain.repository.StreamsRepository
 import com.example.coursework.feature.streams.impl.ui.model.StreamUi
 import com.example.coursework.feature.streams.impl.ui.model.StreamsTab
 import com.example.coursework.feature.streams.impl.ui.model.TopicUi
+import com.example.coursework.shared_streams.api.domain.model.Stream
+import com.example.coursework.shared_streams.api.domain.model.Topic
+import com.example.coursework.shared_streams.api.domain.repository.StreamsRepository
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
@@ -27,7 +27,7 @@ class StreamsActor @Inject constructor(
         )
 
     private fun loadStreams(command: StreamsCommand.LoadStreams) = flow {
-        val streams = getStreamsFlow(command.query, command.tab)
+        val streams = getStreamsFlow(command.query, command.tab, command.forceRemote)
         emitAll(
             streams.map {
                 StreamsEvent.Internal.StreamsLoaded(it)
@@ -38,9 +38,10 @@ class StreamsActor @Inject constructor(
     private fun getStreamsFlow(
         searchQuery: String?,
         tab: StreamsTab,
+        forceRemote: Boolean,
     ) = when (tab) {
-        StreamsTab.ALL -> streamsRepository.getAllStreams()
-        StreamsTab.SUBSCRIBED -> streamsRepository.getSubscribedStreams()
+        StreamsTab.ALL -> streamsRepository.getAllStreams(forceRemote)
+        StreamsTab.SUBSCRIBED -> streamsRepository.getSubscribedStreams(forceRemote)
     }
         .map { streams -> streams.map(::toStreamUi) }
         .map { streamUis ->
@@ -48,7 +49,7 @@ class StreamsActor @Inject constructor(
                 streamUis
             } else {
                 matchStreams(searchQuery, streamUis)
-            }
+            }.sortedBy(StreamUi::name)
         }
 
     private fun toStreamUi(

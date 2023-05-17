@@ -1,16 +1,18 @@
 package com.example.coursework.feature.streams.impl.ui.recycler
 
 import android.view.View
-import com.example.coursework.feature.streams.R
-import com.example.coursework.feature.streams.impl.ui.model.StreamsItem
+import com.example.coursework.feature.streams.impl.ui.model.*
 import ru.tinkoff.mobile.tech.ti_recycler.base.BaseViewHolder
 import ru.tinkoff.mobile.tech.ti_recycler_coroutines.base.CoroutinesHolderFactory
 
 class StreamsViewHolderFactory : CoroutinesHolderFactory() {
     override fun createViewHolder(view: View, viewType: Int): BaseViewHolder<out StreamsItem> {
         return when (viewType) {
-            R.layout.item_stream -> StreamUiViewHolder(view, clicks)
-            R.layout.item_topic -> TopicUiViewHolder(view, clicks)
+            StreamUi.VIEW_TYPE -> StreamUiViewHolder(view, clicks)
+            TopicUi.VIEW_TYPE -> TopicUiViewHolder(view, clicks)
+            TopicShimmerUi.VIEW_TYPE -> TopicShimmerUiViewHolder(view)
+            CreateTopicUi.VIEW_TYPE -> CreateTopicUiViewHolder(view, clicks)
+            ViewAllMessagesUi.VIEW_TYPE -> ViewAllMessagesUiViewHolder(view, clicks)
             else -> throw IllegalArgumentException("Unknown view type $viewType")
         }
     }

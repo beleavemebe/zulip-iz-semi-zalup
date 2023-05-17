@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="create_stream">Create stream</string>
+    <string name="done">Done</string>
+    <string name="stream_name">Stream name</string>
+    <string name="wait_a_bit">Wait a bit plz</string>
+    <string name="name_blank">Name is blank</string>
+    <string name="name_occupied">Name is occupied</string>
+    <string name="valid">Valid</string>
+</resources>
