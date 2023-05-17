@@ -8,7 +8,7 @@ interface TopicItem : ViewTyped {
     companion object {
         val payloadMappers by lazy {
             SparseArrayCompat<PayloadMapper<TopicItem>>(2).apply {
-                put(MessageUi.VIEW_TYPE, MessageUi::calcPayload)
+                put(ForeignMessageUi.VIEW_TYPE, MessageUi::calcPayload)
                 put(OwnMessageUi.VIEW_TYPE, MessageUi::calcPayload)
             }
         }

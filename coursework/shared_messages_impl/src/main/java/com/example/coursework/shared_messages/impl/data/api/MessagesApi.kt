@@ -20,6 +20,17 @@ interface MessagesApi {
         @Query("content") content: String,
     )
 
+    @DELETE("messages/{message_id}")
+    suspend fun deleteMessage(
+        @Path("message_id") messageId: Int,
+    )
+
+    @PATCH("messages/{message_id}")
+    suspend fun editMessage(
+        @Path("message_id") messageId: Int,
+        @Query("content") content: String
+    )
+
     @POST("messages/{message_id}/reactions")
     suspend fun addReaction(
         @Path("message_id") messageId: Int,

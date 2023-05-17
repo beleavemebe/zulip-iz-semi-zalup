@@ -129,6 +129,14 @@ class MessageRepositoryImpl @Inject constructor(
         )
     }
 
+    override suspend fun deleteMessage(id: Int) {
+        api.deleteMessage(id)
+    }
+
+    override suspend fun editMessage(id: Int, content: String) {
+        api.editMessage(id, content)
+    }
+
     companion object {
         private const val PRELOADED_AMOUNT = 50
         private const val PAGE_SIZE = 20

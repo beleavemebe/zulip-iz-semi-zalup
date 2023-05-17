@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hint_message_input_field">Написать…</string>
-    <string name="desc_send_message">Отправить сообщение</string>
-    <string name="add_new_reaction">Добавить новую реакцию</string>
+    <string name="hint_message_input_field">Message…</string>
+    <string name="desc_send_message">Send message</string>
+    <string name="add_new_reaction">Add new reaction</string>
     <string name="placeholder_topic">Topic: %1$s</string>
+    <string name="pick_reaction">Pick reaction</string>
+    <string name="delete_message">Delete message</string>
+    <string name="edit_message">Edit message</string>
+    <string name="done">Done</string>
+    <string name="message_blank">Message is blank</string>
+    <string name="copied">Copied</string>
+    <string name="not_copied">Not copied =(</string>
+    <string name="copy">Copy</string>
 </resources>

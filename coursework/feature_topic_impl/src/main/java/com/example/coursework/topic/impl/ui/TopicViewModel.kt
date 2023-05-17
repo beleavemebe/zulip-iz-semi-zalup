@@ -1,18 +1,17 @@
 package com.example.coursework.topic.impl.ui
 
-import com.example.core.ui.base.BaseViewModel
+import androidx.lifecycle.ViewModel
 import com.example.coursework.topic.impl.TopicFacade
 import com.example.coursework.topic.impl.ui.elm.TopicEvent
 import com.example.coursework.topic.impl.ui.elm.TopicStoreFactory
-import com.example.coursework.topic.impl.ui.model.MessageUi
 
 class TopicViewModel(
     storeFactory: TopicStoreFactory
-) : BaseViewModel() {
+) : ViewModel() {
     val store = storeFactory.store
 
-    fun toggleReaction(messageUi: MessageUi, emoteName: String) {
-        store.accept(TopicEvent.Ui.ToggleReaction(messageUi, emoteName))
+    fun toggleReaction(messageId: Int, emoteName: String) {
+        store.accept(TopicEvent.Ui.ToggleReaction(messageId, emoteName))
     }
 
     fun sendMessage() {
@@ -33,6 +32,18 @@ class TopicViewModel(
 
     fun goBack() {
         store.accept(TopicEvent.Ui.ClickGoBack)
+    }
+
+    fun deleteMessage(messageId: Int) {
+        store.accept(TopicEvent.Ui.DeleteMessage(messageId))
+    }
+
+    fun editMessage(messageId: Int, oldContent: String, updatedContent: String) {
+        store.accept(TopicEvent.Ui.EditMessage(messageId, oldContent, updatedContent))
+    }
+
+    fun copyMessage(message: String) {
+        store.accept(TopicEvent.Ui.CopyMessage(message))
     }
 
     override fun onCleared() {

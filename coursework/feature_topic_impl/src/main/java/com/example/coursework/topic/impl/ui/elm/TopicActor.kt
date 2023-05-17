@@ -27,6 +27,8 @@ class TopicActor @Inject constructor(
             is TopicCommand.SendReaction -> sendReaction(command)
             is TopicCommand.RevokeReaction -> revokeReaction(command)
             is TopicCommand.SendMessage -> sendMessage(command)
+            is TopicCommand.DeleteMessage -> deleteMessage(command)
+            is TopicCommand.EditMessage -> editMessage(command)
             is TopicCommand.LoadPreviousPage -> loadPreviousPage(command)
             is TopicCommand.LoadNextPage -> loadNextPage(command)
         }.mapEvents(
@@ -69,6 +71,23 @@ class TopicActor @Inject constructor(
                 fetchCacheFirst = false
             )
         )
+    }
+
+    private fun deleteMessage(command: TopicCommand.DeleteMessage) = flow<Nothing> {
+        messageRepository.deleteMessage(command.messageId)
+    }
+
+    private fun editMessage(command: TopicCommand.EditMessage) = flow {
+        emit(
+            TopicEvent.Internal.MessageEdited(command.messageId, command.updatedContent)
+        )
+        runCatching {
+            messageRepository.editMessage(command.messageId, command.updatedContent)
+        }.getOrElse {
+            emit(
+                TopicEvent.Internal.MessageEdited(command.messageId, command.oldContent)
+            )
+        }
     }
 
     private fun loadPreviousPage(command: TopicCommand.LoadPreviousPage) = flow {

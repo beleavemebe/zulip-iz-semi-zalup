@@ -19,6 +19,7 @@ internal object NetworkModule {
 
     fun createOkHttpClient(): OkHttpClient = OkHttpClient.Builder()
         .addInterceptor(AuthorizationInterceptor())
+        .addInterceptor(ErrorMappingInterceptor())
         .addInterceptor(
             HttpLoggingInterceptor { Log.d("http-debug", it) }
                 .setLevel(HttpLoggingInterceptor.Level.BODY)

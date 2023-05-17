@@ -4,9 +4,11 @@ import com.example.coursework.core.di.FeatureFacade
 import com.example.coursework.topic.impl.di.DaggerTopicComponent
 import com.example.coursework.topic.impl.di.TopicComponent
 import com.example.coursework.topic.impl.ui.TopicFragment
+import com.example.coursework.topic.impl.ui.actions.MessageAction
 import com.example.feature.topic.api.TopicApi
 import com.example.feature.topic.api.TopicDeps
 import com.github.terrakok.cicerone.androidx.FragmentScreen
+import kotlinx.coroutines.flow.MutableSharedFlow
 
 object TopicFacade : FeatureFacade<TopicDeps, TopicApi, TopicComponent>() {
     override fun createComponent(deps: TopicDeps): TopicComponent {
@@ -24,4 +26,6 @@ object TopicFacade : FeatureFacade<TopicDeps, TopicApi, TopicComponent>() {
             }
         }
     }
+
+    val actionsFlow = MutableSharedFlow<MessageAction>(extraBufferCapacity = Int.MAX_VALUE)
 }

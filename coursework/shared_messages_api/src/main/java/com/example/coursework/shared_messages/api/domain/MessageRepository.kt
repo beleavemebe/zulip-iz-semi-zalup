@@ -37,4 +37,8 @@ interface MessageRepository {
         topic: String,
         text: String,
     )
+
+    suspend fun deleteMessage(id: Int)
+
+    suspend fun editMessage(id: Int, content: String)
 }

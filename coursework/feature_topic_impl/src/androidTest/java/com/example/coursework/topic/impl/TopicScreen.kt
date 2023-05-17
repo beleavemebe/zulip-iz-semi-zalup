@@ -1,7 +1,7 @@
 package com.example.coursework.topic.impl
 
 import android.view.View
-import com.example.coursework.topic.impl.ui.PickEmojiDialog
+import com.example.coursework.topic.impl.ui.actions.pick_emoji.PickEmojiDialog
 import com.example.feature.topic.impl.R
 import com.kaspersky.kaspresso.screens.KScreen
 import io.github.kakaocup.kakao.common.builders.ViewBuilder

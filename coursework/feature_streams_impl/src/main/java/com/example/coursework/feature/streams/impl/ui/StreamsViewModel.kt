@@ -2,8 +2,8 @@
 
 package com.example.coursework.feature.streams.impl.ui
 
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.core.ui.base.BaseViewModel
 import com.example.coursework.feature.streams.impl.StreamsFacade
 import com.example.coursework.feature.streams.impl.ui.elm.StreamsEvent
 import com.example.coursework.feature.streams.impl.ui.elm.StreamsStoreFactory
@@ -15,7 +15,7 @@ import java.lang.ref.WeakReference
 
 class StreamsViewModel(
     storeFactory: StreamsStoreFactory
-): BaseViewModel() {
+) : ViewModel() {
     val store = storeFactory.store
 
     val searchQuery = MutableStateFlow<String?>(null)

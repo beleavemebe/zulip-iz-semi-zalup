@@ -1,13 +1,13 @@
 package com.example.feature.create_stream.impl.ui
 
-import com.example.core.ui.base.BaseViewModel
+import androidx.lifecycle.ViewModel
 import com.example.feature.create_stream.impl.CreateStreamFacade
 import com.example.feature.create_stream.impl.ui.elm.CreateStreamEvent
 import com.example.feature.create_stream.impl.ui.elm.CreateStreamStoreFactory
 
 class CreateStreamViewModel(
     storeFactory: CreateStreamStoreFactory
-) : BaseViewModel() {
+) : ViewModel() {
     val store = storeFactory.store
 
     fun clickGoBack() {

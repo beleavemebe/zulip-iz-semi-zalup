@@ -8,4 +8,5 @@ android {
 
 dependencies {
     implementation libs.lifecycle.runtimeKtx
+    implementation libs.core
 }

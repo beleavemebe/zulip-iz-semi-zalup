@@ -3,6 +3,7 @@ package com.example.coursework.topic.impl.ui
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.annotation.VisibleForTesting
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
@@ -13,12 +14,18 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.core.ui.argument
 import com.example.core.ui.assistedViewModel
 import com.example.coursework.core.utils.collectWhenStarted
+import com.example.coursework.core.utils.copyStringToClipboard
 import com.example.coursework.topic.impl.TopicFacade
+import com.example.coursework.topic.impl.ui.actions.ActionsDialog
+import com.example.coursework.topic.impl.ui.actions.MessageAction
+import com.example.coursework.topic.impl.ui.actions.pick_emoji.PickEmojiDialog
 import com.example.coursework.topic.impl.ui.elm.TopicEffect
 import com.example.coursework.topic.impl.ui.elm.TopicEvent
 import com.example.coursework.topic.impl.ui.elm.TopicState
 import com.example.coursework.topic.impl.ui.elm.TopicStoreFactory
+import com.example.coursework.topic.impl.ui.model.ForeignMessageUi
 import com.example.coursework.topic.impl.ui.model.MessageUi
+import com.example.coursework.topic.impl.ui.model.OwnMessageUi
 import com.example.coursework.topic.impl.ui.model.TopicItem
 import com.example.coursework.topic.impl.ui.recycler.TopicViewHolderFactory
 import com.example.feature.topic.impl.R
@@ -66,10 +73,26 @@ class TopicFragment : ElmFragment<TopicEvent, TopicEffect, TopicState>(R.layout.
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initActionListener()
         initToolbar()
         initEditText()
         initSendButton()
         initRecycler()
+    }
+
+    private fun initActionListener() {
+        TopicFacade.actionsFlow
+            .onEach(::handleAction)
+            .collectWhenStarted(viewLifecycleOwner.lifecycle)
+    }
+
+    private fun handleAction(action: MessageAction) {
+        when (action) {
+            is MessageAction.PickReaction -> viewModel.toggleReaction(action.messageId, action.emoteName)
+            is MessageAction.DeleteMessage -> viewModel.deleteMessage(action.messageId)
+            is MessageAction.EditMessage -> viewModel.editMessage(action.messageId, action.oldContent, action.updatedContent)
+            is MessageAction.CopyMessage -> viewModel.copyMessage(action.message)
+        }
     }
 
     private fun initToolbar() {
@@ -93,9 +116,15 @@ class TopicFragment : ElmFragment<TopicEvent, TopicEffect, TopicState>(R.layout.
 
     private fun initRecycler() {
         recycler = TiRecyclerCoroutines(binding.rvChat, adapter)
-        recycler.longClickedItem<MessageUi>(MessageUi.VIEW_TYPE)
-            .onEach(::pickReactionForMessage)
-            .collectWhenStarted(viewLifecycleOwner.lifecycle)
+        listOf(
+            recycler.longClickedItem<ForeignMessageUi>(ForeignMessageUi.VIEW_TYPE),
+            recycler.longClickedItem<OwnMessageUi>(OwnMessageUi.VIEW_TYPE)
+        ).forEach { messageClickFlow ->
+            messageClickFlow
+                .onEach(::openActionsDialog)
+                .collectWhenStarted(viewLifecycleOwner.lifecycle)
+        }
+
         binding.rvChat.addOnScrollListener(
             PagingTriggeringScrollListener(
                 binding.rvChat.layoutManager as LinearLayoutManager,
@@ -105,21 +134,16 @@ class TopicFragment : ElmFragment<TopicEvent, TopicEffect, TopicState>(R.layout.
         )
     }
 
-    private fun pickReactionForMessage(messageUi: MessageUi) {
-        parentFragmentManager.setFragmentResultListener(
-            PickEmojiDialog.EMOJI_RESULT_KEY, viewLifecycleOwner
-        ) { _, bundle ->
-            onEmojiPicked(bundle, messageUi)
-        }
-
+    private fun openActionsDialog(messageUi: MessageUi) {
         parentFragmentManager.commit {
-            add(PickEmojiDialog(), null)
+            add(ActionsDialog.newInstance(messageUi.id, messageUi.message), null)
         }
     }
 
-    private fun onEmojiPicked(bundle: Bundle, messageUi: MessageUi) {
-        val emojiName = requireNotNull(bundle.getString(PickEmojiDialog.EMOJI_RESULT_KEY))
-        viewModel.toggleReaction(messageUi, emojiName)
+    private fun pickReactionForMessage(messageUi: MessageUi) {
+        parentFragmentManager.commit {
+            add(PickEmojiDialog.newInstance(messageUi.id), null)
+        }
     }
 
     override fun render(state: TopicState) {
@@ -143,6 +167,21 @@ class TopicFragment : ElmFragment<TopicEvent, TopicEffect, TopicState>(R.layout.
     private fun setSendButtonVisibility(visible: Boolean) {
         binding.ibAdd.isVisible = !visible
         binding.ibSend.isVisible = visible
+    }
+
+    override fun handleEffect(effect: TopicEffect): Unit? {
+        return when (effect) {
+            is TopicEffect.CopyMessage -> copyMessage(effect)
+        }
+    }
+
+    private fun copyMessage(effect: TopicEffect.CopyMessage) {
+        val copied = requireContext().copyStringToClipboard(effect.message)
+        Toast.makeText(
+            requireContext(),
+            getString(if (copied) R.string.copied else R.string.not_copied),
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
     override fun onDestroyView() {

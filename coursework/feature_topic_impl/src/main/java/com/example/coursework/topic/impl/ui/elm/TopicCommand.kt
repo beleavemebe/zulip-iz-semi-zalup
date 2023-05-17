@@ -37,4 +37,12 @@ sealed interface TopicCommand {
         val topic: String,
         val message: String
     ) : TopicCommand
+
+    data class DeleteMessage(val messageId: Int) : TopicCommand
+
+    data class EditMessage(
+        val messageId: Int,
+        val oldContent: String,
+        val updatedContent: String,
+    ) : TopicCommand
 }

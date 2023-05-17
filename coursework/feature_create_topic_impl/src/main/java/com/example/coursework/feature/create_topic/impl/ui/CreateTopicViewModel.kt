@@ -1,13 +1,13 @@
 package com.example.coursework.feature.create_topic.impl.ui
 
-import com.example.core.ui.base.BaseViewModel
+import androidx.lifecycle.ViewModel
 import com.example.coursework.feature.create_topic.impl.CreateTopicFacade
 import com.example.coursework.feature.create_topic.impl.ui.elm.CreateTopicEvent
 import com.example.coursework.feature.create_topic.impl.ui.elm.CreateTopicStoreFactory
 
 class CreateTopicViewModel(
     storeFactory: CreateTopicStoreFactory
-) : BaseViewModel() {
+) : ViewModel() {
     val store = storeFactory.store
 
     fun clickGoBack() {

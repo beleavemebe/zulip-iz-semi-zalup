@@ -15,15 +15,19 @@ class TopicReducer @Inject constructor(
     override fun Result.reduce(event: TopicEvent) =
         when (event) {
             is TopicEvent.Ui.Init -> init(event.stream, event.topic)
-            is TopicEvent.Ui.ToggleReaction -> toggleReaction(event.messageUi, event.emoteName)
+            is TopicEvent.Ui.ToggleReaction -> toggleReaction(event.messageId, event.emoteName)
             is TopicEvent.Ui.ClickSendMessage -> sendMessage()
             is TopicEvent.Ui.UpdateInputText -> updateInput(event.value)
             is TopicEvent.Ui.LoadPreviousPage -> loadPreviousPage()
             is TopicEvent.Ui.LoadNextPage -> loadNextPage()
             is TopicEvent.Ui.ClickGoBack -> goBack()
+            is TopicEvent.Ui.DeleteMessage -> deleteMessage(event)
+            is TopicEvent.Ui.EditMessage -> editMessage(event)
+            is TopicEvent.Ui.CopyMessage -> copyMessage(event)
             is TopicEvent.Internal.MessagesLoaded -> onMessagesLoaded(event)
             is TopicEvent.Internal.PreviousPageLoaded -> onPreviousPageLoaded(event)
             is TopicEvent.Internal.NextPageLoaded -> onNextPageLoaded(event)
+            is TopicEvent.Internal.MessageEdited -> onMessageEdited(event)
             is TopicEvent.Internal.CaughtError -> showError(event.error)
         }
 
@@ -36,7 +40,8 @@ class TopicReducer @Inject constructor(
         }
     }
 
-    private fun Result.toggleReaction(messageUi: MessageUi, emoteName: String) {
+    private fun Result.toggleReaction(messageId: Int, emoteName: String) {
+        val messageUi = state.items.filterIsInstance<MessageUi>().first { it.id == messageId }
         val targetReaction = messageUi.reactions.firstOrNull { reaction ->
             reaction.name == emoteName
         }
@@ -174,6 +179,29 @@ class TopicReducer @Inject constructor(
         cicerone.router.backTo(null)
     }
 
+    private fun Result.deleteMessage(event: TopicEvent.Ui.DeleteMessage) {
+        commands {
+            +TopicCommand.DeleteMessage(event.messageId)
+        }
+        state {
+            val updatedMessages = items.filterIsInstance<MessageUi>()
+                .filterNot { it.id == event.messageId }
+            state.setUpdatedMessages(updatedMessages)
+        }
+    }
+
+    private fun Result.editMessage(event: TopicEvent.Ui.EditMessage) {
+        commands {
+            +TopicCommand.EditMessage(event.messageId, event.oldContent, event.updatedContent)
+        }
+    }
+
+    private fun Result.copyMessage(event: TopicEvent.Ui.CopyMessage) {
+        effects {
+            +TopicEffect.CopyMessage(event.message)
+        }
+    }
+
     private fun Result.onMessagesLoaded(event: TopicEvent.Internal.MessagesLoaded) {
         state {
             copy(
@@ -185,6 +213,21 @@ class TopicReducer @Inject constructor(
                 isLoading = false,
                 error = null,
             )
+        }
+    }
+
+    private fun Result.onMessageEdited(event: TopicEvent.Internal.MessageEdited) {
+        state {
+            val updatedMessages = items.filterIsInstance<MessageUi>()
+                .map { messageUi ->
+                    if (messageUi.id == event.messageId) {
+                        messageUi.updateContent(event.updatedContent)
+                    } else {
+                        messageUi
+                    }
+                }
+
+            state.setUpdatedMessages(updatedMessages)
         }
     }
 

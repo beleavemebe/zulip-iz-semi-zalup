@@ -13,6 +13,8 @@ data class OwnMessageUi(
 
     override fun updateReactions(reactions: List<ReactionUi>) = copy(reactions = reactions)
 
+    override fun updateContent(content: String) = copy(message = content)
+
     companion object {
         val VIEW_TYPE = R.layout.item_own_message
     }
