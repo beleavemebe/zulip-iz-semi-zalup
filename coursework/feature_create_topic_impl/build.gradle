@@ -1,0 +1,19 @@
+plugins {
+    id 'android-library-convention'
+    id 'dagger-convention'
+}
+
+android {
+    namespace 'com.example.coursework.feature.create_topic.api'
+}
+
+dependencies {
+    implementation project(":feature_create_topic_api")
+    implementation project(":core_di")
+    implementation project(":core_ui")
+    implementation libs.bundles.elmslie
+    implementation libs.bundles.coroutines
+    implementation libs.fragmentKtx
+    implementation libs.material
+    implementation libs.viewBindingDelegate
+}

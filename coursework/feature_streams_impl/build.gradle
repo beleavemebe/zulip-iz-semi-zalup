@@ -9,6 +9,7 @@ android {
 
 dependencies {
     implementation project(":shared_streams_api")
+    implementation project(":shared_messages_api")
     implementation project(":feature_streams_api")
     implementation project(':core_db')
     implementation project(":core_di")

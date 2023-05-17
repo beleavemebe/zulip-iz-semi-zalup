@@ -4,9 +4,9 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.coursework.topic.impl.data.db.MessageEntity
-import com.example.coursework.topic.impl.data.db.ReactionEntity
-import com.example.coursework.topic.impl.data.db.TopicDao
+import com.example.coursework.shared_messages.impl.data.db.MessageEntity
+import com.example.coursework.shared_messages.impl.data.db.ReactionEntity
+import com.example.coursework.shared_messages.impl.data.db.TopicDao
 import com.example.shared_streams.impl.coursework.data.db.StreamEntity
 import com.example.shared_streams.impl.coursework.data.db.StreamsDao
 import com.example.shared_streams.impl.coursework.data.db.TopicEntity

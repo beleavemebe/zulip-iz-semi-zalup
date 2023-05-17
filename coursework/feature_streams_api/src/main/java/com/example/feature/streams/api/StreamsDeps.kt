@@ -17,4 +17,6 @@ interface StreamsDeps : BaseDeps {
     ): FragmentScreen
 
     fun getCreateStreamScreen(): FragmentScreen
+
+    fun getCreateTopicScreen(streamId: Int, stream: String): FragmentScreen
 }

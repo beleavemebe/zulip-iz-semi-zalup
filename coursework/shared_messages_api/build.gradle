@@ -1,0 +1,15 @@
+plugins {
+    id 'android-library-convention'
+    id 'org.jetbrains.kotlin.android'
+}
+
+android {
+    namespace 'com.example.coursework.shared_messages_api'
+}
+
+dependencies {
+    implementation project(":core_di")
+    implementation project(":core_db")
+    implementation project(":core_network")
+    implementation libs.bundles.coroutines
+}

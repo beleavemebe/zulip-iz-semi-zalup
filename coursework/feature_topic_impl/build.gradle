@@ -12,6 +12,8 @@ android {
 dependencies {
     implementation project(":feature_topic_api")
     implementation project(":shared_profile_api")
+    implementation project(":shared_messages_api")
+    implementation project(":shared_messages_impl")
     implementation project(':core_db')
     implementation project(":core_ui")
     implementation project(":core_di")

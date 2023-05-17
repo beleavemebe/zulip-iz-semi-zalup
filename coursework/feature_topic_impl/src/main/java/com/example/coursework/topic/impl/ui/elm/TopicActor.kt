@@ -2,10 +2,10 @@ package com.example.coursework.topic.impl.ui.elm
 
 import com.example.coursework.core.utils.CacheContainer
 import com.example.coursework.core.utils.cache
+import com.example.coursework.shared_messages.api.domain.MessageRepository
+import com.example.coursework.shared_messages.api.domain.model.Message
+import com.example.coursework.shared_messages.api.domain.model.Reaction
 import com.example.coursework.topic.impl.di.TopicScope
-import com.example.coursework.topic.impl.domain.MessageRepository
-import com.example.coursework.topic.impl.domain.model.Message
-import com.example.coursework.topic.impl.domain.model.Reaction
 import com.example.coursework.topic.impl.ui.model.ForeignMessageUi
 import com.example.coursework.topic.impl.ui.model.OwnMessageUi
 import com.example.coursework.topic.impl.ui.model.ReactionUi

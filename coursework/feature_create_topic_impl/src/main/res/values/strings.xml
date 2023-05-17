@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="wait_a_bit">Wait a bit</string>
+    <string name="name_blank">Name is blank</string>
+    <string name="name_occupied">Name is occupied</string>
+    <string name="message_blank">Message is blank</string>
+    <string name="valid">Valid</string>
+    <string name="topic_name">Topic name</string>
+    <string name="first_message">First message</string>
+    <string name="done">Done</string>
+    <string name="stream_name">Stream name</string>
+</resources>

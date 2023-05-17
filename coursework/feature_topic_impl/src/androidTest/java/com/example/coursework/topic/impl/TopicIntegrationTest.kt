@@ -5,7 +5,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.example.core.ui.FlexBoxLayout
 import com.example.coursework.core.network.di.CoreNetworkDeps
 import com.example.coursework.core.network.di.CoreNetworkFacade
-import com.example.coursework.topic.impl.data.db.TopicDao
+import com.example.coursework.shared_messages.impl.data.db.TopicDao
 import com.example.coursework.topic.impl.ui.TopicFragment
 import com.example.coursework.topic.impl.ui.view.EmoteReactionView
 import com.example.feature.topic.api.TopicDeps

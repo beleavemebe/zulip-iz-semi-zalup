@@ -4,7 +4,6 @@ import android.content.Context
 import com.example.coursework.app.database.di.AppDbApi
 import com.example.coursework.app.database.di.AppDbDeps
 import com.example.coursework.app.database.di.AppDbFacade
-import com.example.coursework.core.database.DaoProvider
 import com.example.coursework.core.database.di.CoreDbApi
 import com.example.coursework.core.database.di.CoreDbDeps
 import com.example.coursework.core.database.di.CoreDbFacade
@@ -15,15 +14,21 @@ import com.example.coursework.core.network.di.CoreNetworkDeps
 import com.example.coursework.core.network.di.CoreNetworkFacade
 import com.example.coursework.feature.create_stream.api.CreateStreamApi
 import com.example.coursework.feature.create_stream.api.CreateStreamDeps
+import com.example.coursework.feature.create_topic.impl.CreateTopicFacade
 import com.example.coursework.feature.people.impl.PeopleFacade
 import com.example.coursework.feature.profile.ui.di.ProfileFacade
 import com.example.coursework.feature.streams.impl.StreamsFacade
 import com.example.coursework.main.di.MainFacade
 import com.example.coursework.shared.profile.impl.di.SharedProfileFacade
+import com.example.coursework.shared_messages.api.SharedMessagesApi
+import com.example.coursework.shared_messages.api.SharedMessagesDeps
+import com.example.coursework.shared_messages.impl.SharedMessagesFacade
 import com.example.coursework.shared_streams.api.SharedStreamsApi
 import com.example.coursework.shared_streams.api.SharedStreamsDeps
 import com.example.coursework.topic.impl.TopicFacade
 import com.example.feature.create_stream.impl.CreateStreamFacade
+import com.example.feature.create_topic.api.CreateTopicApi
+import com.example.feature.create_topic.api.CreateTopicDeps
 import com.example.feature.main.api.MainApi
 import com.example.feature.main.api.MainDeps
 import com.example.feature.people.api.PeopleApi
@@ -42,19 +47,21 @@ import com.github.terrakok.cicerone.Cicerone
 import com.github.terrakok.cicerone.Router
 import dagger.Module
 import dagger.Provides
-import retrofit2.Retrofit
 import javax.inject.Provider
 
 @Module
 object FeatureGluingModule {
     @Provides
     fun provideTopicDeps(
-        retrofit: Retrofit,
+        sharedMessagesApi: SharedMessagesApi,
         getCurrentUser: GetCurrentUser,
-        daoProvider: DaoProvider,
         @GlobalCicerone globalCicerone: Cicerone<Router>
     ): TopicDeps {
-        return TopicDeps(retrofit, getCurrentUser, daoProvider, globalCicerone)
+        return TopicDeps(
+            sharedMessagesApi.messageRepository,
+            getCurrentUser,
+            globalCicerone
+        )
     }
 
     @Provides
@@ -79,7 +86,22 @@ object FeatureGluingModule {
     ): SharedProfileApi {
         return SharedProfileFacade.init(deps).api
     }
-    
+
+    @Provides
+    fun provideSharedMessagesDeps(
+        coreNetworkApi: CoreNetworkApi,
+        coreDbApi: CoreDbApi
+    ): SharedMessagesDeps {
+        return SharedMessagesDeps(coreNetworkApi.retrofit, coreDbApi.daoProvider)
+    }
+
+    @Provides
+    fun provideSharedMessagesApi(
+        deps: SharedMessagesDeps
+    ): SharedMessagesApi {
+        return SharedMessagesFacade.init(deps).api
+    }
+
     @Provides
     fun provideSharedStreamsDeps(
         coreNetworkApi: CoreNetworkApi,
@@ -107,9 +129,36 @@ object FeatureGluingModule {
 
     @Provides
     fun providePeopleApi(
-        peopleDeps: PeopleDeps
+        deps: PeopleDeps
     ): PeopleApi {
-        return PeopleFacade.init(peopleDeps).api
+        return PeopleFacade.init(deps).api
+    }
+
+    @Provides
+    fun provideCreateTopicDeps(
+        @GlobalCicerone globalCicerone: Cicerone<Router>,
+        sharedStreamsApi: SharedStreamsApi,
+        sharedMessagesApi: SharedMessagesApi,
+        topicApiProvider: Provider<TopicApi>
+    ): CreateTopicDeps {
+        return object : CreateTopicDeps {
+            override val globalCicerone = globalCicerone
+            override val streamsRepository = sharedStreamsApi.streamsRepository
+            override val messageRepository = sharedMessagesApi.messageRepository
+
+            override fun onTopicCreated(streamId: Int, stream: String, topic: String) {
+                globalCicerone.router.replaceScreen(
+                    screen = topicApiProvider.get().getTopicScreen(streamId, stream, topic)
+                )
+            }
+        }
+    }
+
+    @Provides
+    fun provideCreateTopicApi(
+        deps: CreateTopicDeps
+    ): CreateTopicApi {
+        return CreateTopicFacade.init(deps).api
     }
 
     @Provides
@@ -155,10 +204,11 @@ object FeatureGluingModule {
         sharedStreamsApi: SharedStreamsApi,
         topicApiProvider: Provider<TopicApi>,
         createStreamApiProvider: Provider<CreateStreamApi>,
+        createTopicApiProvider: Provider<CreateTopicApi>
     ): StreamsDeps {
         return object : StreamsDeps {
             override val globalCicerone = cicerone
-            
+
             override val streamsRepository = sharedStreamsApi.streamsRepository
 
             override fun getTopicScreen(streamId: Int, stream: String, topic: String) = 
@@ -166,6 +216,9 @@ object FeatureGluingModule {
 
             override fun getCreateStreamScreen() = 
                 createStreamApiProvider.get().getCreateStreamScreen()
+
+            override fun getCreateTopicScreen(streamId: Int, stream: String) =
+                createTopicApiProvider.get().getCreateTopicScreen(streamId, stream)
         }
     }
 

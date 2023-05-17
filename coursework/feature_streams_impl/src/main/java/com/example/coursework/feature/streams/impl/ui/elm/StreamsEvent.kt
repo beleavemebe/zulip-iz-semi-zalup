@@ -10,7 +10,7 @@ sealed interface StreamsEvent {
     sealed interface Ui : StreamsEvent {
         object ClickCreateStream : StreamsEvent
         object ClickViewAllMessages : StreamsEvent
-        object ClickCreateTopic : StreamsEvent
+        data class ClickCreateTopic(val streamUi: StreamUi) : StreamsEvent
         data class UpdateSearchQuery(val value: String) : Ui
         data class SelectStreamsTab(val tab: StreamsTab) : Ui
         data class ClickStream(val streamUi: StreamUi) : Ui

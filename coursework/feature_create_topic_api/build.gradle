@@ -1,0 +1,14 @@
+plugins {
+    id 'android-library-convention'
+}
+
+android {
+    namespace 'com.example.feature.create_topic.api'
+}
+
+dependencies {
+    api project(":core_di")
+    api project(":shared_messages_api")
+    api project(":shared_streams_api")
+    api libs.cicerone
+}

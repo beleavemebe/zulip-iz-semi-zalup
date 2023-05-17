@@ -8,5 +8,6 @@ interface StreamsRepository {
     fun getAllStreams(forceRemote: Boolean): Flow<List<Stream>>
     fun getSubscribedStreams(forceRemote: Boolean): Flow<List<Stream>>
     fun getTopics(streamId: Int): Flow<List<Topic>>
+
     suspend fun createStream(name: String)
 }

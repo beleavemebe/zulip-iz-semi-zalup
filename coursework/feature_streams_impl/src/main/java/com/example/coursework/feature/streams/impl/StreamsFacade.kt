@@ -10,6 +10,9 @@ import com.github.terrakok.cicerone.androidx.FragmentScreen
 import java.lang.ref.WeakReference
 
 object StreamsFacade : FeatureFacade<StreamsDeps, StreamsApi, StreamsComponent>() {
+    var onStreamCreated: WeakReference<(name: String) -> Unit>? = null
+        internal set
+
     override fun createComponent(deps: StreamsDeps): StreamsComponent {
         return DaggerStreamsComponent.factory().create(deps)
     }
@@ -21,7 +24,4 @@ object StreamsFacade : FeatureFacade<StreamsDeps, StreamsApi, StreamsComponent>(
             }
         }
     }
-
-    var onStreamCreated: WeakReference<(name: String) -> Unit>? = null
-        internal set
 }

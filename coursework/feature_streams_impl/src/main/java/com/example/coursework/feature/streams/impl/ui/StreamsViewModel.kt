@@ -59,7 +59,7 @@ class StreamsViewModel(
     }
 
     fun clickCreateTopic(createTopicUi: CreateTopicUi) {
-        store.accept(StreamsEvent.Ui.ClickCreateTopic)
+        store.accept(StreamsEvent.Ui.ClickCreateTopic(createTopicUi.streamUi))
     }
 
     override fun onCleared() {

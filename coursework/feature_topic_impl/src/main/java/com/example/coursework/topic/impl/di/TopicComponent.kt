@@ -8,7 +8,6 @@ import dagger.Component
 @TopicScope
 @Component(
     dependencies = [TopicDeps::class],
-    modules = [TopicModule::class]
 )
 interface TopicComponent : DaggerComponent {
     fun inject(topicFragment: TopicFragment)

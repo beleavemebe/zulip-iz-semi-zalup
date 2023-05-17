@@ -1,0 +1,20 @@
+plugins {
+    id 'android-library-convention'
+    id 'dagger-convention'
+    id 'room-convention'
+    alias libs.plugins.kotlinx.serialization
+}
+
+android {
+    namespace 'com.example.coursework.shared_messages.impl'
+}
+
+dependencies {
+    implementation project(":shared_messages_api")
+    implementation project(":core_db")
+    implementation project(":core_ui")
+    implementation project(":core_utils")
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation project(":core_network")
+    implementation project(":core_di")
+}

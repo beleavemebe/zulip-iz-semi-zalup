@@ -18,7 +18,7 @@ class StreamsReducer @Inject constructor(
             is StreamsEvent.Ui.ClickStream -> toggleStream(event)
             is StreamsEvent.Ui.ClickTopic -> goToTopic(event)
             is StreamsEvent.Ui.ClickCreateStream -> createStream()
-            is StreamsEvent.Ui.ClickCreateTopic -> createTopic()
+            is StreamsEvent.Ui.ClickCreateTopic -> createTopic(event)
             is StreamsEvent.Ui.ClickViewAllMessages -> viewAllMessages()
             is StreamsEvent.Internal.StreamsLoaded -> showStreams(event)
             is StreamsEvent.Internal.TopicsLoaded -> showTopics(event)
@@ -109,7 +109,10 @@ class StreamsReducer @Inject constructor(
     private fun Result.showTopics(
         event: StreamsEvent.Internal.TopicsLoaded,
     ) {
-        showStreamContent(event.streamUi, event.topicUis + ViewAllMessagesUi + CreateTopicUi)
+        showStreamContent(
+            streamUi = event.streamUi,
+            content = listOf(ViewAllMessagesUi, CreateTopicUi(event.streamUi)) + event.topicUis
+        )
     }
 
     private fun Result.showError(
@@ -131,9 +134,11 @@ class StreamsReducer @Inject constructor(
         // todo put in a separate module
     }
 
-    private fun Result.createTopic() {
+    private fun Result.createTopic(event: StreamsEvent.Ui.ClickCreateTopic) {
         // todo put in a separate module
-        deps.globalCicerone.router.navigateTo()
+        deps.globalCicerone.router.navigateTo(
+            deps.getCreateTopicScreen(event.streamUi.id, event.streamUi.name)
+        )
     }
 
     private fun Result.onStreamCreated(event: StreamsEvent.Internal.StreamCreated) {
